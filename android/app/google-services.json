@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "942953101996",
+    "project_id": "study-a7154",
+    "storage_bucket": "study-a7154.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942953101996:android:e7d64b3e134e1ccbdc7d09",
+        "android_client_info": {
+          "package_name": "com.sacademy.study_academy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1x2gU8Y6kXx1kAvNehzX7fcIsb7i0YC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
