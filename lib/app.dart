@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/routes.dart';
@@ -20,4 +19,4 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: AppRoutes.generateRoutes,
     );
   }
-}
+} 
