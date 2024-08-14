@@ -1,27 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:study_academy/core/utils/colors.dart';
+import 'package:study_academy/core/view_model/auth_viewmodel.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:get/get.dart';
 
-class SigninView extends StatefulWidget {
-  const SigninView({super.key});
-
-  @override
-  State<SigninView> createState() => _SigninViewState();
-}
-
-class _SigninViewState extends State<SigninView> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool passwordShown = true;
-
-  void _changePassword() {
-    setState(() {
-      passwordShown = !passwordShown;
-    });
-  }
+class SigninView extends GetWidget<AuthViewModel> {
+  SigninView({super.key});
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +19,7 @@ class _SigninViewState extends State<SigninView> {
         child: Padding(
           padding: EdgeInsets.all(Dimensions.height15),
           child: Form(
+            key: _formKey,
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -61,7 +51,7 @@ class _SigninViewState extends State<SigninView> {
                         height: Dimensions.height10,
                       ),
                       TextFormField(
-                        controller: _emailController,
+                        // controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(
@@ -70,6 +60,19 @@ class _SigninViewState extends State<SigninView> {
                           filled: true,
                           fillColor: Colors.grey[200],
                         ),
+                        onSaved: (value) {
+                          controller.email = value!;
+                        },
+                        validator: (value) {
+                          final regex = RegExp(
+                              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+                          if (controller.email.isEmpty) {
+                            return 'Please, Enter your Email';
+                          } else if (!regex.hasMatch(value!)) {
+                            return 'Your Email is not valid';
+                          }
+                          return null;
+                        },
                       ),
                     ],
                   ),
@@ -87,35 +90,63 @@ class _SigninViewState extends State<SigninView> {
                       SizedBox(
                         height: Dimensions.height10,
                       ),
-                      TextFormField(
-                        controller: _passwordController,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: passwordShown,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              passwordShown
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
+                      GetX<AuthViewModel>(builder: (authCTRL) {
+                        return TextFormField(
+                          // controller: _passwordController,
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: authCTRL.shownPassword.value,
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide.none,
                             ),
-                            onPressed: _changePassword,
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                controller.shownPassword.value
+                                    ? Icons.remove_red_eye_rounded
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                controller.changeShownPassword();
+                              },
+                            ),
                           ),
-                        ),
-                      ),
+                          onSaved: (value) {
+                            controller.password = value!;
+                          },
+                          validator: (value) {
+                            if (controller.password.isEmpty) {
+                              return 'Please, Enter your Password';
+                            } else if (controller.password.length < 6) {
+                              return 'Your Password is not valid';
+                            }
+                            return null;
+                          },
+                        );
+                      }),
                     ],
                   ),
                   SizedBox(
                     height: Dimensions.height30,
                   ),
-                  MainButton(
-                    text: 'Login',
-                    onTap: () {},
-                  ),
+                  GetX<AuthViewModel>(builder: (process) {
+                    return process.action.value
+                        ? const Center(
+                            child: CupertinoActivityIndicator(
+                              color: AppColors.mainColor,
+                            ),
+                          )
+                        : MainButton(
+                            text: 'Login',
+                            onTap: () {
+                              _formKey.currentState!.save();
+                              if (_formKey.currentState!.validate()) {
+                                controller.signInWithEmailAndPassword();
+                              }
+                            },
+                          );
+                  }),
                 ],
               ),
             ),

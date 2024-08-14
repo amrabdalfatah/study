@@ -14,7 +14,7 @@ class AppRoutes {
     switch (setting.name) {
       case loginRoute:
         return MaterialPageRoute(
-          builder: (_) => const SigninView(),
+          builder: (_) => SigninView(),
         );
       case detailAppRoute:
         return MaterialPageRoute(
