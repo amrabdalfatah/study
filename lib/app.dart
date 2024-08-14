@@ -8,12 +8,12 @@ import 'helper/binding.dart';
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialBinding: Binding(),
       theme: ThemeData().copyWith(
-        scaffoldBackgroundColor: AppColors.secondaryColor,
+        scaffoldBackgroundColor: AppColors.backgroundPageColor,
       ),
       initialRoute: AppRoutes.splashRoute,
       onGenerateRoute: AppRoutes.generateRoutes,

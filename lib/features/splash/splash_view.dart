@@ -1,13 +1,59 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-class SplashView extends StatelessWidget {
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:study_academy/core/utils/colors.dart';
+import 'package:study_academy/core/utils/dimensions.dart';
+import 'package:study_academy/core/utils/image_strings.dart';
+import 'package:study_academy/routes.dart';
+
+class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
   @override
+  State<SplashView> createState() => _SplashViewState();
+}
+
+class _SplashViewState extends State<SplashView> {
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(
+      const Duration(seconds: 4),
+      (timer) {
+        timer.cancel();
+        Get.toNamed(AppRoutes.detailAppRoute);
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Splash View'),
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(
+              Dimensions.height10,
+            ),
+            child: SizedBox(
+              height: Dimensions.height100,
+              child: Image.asset(
+                ImagesStrings.logo,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: Dimensions.height15,
+            width: double.infinity,
+            child: const CupertinoActivityIndicator(
+              color: AppColors.mainColor,
+            ),
+          ),
+        ],
       ),
     );
   }
