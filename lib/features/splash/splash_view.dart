@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/utils/image_strings.dart';
-import 'package:study_academy/routes.dart';
+
+import 'deatil_app_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -23,7 +24,7 @@ class _SplashViewState extends State<SplashView> {
       const Duration(seconds: 4),
       (timer) {
         timer.cancel();
-        Get.toNamed(AppRoutes.detailAppRoute);
+        Get.to(() => const DeatilAppView());
       },
     );
   }

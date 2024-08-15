@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../utils/colors.dart';
@@ -31,8 +30,8 @@ class MainButton extends StatelessWidget {
             text: text,
             color: Colors.white,
             fontFamily: "Urbanist",
-            fontWeight: FontWeight.w600,
-            size: Dimensions.font16,
+            fontWeight: FontWeight.w500,
+            size: Dimensions.font12,
           ),
         ),
       ),

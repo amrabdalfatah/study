@@ -5,7 +5,7 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/utils/image_strings.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
-import 'package:study_academy/routes.dart';
+import 'package:study_academy/features/auth/signin_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeatilAppView extends StatefulWidget {
@@ -76,7 +76,7 @@ class _DeatilAppViewState extends State<DeatilAppView> {
               child: MainButton(
                 text: 'Let\'s get Started',
                 onTap: () {
-                  Get.toNamed(AppRoutes.loginRoute);
+                  Get.to(() => SigninView());
                 },
               ),
             ),

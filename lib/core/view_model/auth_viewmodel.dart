@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/services/firestore_admin.dart';
 import 'package:study_academy/core/utils/constants.dart';
+import 'package:study_academy/features/admin/admin_homeview.dart';
 import 'package:study_academy/model/admin_model.dart';
-import 'package:study_academy/routes.dart';
 
 class AuthViewModel extends GetxController {
   late final FirebaseAuth _auth;
@@ -49,7 +49,7 @@ class AuthViewModel extends GetxController {
           }).whenComplete(() async {
             if (adminData!.firstName != null) {
               action.value = false;
-              Get.offAllNamed(AppRoutes.adminHomeRoute);
+              Get.off(() => const AdminHomeView());
             } else {
               await FireStoreAdmin().addUserToFirestore(
                 AdminModel(
@@ -60,7 +60,7 @@ class AuthViewModel extends GetxController {
                 ),
               );
               action.value = false;
-              Get.offAllNamed(AppRoutes.adminHomeRoute);
+              Get.off(() => const AdminHomeView());
             }
           });
         }

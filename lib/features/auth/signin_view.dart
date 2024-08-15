@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
-import 'package:study_academy/core/view_model/auth_viewmodel.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
+import 'package:study_academy/core/view_model/auth_viewmodel.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
-import 'package:get/get.dart';
 
 class SigninView extends GetWidget<AuthViewModel> {
   SigninView({super.key});
@@ -51,7 +51,6 @@ class SigninView extends GetWidget<AuthViewModel> {
                         height: Dimensions.height10,
                       ),
                       TextFormField(
-                        // controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(
@@ -90,41 +89,42 @@ class SigninView extends GetWidget<AuthViewModel> {
                       SizedBox(
                         height: Dimensions.height10,
                       ),
-                      GetX<AuthViewModel>(builder: (authCTRL) {
-                        return TextFormField(
-                          // controller: _passwordController,
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: authCTRL.shownPassword.value,
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                controller.shownPassword.value
-                                    ? Icons.remove_red_eye_rounded
-                                    : Icons.visibility_off,
+                      GetX<AuthViewModel>(
+                        builder: (authCTRL) {
+                          return TextFormField(
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: authCTRL.shownPassword.value,
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
                               ),
-                              onPressed: () {
-                                controller.changeShownPassword();
-                              },
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.shownPassword.value
+                                      ? Icons.remove_red_eye_rounded
+                                      : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  controller.changeShownPassword();
+                                },
+                              ),
                             ),
-                          ),
-                          onSaved: (value) {
-                            controller.password = value!;
-                          },
-                          validator: (value) {
-                            if (controller.password.isEmpty) {
-                              return 'Please, Enter your Password';
-                            } else if (controller.password.length < 6) {
-                              return 'Your Password is not valid';
-                            }
-                            return null;
-                          },
-                        );
-                      }),
+                            onSaved: (value) {
+                              controller.password = value!;
+                            },
+                            validator: (value) {
+                              if (controller.password.isEmpty) {
+                                return 'Please, Enter your Password';
+                              } else if (controller.password.length < 6) {
+                                return 'Your Password is not valid';
+                              }
+                              return null;
+                            },
+                          );
+                        },
+                      ),
                     ],
                   ),
                   SizedBox(

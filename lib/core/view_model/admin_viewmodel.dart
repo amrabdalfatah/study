@@ -1,26 +1,12 @@
-// import 'dart:async';
-
-// import 'package:alyamama_app/core/services/firestore_camera.dart';
-// import 'package:alyamama_app/core/services/firestore_caseAlert.dart';
-// import 'package:alyamama_app/core/services/firestore_member.dart';
-// import 'package:alyamama_app/core/services/firestore_user.dart';
-// import 'package:alyamama_app/core/utils/constants.dart';
-// import 'package:alyamama_app/core/utils/dimensions.dart';
-// import 'package:alyamama_app/features/home/views/add_member_with_face.dart';
-// import 'package:alyamama_app/features/home/views/edit_member_with_face.dart';
-// import 'package:alyamama_app/features/home/views/home_view.dart';
-// import 'package:alyamama_app/model/camera_model.dart';
-// import 'package:alyamama_app/model/case_alert_model.dart';
-// import 'package:alyamama_app/model/member_model.dart';
-// import 'package:alyamama_app/model/user_model.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:study_academy/core/services/doctor_storage.dart';
 import 'package:study_academy/core/services/firestore_admin.dart';
+import 'package:study_academy/core/services/firestore_doctor.dart';
 import 'package:study_academy/core/utils/constants.dart';
+import 'package:study_academy/features/admin/admin_homeview.dart';
 import 'package:study_academy/features/admin/chat_screen.dart';
 import 'package:study_academy/features/admin/course_screen.dart';
 import 'package:study_academy/features/admin/doctor_screen.dart';
@@ -28,41 +14,35 @@ import 'package:study_academy/features/admin/home_screen.dart';
 import 'package:study_academy/features/admin/student_screen.dart';
 import 'package:study_academy/model/admin_model.dart';
 import 'package:study_academy/model/doctor_model.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:intl/intl.dart';
-// import 'package:location/location.dart';
+import 'package:study_academy/routes.dart';
 
 class AdminViewModel extends GetxController {
   AdminModel? adminData;
-  List<Widget> screens = const [
-    HomeScreen(),
+  List<Widget> screens = [
+    const HomeScreen(),
     DoctorScreen(),
-    CourseScreen(),
-    StudentScreen(),
-    ChatScreen(),
+    const CourseScreen(),
+    const StudentScreen(),
+    const ChatScreen(),
   ];
-
+  RxBool shownPassword = true.obs;
+  RxBool action = false.obs;
   DoctorModel? doctorModel;
-  String? imageDoctorUrl;
+
 //   Stream<QuerySnapshot>? cameraSettings;
 //   CameraModel cameraModel = CameraModel();
 //   // List<CameraFace> cameraFaces = [];
-  ValueNotifier<bool> dataLoaded = ValueNotifier(false);
+  ValueNotifier<bool> dataLoaded = ValueNotifier(true);
   ValueNotifier<int> screenIndex = ValueNotifier(0);
-//   bool isMember = AppConstants.typePerson == TypePerson.member;
 
   @override
   void onInit() {
     super.onInit();
     getAdmin();
-    // else if (isMember) {
-    //   getMember();
-    // } else {
-    //   getDataForSecurityCompany();
-    // }
   }
 
   Future<void> getAdmin() async {
+    dataLoaded.value = false;
     await FireStoreAdmin().getCurrentUser(AppConstants.userId!).then((value) {
       adminData = AdminModel.fromJson(value.data() as Map<dynamic, dynamic>?);
     }).whenComplete(
@@ -77,188 +57,103 @@ class AdminViewModel extends GetxController {
     update();
   }
 
-//   void getMember() async {
-//     await FireStoreMember()
-//         .getCurrentMember(AppConstants.loginId!)
-//         .then((value) {
-//       memberData = MemberModel.fromJson(value.data() as Map<dynamic, dynamic>?);
-//     });
+  void changeShownPassword() {
+    shownPassword.value = !shownPassword.value;
+  }
 
-//     dataLoaded.value = true;
-//     update();
-//   }
+  String doctorEmail = '',
+      doctorPassword = '',
+      doctorFirstName = '',
+      doctorLastName = '',
+      doctorPhone = '',
+      doctorId = '';
+  RxString? imageDoctorUrl = ''.obs;
+  // Select Image for Doctor
+  XFile? mediaFile;
+  final ImagePicker _picker = ImagePicker();
+  void _setImageFileFromFile(XFile? value) {
+    mediaFile = value;
+    imageDoctorUrl!.value = mediaFile!.path;
+    update();
+  }
 
-//   // List of cameras
-//   List cameras = [];
-//   List users = [];
-//   void getDataForSecurityCompany() async {
-//     await FireStoreCamera().getCameras().then((value) {
-//       cameras = value.docs.map((e) {
-//         return e.data();
-//       }).toList();
-//     }).whenComplete(() async {
-//       await FireStoreUser().getUsers().then((value) {
-//         users = value.docs.map((e) {
-//           return e.data();
-//         }).toList();
-//       });
-//       dataLoaded.value = true;
-//       update();
-//     });
-//   }
+  Future<void> onImageButtonPressed(
+    ImageSource source, {
+    required BuildContext context,
+  }) async {
+    if (context.mounted) {
+      try {
+        final XFile? pickedFile = await _picker.pickImage(
+          source: source,
+        );
+        _setImageFileFromFile(pickedFile);
+      } catch (e) {
+        Get.snackbar(
+          'Error',
+          e.toString(),
+          snackPosition: SnackPosition.TOP,
+          colorText: Colors.red,
+        );
+      }
+    }
+  }
 
-//   // void getCameraData() async {
-//   //   await FireStoreCamera()
-//   //       .getCurrentCamera(userData!.cameraId!)
-//   //       .then((value) async {
-//   //     print('//////// Camera //////');
-//   //     print(value.data());
-//   //     await FireStoreCamera().getFacesCamera(userData!.cameraId!).then((camFa) {
-//   //       print(camFa.docs.map((e) => print(e.data())));
-//   //     });
-//   //   });
-//   // }
+  void addDoctor() async {
+    action.value = true;
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    try {
+      await _auth
+          .createUserWithEmailAndPassword(
+        email: doctorEmail,
+        password: doctorPassword,
+      )
+          .then((user) async {
+        doctorId = user.user!.uid;
+        final imagePath = await DoctorStorage().uploadDoctorImage(
+          imageDoctorUrl!.value,
+          doctorEmail,
+        );
+        doctorModel = DoctorModel(
+          doctorId: doctorId,
+          email: doctorEmail,
+          firstName: doctorFirstName,
+          lastName: doctorLastName,
+          image: imagePath,
+          phone: doctorPhone,
+        );
+        await FireStoreDoctor()
+            .addDoctorToFirestore(doctorModel!)
+            .then((value) async {
+          Get.snackbar(
+            'Successfully',
+            'Create Doctor Successfully',
+            snackPosition: SnackPosition.TOP,
+            colorText: Colors.green,
+          );
+        });
+      });
 
-//   Future<void> signOut() async {
-//     FirebaseAuth.instance.signOut();
-//   }
+      action.value = false;
+      update();
+      Get.off(() => const AdminHomeView());
+    } catch (error) {
+      Get.snackbar(
+        'Error',
+        error.toString(),
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red,
+      );
+    }
+    action.value = false;
+    update();
+  }
 
-//   // DashBoard View
-//   var daily = false.obs;
-//   var weekly = false.obs;
-//   var monthly = false.obs;
-
-//   getReportData(int report) {
-//     switch (report) {
-//       case 1:
-//         daily.value = true;
-//         weekly.value = false;
-//         monthly.value = false;
-//         break;
-//       case 3:
-//         daily.value = false;
-//         weekly.value = true;
-//         monthly.value = false;
-//         break;
-//       case 10:
-//         daily.value = false;
-//         weekly.value = false;
-//         monthly.value = true;
-//     }
-//   }
-
-//   void changeToDaily() async {
-//     daily.value = true;
-//     weekly.value = false;
-//     monthly.value = false;
-//     await FireStoreUser()
-//         .updateUserInfo(
-//       key: 'report',
-//       value: 1,
-//       userModel: userData!,
-//     )
-//         .then((value) async {
-//       await getUser();
-//     });
-//   }
-
-//   void changeToWeekly() async {
-//     daily.value = false;
-//     weekly.value = true;
-//     monthly.value = false;
-//     await FireStoreUser()
-//         .updateUserInfo(
-//       key: 'report',
-//       value: 3,
-//       userModel: userData!,
-//     )
-//         .then((value) async {
-//       await getUser();
-//     });
-//   }
-
-//   void changeToMonthly() async {
-//     daily.value = false;
-//     weekly.value = false;
-//     monthly.value = true;
-//     await FireStoreUser()
-//         .updateUserInfo(
-//       key: 'report',
-//       value: 10,
-//       userModel: userData!,
-//     )
-//         .then((value) async {
-//       await getUser();
-//     });
-//   }
-
-//   Color changeColor(String? lastSeen) {
-//     print("Last Seen $lastSeen");
-//     var actTime = DateFormat('dd-MM-yyyy HH:mm a').format(DateTime.now());
-//     // String actminutes = actTime[14] + actTime[15];
-//     print("Act Time $actTime");
-//     int lastMinutes = int.parse(lastSeen![14] + lastSeen[15]);
-//     int lastHours = int.parse(lastSeen[11] + lastSeen[12]);
-//     int actMinutes = int.parse(actTime[14] + actTime[15]);
-//     int actHour = int.parse(actTime[11] + actTime[12]);
-
-//     var minutesReported = userData!.report;
-
-//     if (lastMinutes + minutesReported! < actMinutes && lastHours <= actHour) {
-//       return Colors.red;
-//     } else {
-//       return Colors.green;
-//     }
-//   }
+  Future<void> signOut() async {
+    FirebaseAuth.instance.signOut();
+    Get.offAllNamed(AppRoutes.loginRoute);
+  }
 
 //   // Add Members Screen
-//   PageController pageController = PageController();
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
-//   String email = '', password = '', firstName = '', lastName = '';
-//   String memberId = '';
-//   var shownPassword = true.obs;
-
-//   void changeShownPassword() {
-//     shownPassword.value = !shownPassword.value;
-//   }
-
-// // Timer
-//   Timer? timer;
-//   var seconds = 0.obs;
-//   CaseAlertModel? caseAlert;
-
-//   void startTimer(CaseAlertModel caseAlert) {
-//     timer = Timer.periodic(
-//       const Duration(seconds: 1),
-//       (timer) async {
-//         seconds.value += 1;
-//         if (seconds.value == 45) {
-//           timer.cancel();
-//           await FireStoreCaseAlert()
-//               .updateCaseAlertInfo(
-//             key: 'alertType',
-//             value: 'timerSend',
-//             caseAlertModel: caseAlert,
-//           )
-//               .then((value) {
-//             Get.snackbar(
-//               'Send to Security',
-//               'The Alert sended to security company',
-//               snackPosition: SnackPosition.TOP,
-//             );
-//           });
-//         }
-//       },
-//     );
-//   }
-
-//   void stopTimer() {
-//     if (timer != null) {
-//       timer!.cancel();
-//       seconds.value = 0;
-//     }
-//   }
-
 //   void createMemberWithEmailAndPassword({
 //     int? index,
 //     String image = '',
@@ -425,48 +320,6 @@ class AdminViewModel extends GetxController {
 
 //   deleteFace() {}
 
-//   previewFace(String image) {
-//     Get.dialog(
-//       AlertDialog(
-//         title: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             Align(
-//               alignment: Alignment.topRight,
-//               child: IconButton(
-//                 onPressed: () {
-//                   Get.back();
-//                 },
-//                 icon: const Icon(
-//                   Icons.close,
-//                   color: Color(0xFFC8D1E1),
-//                 ),
-//               ),
-//             ),
-//             Text(
-//               'Face Image',
-//               textAlign: TextAlign.center,
-//               style: TextStyle(
-//                 fontFamily: 'Montserrat',
-//                 fontSize: Dimensions.font16,
-//                 fontWeight: FontWeight.w600,
-//                 height: 1.8,
-//               ),
-//             ),
-//           ],
-//         ),
-//         content: SizedBox(
-//           width: Dimensions.heightHalf,
-//           child: Image.network(
-//             image,
-//             fit: BoxFit.contain,
-//             width: Dimensions.heightHalf,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
 //   // Delete Member
 //   deleteMember(MemberModel member) async {
 //     manageFaces.value = true;
@@ -499,44 +352,5 @@ class AdminViewModel extends GetxController {
 //         colorText: Colors.green,
 //       );
 //     });
-//   }
-
-//   // Security which detect locaion
-//   LocationData? locationData;
-//   var markers = RxSet<Marker>();
-//   var isLoading = false.obs;
-//   var longitude = 0.0.obs;
-//   var latitude = 0.0.obs;
-
-//   fetchLocation({
-//     required double long,
-//     required double lat,
-//   }) async {
-//     try {
-//       isLoading(true);
-//       longitude.value = long;
-//       latitude.value = lat;
-//     } catch (e) {
-//       Get.snackbar(
-//         'Error while getting data',
-//         e.toString(),
-//         snackPosition: SnackPosition.TOP,
-//         colorText: Colors.red,
-//       );
-//     } finally {
-//       isLoading(false);
-//       createMarkers();
-//     }
-//   }
-
-//   createMarkers() {
-//     markers.add(
-//       Marker(
-//         markerId: const MarkerId('Location'),
-//         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-//         position: LatLng(latitude.value, longitude.value),
-//         onTap: () {},
-//       ),
-//     );
 //   }
 }

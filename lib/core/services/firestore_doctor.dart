@@ -20,6 +20,10 @@ class FireStoreDoctor {
     return await _doctorCollectionRef.doc(mid).get();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAllDoctors() {
+    return _doctorCollectionRef.firestore.collection('Doctors').snapshots();
+  }
+
   Future<void> updateDoctorInfo({
     required String key,
     required dynamic value,
