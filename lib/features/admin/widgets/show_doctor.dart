@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:study_academy/core/services/firestore_doctor.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
@@ -6,12 +8,27 @@ import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 import 'package:study_academy/model/doctor_model.dart';
 
-class ShowDoctor extends StatelessWidget {
+class ShowDoctor extends StatefulWidget {
   final DoctorModel member;
   const ShowDoctor({
     super.key,
     required this.member,
   });
+
+  @override
+  State<ShowDoctor> createState() => _ShowDoctorState();
+}
+
+class _ShowDoctorState extends State<ShowDoctor> {
+  void deleteDoctor(String dId, bool active) async {
+    bool newActive = !active;
+    await FireStoreDoctor().updateDoctorInfo(
+      key: 'isActive',
+      value: newActive,
+      doctorId: dId,
+    );
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +46,7 @@ class ShowDoctor extends StatelessWidget {
                     height: constraints.maxHeight / 3,
                     width: double.infinity,
                     child: Image.network(
-                      member.image!,
+                      widget.member.image!,
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -39,27 +56,29 @@ class ShowDoctor extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BigText(
-                          text: '${member.firstName} ${member.lastName}',
+                          text:
+                              '${widget.member.firstName} ${widget.member.lastName}',
                           color: Colors.black,
                           size: Dimensions.font16,
                         ),
                         SizedBox(height: Dimensions.height10),
                         SmallText(
-                          text: member.email!,
+                          text: widget.member.email!,
                           color: Colors.black,
                           size: Dimensions.font12,
                         ),
                         SizedBox(height: Dimensions.height10),
                         SmallText(
-                          text: member.phone!,
+                          text: widget.member.phone!,
                           color: Colors.black,
                           size: Dimensions.font12,
                         ),
                         SizedBox(height: Dimensions.height10),
                         SmallText(
-                          text: member.isActive! ? 'Active' : 'Deactive',
-                          color:
-                              member.isActive! ? Colors.green[800] : Colors.red,
+                          text: widget.member.isActive! ? 'Active' : 'Deactive',
+                          color: widget.member.isActive!
+                              ? Colors.green[800]
+                              : Colors.red,
                           size: Dimensions.font12,
                           fontWeight: FontWeight.w500,
                         ),
@@ -69,8 +88,50 @@ class ShowDoctor extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: MainButton(
-                                  text: 'Delete',
-                                  onTap: () {},
+                                  text: widget.member.isActive!
+                                      ? 'Delete'
+                                      : 'Active',
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return CupertinoAlertDialog(
+                                          title: const Text('Delete Doctor'),
+                                          content: Text(
+                                            'Are you sure to ${widget.member.isActive! ? 'deactivate' : 'active'} this doctor?',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                deleteDoctor(
+                                                  widget.member.doctorId!,
+                                                  widget.member.isActive!,
+                                                );
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text(
+                                                'Yes',
+                                                style: TextStyle(
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text(
+                                                'No',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
                                   color: Colors.red,
                                 ),
                               ),

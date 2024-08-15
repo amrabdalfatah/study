@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:study_academy/core/services/firestore_admin.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/features/admin/admin_homeview.dart';
@@ -39,6 +40,8 @@ class AuthViewModel extends GetxController {
       )
           .then((value) async {
         AppConstants.loginId = value.user!.uid;
+        final box = GetStorage();
+        box.write('userid', value.user!.uid);
         if (email == AppConstants.adminEmail) {
           AppConstants.typePerson = TypePerson.admin;
           AppConstants.userId = value.user!.uid;
