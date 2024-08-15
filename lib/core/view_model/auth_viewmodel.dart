@@ -5,14 +5,23 @@ import 'package:get/get.dart';
 import 'package:study_academy/core/services/firestore_admin.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/model/admin_model.dart';
+import 'package:study_academy/routes.dart';
 
 class AuthViewModel extends GetxController {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  late final FirebaseAuth _auth;
   // // final LocalStorageData localStorageData = Get.find();
-  var shownPassword = true.obs;
-  var action = false.obs;
+  late RxBool shownPassword;
+  late RxBool action;
   String email = '', password = '';
   String userId = '';
+
+  @override
+  void onInit() {
+    super.onInit();
+    _auth = FirebaseAuth.instance;
+    shownPassword = true.obs;
+    action = false.obs;
+  }
 
   // This method to change Password from visible to un_visible
   void changeShownPassword() {
@@ -40,8 +49,7 @@ class AuthViewModel extends GetxController {
           }).whenComplete(() async {
             if (adminData!.firstName != null) {
               action.value = false;
-              print('Let started');
-              // Get.to(() => const HomeView());
+              Get.offAllNamed(AppRoutes.adminHomeRoute);
             } else {
               await FireStoreAdmin().addUserToFirestore(
                 AdminModel(
@@ -52,9 +60,7 @@ class AuthViewModel extends GetxController {
                 ),
               );
               action.value = false;
-              print('Add admin to firestore');
-              // Get.to(() => const HomeView());
-              // Get.to(() => const FaceAuthenticateView());
+              Get.offAllNamed(AppRoutes.adminHomeRoute);
             }
           });
         }

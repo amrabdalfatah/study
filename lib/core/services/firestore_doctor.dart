@@ -1,35 +1,36 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:study_academy/model/doctor_model.dart';
 
-// class FireStoreMember {
-//   final CollectionReference _memberCollectionRef =
-//       FirebaseFirestore.instance.collection('Members');
+class FireStoreDoctor {
+  final CollectionReference _doctorCollectionRef =
+      FirebaseFirestore.instance.collection('Doctors');
 
-//   Future<void> addMemberToFirestore(MemberModel member) async {
-//     return await _memberCollectionRef.doc(member.memberId).set(
-//           member.toJson(),
-//         );
-//   }
+  Future<void> addDoctorToFirestore(DoctorModel doctor) async {
+    return await _doctorCollectionRef.doc(doctor.doctorId).set(
+          doctor.toJson(),
+        );
+  }
 
-//   checkMember(String uid) async {
-//     var data = await _memberCollectionRef.doc(uid).get();
-//     return data.exists;
-//   }
+  checkDoctor(String uid) async {
+    var data = await _doctorCollectionRef.doc(uid).get();
+    return data.exists;
+  }
 
-//   Future<DocumentSnapshot> getCurrentMember(String mid) async {
-//     return await _memberCollectionRef.doc(mid).get();
-//   }
+  Future<DocumentSnapshot> getCurrentDoctor(String mid) async {
+    return await _doctorCollectionRef.doc(mid).get();
+  }
 
-//   Future<void> updateMemberInfo({
-//     required String key,
-//     required dynamic value,
-//     required String memberId,
-//   }) async {
-//     return await _memberCollectionRef.doc(memberId).update({
-//       key: value,
-//     });
-//   }
+  Future<void> updateDoctorInfo({
+    required String key,
+    required dynamic value,
+    required String doctorId,
+  }) async {
+    return await _doctorCollectionRef.doc(doctorId).update({
+      key: value,
+    });
+  }
 
-//   Future<void> deleteMember(String mid) async {
-//     return await _memberCollectionRef.doc(mid).delete();
-//   }
-// }
+  Future<void> deleteDoctor(String mid) async {
+    return await _doctorCollectionRef.doc(mid).delete();
+  }
+}
