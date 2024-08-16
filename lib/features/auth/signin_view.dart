@@ -8,12 +8,13 @@ import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 
-class SigninView extends GetWidget<AuthViewModel> {
-  SigninView({super.key});
+class SignInView extends StatelessWidget {
+  SignInView({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(AuthViewModel());
     return Scaffold(
       body: SafeArea(
         child: Padding(

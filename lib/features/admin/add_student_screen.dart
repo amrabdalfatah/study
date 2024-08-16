@@ -10,8 +10,8 @@ import 'package:study_academy/core/view_model/admin_viewmodel.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 
-class AddDoctorScreen extends GetWidget<AdminViewModel> {
-  AddDoctorScreen({super.key});
+class AddStudentScreen extends GetWidget<AdminViewModel> {
+  AddStudentScreen({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -39,7 +39,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                     ),
                   ),
                   title: const Text(
-                    'Add Doctor',
+                    'Add Student',
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -67,7 +67,9 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                         : CircleAvatar(
                                             radius: Dimensions.height50,
                                             backgroundImage: FileImage(
-                                              File(imageCtrl.imageUrl!.value),
+                                              File(
+                                                imageCtrl.imageUrl!.value,
+                                              ),
                                             ),
                                           );
                                   },
@@ -190,7 +192,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return 'Please, Enter Phone';
+                                    return 'Please, Enter your Phone';
                                   }
                                   return null;
                                 },
@@ -307,7 +309,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                             .imageUrl!.value.isNotEmpty) {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            controller.addDoctor();
+                                            controller.addStudent();
                                           }
                                         } else {
                                           Get.snackbar(

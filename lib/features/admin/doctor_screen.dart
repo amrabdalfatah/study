@@ -10,9 +10,7 @@ import 'package:study_academy/features/admin/widgets/show_doctor.dart';
 import 'package:study_academy/model/doctor_model.dart';
 
 class DoctorScreen extends StatelessWidget {
-  DoctorScreen({super.key});
-
-  List<DoctorModel> doctors = [];
+  const DoctorScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +24,7 @@ class DoctorScreen extends StatelessWidget {
               // isEqualTo: controller.userData!.userId)
               .snapshots(),
           builder: (context, snapshot) {
+            List<DoctorModel> doctors = [];
             if (snapshot.hasError) {
               return const Text('Something went wrong');
             }

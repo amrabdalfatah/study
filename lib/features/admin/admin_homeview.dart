@@ -34,6 +34,17 @@ class AdminHomeView extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        controller.signOut();
+                      },
+                      icon: const Icon(
+                        Icons.logout,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
                 body: controller.screens[controller.screenIndex.value],
                 bottomNavigationBar: BottomNavigationBar(

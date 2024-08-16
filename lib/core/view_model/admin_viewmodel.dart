@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:study_academy/core/services/doctor_storage.dart';
 import 'package:study_academy/core/services/firestore_admin.dart';
 import 'package:study_academy/core/services/firestore_doctor.dart';
+import 'package:study_academy/core/services/firestore_student.dart';
+import 'package:study_academy/core/services/student_storage.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/features/admin/admin_homeview.dart';
 import 'package:study_academy/features/admin/chat_screen.dart';
@@ -12,15 +15,16 @@ import 'package:study_academy/features/admin/course_screen.dart';
 import 'package:study_academy/features/admin/doctor_screen.dart';
 import 'package:study_academy/features/admin/home_screen.dart';
 import 'package:study_academy/features/admin/student_screen.dart';
+import 'package:study_academy/features/splash/splash_view.dart';
 import 'package:study_academy/model/admin_model.dart';
 import 'package:study_academy/model/doctor_model.dart';
-import 'package:study_academy/routes.dart';
+import 'package:study_academy/model/student_model.dart';
 
 class AdminViewModel extends GetxController {
   AdminModel? adminData;
   List<Widget> screens = [
     const HomeScreen(),
-    DoctorScreen(),
+    const DoctorScreen(),
     const CourseScreen(),
     const StudentScreen(),
     const ChatScreen(),
@@ -28,6 +32,7 @@ class AdminViewModel extends GetxController {
   RxBool shownPassword = true.obs;
   RxBool action = false.obs;
   DoctorModel? doctorModel;
+  StudentModel? studentModel;
 
 //   Stream<QuerySnapshot>? cameraSettings;
 //   CameraModel cameraModel = CameraModel();
@@ -61,19 +66,19 @@ class AdminViewModel extends GetxController {
     shownPassword.value = !shownPassword.value;
   }
 
-  String doctorEmail = '',
-      doctorPassword = '',
-      doctorFirstName = '',
-      doctorLastName = '',
-      doctorPhone = '',
-      doctorId = '';
-  RxString? imageDoctorUrl = ''.obs;
+  String email = '',
+      password = '',
+      firstName = '',
+      lastName = '',
+      phone = '',
+      id = '';
+  RxString? imageUrl = ''.obs;
   // Select Image for Doctor
   XFile? mediaFile;
   final ImagePicker _picker = ImagePicker();
   void _setImageFileFromFile(XFile? value) {
     mediaFile = value;
-    imageDoctorUrl!.value = mediaFile!.path;
+    imageUrl!.value = mediaFile!.path;
     update();
   }
 
@@ -104,22 +109,22 @@ class AdminViewModel extends GetxController {
     try {
       await _auth
           .createUserWithEmailAndPassword(
-        email: doctorEmail,
-        password: doctorPassword,
+        email: email,
+        password: password,
       )
           .then((user) async {
-        doctorId = user.user!.uid;
+        id = user.user!.uid;
         final imagePath = await DoctorStorage().uploadDoctorImage(
-          imageDoctorUrl!.value,
-          doctorEmail,
+          imageUrl!.value,
+          email,
         );
         doctorModel = DoctorModel(
-          doctorId: doctorId,
-          email: doctorEmail,
-          firstName: doctorFirstName,
-          lastName: doctorLastName,
+          doctorId: id,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
           image: imagePath,
-          phone: doctorPhone,
+          phone: phone,
         );
         await FireStoreDoctor()
             .addDoctorToFirestore(doctorModel!)
@@ -134,6 +139,7 @@ class AdminViewModel extends GetxController {
       });
 
       action.value = false;
+      imageUrl = ''.obs;
       update();
       Get.off(() => const AdminHomeView());
     } catch (error) {
@@ -145,12 +151,68 @@ class AdminViewModel extends GetxController {
       );
     }
     action.value = false;
+    imageUrl = ''.obs;
     update();
   }
 
-  Future<void> signOut() async {
-    FirebaseAuth.instance.signOut();
-    Get.offAllNamed(AppRoutes.loginRoute);
+  void addStudent() async {
+    action.value = true;
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    try {
+      await _auth
+          .createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      )
+          .then((user) async {
+        id = user.user!.uid;
+        final imagePath = await StudentStorage().uploadStudentImage(
+          imageUrl!.value,
+          email,
+        );
+        studentModel = StudentModel(
+          studentId: id,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          image: imagePath,
+          phone: phone,
+          courses: [],
+        );
+        await FireStoreStudent()
+            .addStudentToFirestore(studentModel!)
+            .then((value) async {
+          Get.snackbar(
+            'Successfully',
+            'Create Student Successfully',
+            snackPosition: SnackPosition.TOP,
+            colorText: Colors.green,
+          );
+        });
+      });
+
+      action.value = false;
+      imageUrl = ''.obs;
+      update();
+      Get.off(() => const AdminHomeView());
+    } catch (error) {
+      Get.snackbar(
+        'Error',
+        error.toString(),
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red,
+      );
+    }
+    action.value = false;
+    imageUrl = ''.obs;
+    update();
+  }
+
+  void signOut() async {
+    await FirebaseAuth.instance.signOut();
+    final box = GetStorage();
+    box.remove('userid');
+    Get.offAll(() => const SplashView());
   }
 
 //   // Add Members Screen

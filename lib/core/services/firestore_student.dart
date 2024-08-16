@@ -1,35 +1,40 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:study_academy/model/student_model.dart';
 
-// class FireStoreMember {
-//   final CollectionReference _memberCollectionRef =
-//       FirebaseFirestore.instance.collection('Members');
+class FireStoreStudent {
+  final CollectionReference _studentCollectionRef =
+      FirebaseFirestore.instance.collection('Students');
 
-//   Future<void> addMemberToFirestore(MemberModel member) async {
-//     return await _memberCollectionRef.doc(member.memberId).set(
-//           member.toJson(),
-//         );
-//   }
+  Future<void> addStudentToFirestore(StudentModel student) async {
+    return await _studentCollectionRef.doc(student.studentId).set(
+          student.toJson(),
+        );
+  }
 
-//   checkMember(String uid) async {
-//     var data = await _memberCollectionRef.doc(uid).get();
-//     return data.exists;
-//   }
+  checkStudent(String uid) async {
+    var data = await _studentCollectionRef.doc(uid).get();
+    return data.exists;
+  }
 
-//   Future<DocumentSnapshot> getCurrentMember(String mid) async {
-//     return await _memberCollectionRef.doc(mid).get();
-//   }
+  Future<DocumentSnapshot> getCurrentStudent(String mid) async {
+    return await _studentCollectionRef.doc(mid).get();
+  }
 
-//   Future<void> updateMemberInfo({
-//     required String key,
-//     required dynamic value,
-//     required String memberId,
-//   }) async {
-//     return await _memberCollectionRef.doc(memberId).update({
-//       key: value,
-//     });
-//   }
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAllStudents() {
+    return _studentCollectionRef.firestore.collection('Students').snapshots();
+  }
 
-//   Future<void> deleteMember(String mid) async {
-//     return await _memberCollectionRef.doc(mid).delete();
-//   }
-// }
+  Future<void> updateStudentInfo({
+    required String key,
+    required dynamic value,
+    required String studentId,
+  }) async {
+    return await _studentCollectionRef.doc(studentId).update({
+      key: value,
+    });
+  }
+
+  Future<void> deleteStudent(String mid) async {
+    return await _studentCollectionRef.doc(mid).delete();
+  }
+}

@@ -76,7 +76,7 @@ class _DeatilAppViewState extends State<DeatilAppView> {
               child: MainButton(
                 text: 'Let\'s get Started',
                 onTap: () {
-                  Get.to(() => SigninView());
+                  Get.to(() => SignInView());
                 },
               ),
             ),
