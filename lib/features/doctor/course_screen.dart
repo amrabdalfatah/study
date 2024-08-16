@@ -210,29 +210,45 @@ class CourseScreen extends GetWidget<DoctorViewModel> {
                                 height: Dimensions.height10,
                               ),
                               // TODO: Add selected category
-                              // TextFormField(
-                              //   keyboardType: TextInputType.emailAddress,
-                              //   decoration: InputDecoration(
-                              //     border: const OutlineInputBorder(
-                              //       borderSide: BorderSide.none,
-                              //     ),
-                              //     filled: true,
-                              //     fillColor: Colors.grey[200],
-                              //   ),
-                              //   onSaved: (value) {
-                              //     controller.email = value!;
-                              //   },
-                              //   validator: (value) {
-                              //     final regex = RegExp(
-                              //         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-                              //     if (value!.isEmpty) {
-                              //       return 'Please, Enter Email';
-                              //     } else if (!regex.hasMatch(value)) {
-                              //       return 'Email is not valid';
-                              //     }
-                              //     return null;
-                              //   },
-                              // ),
+                              PopupMenuButton<String>(
+                                initialValue: 'Amr',
+                                child: Container(
+                                  height: Dimensions.height64,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.width4,
+                                    ),
+                                    color: Colors.grey[200],
+                                  ),
+                                  padding: EdgeInsets.all(Dimensions.height10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SmallText(
+                                        text: 'Amr',
+                                        color: Colors.black,
+                                        size: Dimensions.font16,
+                                      ),
+                                      Icon(
+                                        Icons.arrow_drop_down,
+                                        color: AppColors.mainColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                itemBuilder: (context) {
+                                  return [
+                                    PopupMenuItem(
+                                      child: Text('Amr'),
+                                    ),
+                                    PopupMenuItem(
+                                      child: Text('Ali'),
+                                    ),
+                                  ];
+                                },
+                              ),
                             ],
                           ),
                           SizedBox(

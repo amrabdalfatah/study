@@ -1,19 +1,31 @@
-// import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
-// class IntrudersStorage {
-//   final Reference intruderStorage = FirebaseStorage.instance.ref();
+import 'package:firebase_storage/firebase_storage.dart';
 
-//   Future<void> deleteStorage() async {
-//     return await intruderStorage.child('/intruders').delete();
-//   }
+class CourseStorage {
+  final courseStorage = FirebaseStorage.instance.ref();
+  Future<String> uploadCourseImage(String path, String courseTitle) async {
+    final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': path},
+    );
+    await courseStorage
+        .child('courses/$courseTitle')
+        .putFile(File(path), metadata);
+    return courseStorage.child('courses/$courseTitle').getDownloadURL();
+  }
 
-//   Future<void> deleteItemByName(String path) async {
-//     final file = intruderStorage.child("intruders/$path");
-//     return await file.delete();
-//   }
+  Future<void> deleteStorage() async {
+    return await FirebaseStorage.instance.ref('courses/').delete();
+  }
 
-//   Future<void> deleteItemByUrl(String url) async {
-//     final file = FirebaseStorage.instance.refFromURL(url);
-//     return await file.delete();
-//   }
-// }
+  Future<void> deleteItemByName(String path) async {
+    final file = FirebaseStorage.instance.ref('courses/').child(path);
+    return await file.delete();
+  }
+
+  Future<void> deleteItemByUrl(String url) async {
+    final file = FirebaseStorage.instance.refFromURL(url);
+    return await file.delete();
+  }
+}

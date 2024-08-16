@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:study_academy/core/services/category_storage.dart';
 import 'package:study_academy/core/services/doctor_storage.dart';
 import 'package:study_academy/core/services/firestore_admin.dart';
+import 'package:study_academy/core/services/firestore_category.dart';
 import 'package:study_academy/core/services/firestore_doctor.dart';
 import 'package:study_academy/core/services/firestore_student.dart';
 import 'package:study_academy/core/services/student_storage.dart';
@@ -17,15 +19,17 @@ import 'package:study_academy/features/admin/home_screen.dart';
 import 'package:study_academy/features/admin/student_screen.dart';
 import 'package:study_academy/features/splash/splash_view.dart';
 import 'package:study_academy/model/admin_model.dart';
+import 'package:study_academy/model/category_model.dart';
 import 'package:study_academy/model/doctor_model.dart';
 import 'package:study_academy/model/student_model.dart';
+import 'package:uuid/uuid.dart';
 
 class AdminViewModel extends GetxController {
   AdminModel? adminData;
   List<Widget> screens = [
     const HomeScreen(),
     const DoctorScreen(),
-    const CourseScreen(),
+    CourseScreen(),
     const StudentScreen(),
     const ChatScreen(),
   ];
@@ -210,6 +214,84 @@ class AdminViewModel extends GetxController {
     }
     action.value = false;
     imageUrl = ''.obs;
+    update();
+  }
+
+  // ---------------------------------------------------------------------
+  // Add Category
+  RxString? imageCat = ''.obs;
+  void setImageCat() {
+    imageCat = ''.obs;
+    update();
+  }
+
+  void _setImageCatFileFromFile(XFile? value) {
+    mediaFile = value;
+    imageCat!.value = mediaFile!.path;
+    update();
+  }
+
+  Future<void> onImageCatButtonPressed(
+    ImageSource source, {
+    required BuildContext context,
+  }) async {
+    if (context.mounted) {
+      try {
+        final XFile? pickedFile = await _picker.pickImage(
+          source: source,
+        );
+        _setImageCatFileFromFile(pickedFile);
+      } catch (e) {
+        Get.snackbar(
+          'Error',
+          e.toString(),
+          snackPosition: SnackPosition.TOP,
+          colorText: Colors.red,
+        );
+      }
+    }
+  }
+
+  String catTitle = '';
+  CategoryModel? categoryModel;
+  void addCategory(BuildContext context) async {
+    action.value = true;
+    try {
+      final imagePath = await CategoryStorage().uploadCategoryImage(
+        imageCat!.value,
+        catTitle,
+      );
+      final uuid = Uuid();
+      final catId = uuid.v4();
+      categoryModel = CategoryModel(
+        categoryId: catId,
+        title: catTitle,
+        image: imagePath,
+      );
+      await FireStoreCategory()
+          .addCategoryToFirestore(categoryModel!)
+          .then((value) async {
+        Get.snackbar(
+          'Successfully',
+          'Create Category Successfully',
+          snackPosition: SnackPosition.TOP,
+          colorText: Colors.green,
+        );
+      });
+      action.value = false;
+      imageCat = ''.obs;
+      update();
+      Navigator.of(context).pop();
+    } catch (error) {
+      Get.snackbar(
+        'Error',
+        error.toString(),
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red,
+      );
+    }
+    action.value = false;
+    imageCat = ''.obs;
     update();
   }
 
