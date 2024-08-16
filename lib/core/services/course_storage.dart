@@ -10,9 +10,21 @@ class CourseStorage {
       customMetadata: {'picked-file-path': path},
     );
     await courseStorage
-        .child('courses/$courseTitle')
+        .child('courses/$courseTitle/$courseTitle')
         .putFile(File(path), metadata);
-    return courseStorage.child('courses/$courseTitle').getDownloadURL();
+    return courseStorage
+        .child('courses/$courseTitle/$courseTitle')
+        .getDownloadURL();
+  }
+
+  Future<String> uploadLessonFile(
+      String path, String courseTitle, String lessonTitle) async {
+    await courseStorage
+        .child('courses/$courseTitle/lessons/$lessonTitle')
+        .putFile(File(path));
+    return courseStorage
+        .child('courses/$courseTitle/$courseTitle')
+        .getDownloadURL();
   }
 
   Future<void> deleteStorage() async {

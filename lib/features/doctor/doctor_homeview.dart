@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
-import 'package:study_academy/core/utils/image_strings.dart';
 import 'package:study_academy/core/view_model/doctor_viewmodel.dart';
 
 class DoctorHomeView extends StatelessWidget {
@@ -22,9 +21,9 @@ class DoctorHomeView extends StatelessWidget {
                     padding: EdgeInsets.symmetric(
                       vertical: Dimensions.height10,
                     ),
-                    child: const CircleAvatar(
-                      backgroundImage: AssetImage(
-                        ImagesStrings.logo,
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        controller.doctorData!.image!,
                       ),
                     ),
                   ),

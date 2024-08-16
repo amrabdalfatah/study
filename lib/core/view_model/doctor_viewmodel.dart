@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:study_academy/core/services/course_storage.dart';
+import 'package:study_academy/core/services/firestore_course.dart';
 import 'package:study_academy/core/services/firestore_doctor.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/features/doctor/chat_screen.dart';
@@ -10,8 +12,10 @@ import 'package:study_academy/features/doctor/course_screen.dart';
 import 'package:study_academy/features/doctor/home_screen.dart';
 import 'package:study_academy/features/doctor/profile_screen.dart';
 import 'package:study_academy/features/splash/splash_view.dart';
+import 'package:study_academy/model/course_model.dart';
 import 'package:study_academy/model/doctor_model.dart';
-import 'package:study_academy/model/student_model.dart';
+import 'package:study_academy/model/lesson_model.dart';
+import 'package:uuid/uuid.dart';
 
 class DoctorViewModel extends GetxController {
   DoctorModel? doctorData;
@@ -22,10 +26,6 @@ class DoctorViewModel extends GetxController {
     const ProfileScreen(),
   ];
   RxBool action = false.obs;
-  StudentModel? studentModel;
-
-  ValueNotifier<bool> dataLoaded = ValueNotifier(true);
-  ValueNotifier<int> screenIndex = ValueNotifier(0);
 
   @override
   void onInit() {
@@ -33,6 +33,7 @@ class DoctorViewModel extends GetxController {
     getDoctor();
   }
 
+  ValueNotifier<bool> dataLoaded = ValueNotifier(true);
   Future<void> getDoctor() async {
     dataLoaded.value = false;
     await FireStoreDoctor()
@@ -46,28 +47,25 @@ class DoctorViewModel extends GetxController {
     update();
   }
 
+  ValueNotifier<int> screenIndex = ValueNotifier(0);
   void changeScreen(int selected) {
     screenIndex.value = selected;
     update();
   }
 
-  String title = '',
-      description = '',
-      firstName = '',
-      lastName = '',
-      price = '',
-      id = '';
-  RxString? imageUrl = ''.obs;
+  String title = '', description = '', price = '', categoryId = '';
+
+  RxString? imageCourse = ''.obs;
+  RxString? categoryName = ''.obs;
   void setImageUrl() {
-    imageUrl = ''.obs;
+    imageCourse = ''.obs;
   }
 
-  // Select Image for Doctor
   XFile? mediaFile;
   final ImagePicker _picker = ImagePicker();
   void _setImageFileFromFile(XFile? value) {
     mediaFile = value;
-    imageUrl!.value = mediaFile!.path;
+    imageCourse!.value = mediaFile!.path;
     update();
   }
 
@@ -92,110 +90,100 @@ class DoctorViewModel extends GetxController {
     }
   }
 
-  // void addDoctor() async {
-  //   action.value = true;
-  //   final FirebaseAuth _auth = FirebaseAuth.instance;
-  //   try {
-  //     await _auth
-  //         .createUserWithEmailAndPassword(
-  //       email: email,
-  //       password: password,
-  //     )
-  //         .then((user) async {
-  //       id = user.user!.uid;
-  //       final imagePath = await DoctorStorage().uploadDoctorImage(
-  //         imageUrl!.value,
-  //         email,
-  //       );
-  //       doctorModel = DoctorModel(
-  //         doctorId: id,
-  //         email: email,
-  //         firstName: firstName,
-  //         lastName: lastName,
-  //         image: imagePath,
-  //         phone: phone,
-  //       );
-  //       await FireStoreDoctor()
-  //           .addDoctorToFirestore(doctorModel!)
-  //           .then((value) async {
-  //         Get.snackbar(
-  //           'Successfully',
-  //           'Create Doctor Successfully',
-  //           snackPosition: SnackPosition.TOP,
-  //           colorText: Colors.green,
-  //         );
-  //       });
-  //     });
-  //
-  //     action.value = false;
-  //     imageUrl = ''.obs;
-  //     update();
-  //     Get.off(() => const AdminHomeView());
-  //   } catch (error) {
-  //     Get.snackbar(
-  //       'Error',
-  //       error.toString(),
-  //       snackPosition: SnackPosition.TOP,
-  //       colorText: Colors.red,
-  //     );
-  //   }
-  //   action.value = false;
-  //   imageUrl = ''.obs;
-  //   update();
-  // }
-  //
-  // void addStudent() async {
-  //   action.value = true;
-  //   final FirebaseAuth _auth = FirebaseAuth.instance;
-  //   try {
-  //     await _auth
-  //         .createUserWithEmailAndPassword(
-  //       email: email,
-  //       password: password,
-  //     )
-  //         .then((user) async {
-  //       id = user.user!.uid;
-  //       final imagePath = await StudentStorage().uploadStudentImage(
-  //         imageUrl!.value,
-  //         email,
-  //       );
-  //       studentModel = StudentModel(
-  //         studentId: id,
-  //         email: email,
-  //         firstName: firstName,
-  //         lastName: lastName,
-  //         image: imagePath,
-  //         phone: phone,
-  //         courses: [],
-  //       );
-  //       await FireStoreStudent()
-  //           .addStudentToFirestore(studentModel!)
-  //           .then((value) async {
-  //         Get.snackbar(
-  //           'Successfully',
-  //           'Create Student Successfully',
-  //           snackPosition: SnackPosition.TOP,
-  //           colorText: Colors.green,
-  //         );
-  //       });
-  //     });
-  //
-  //     action.value = false;
-  //     imageUrl = ''.obs;
-  //     update();
-  //     Get.off(() => const AdminHomeView());
-  //   } catch (error) {
-  //     Get.snackbar(
-  //       'Error',
-  //       error.toString(),
-  //       snackPosition: SnackPosition.TOP,
-  //       colorText: Colors.red,
-  //     );
-  //   }
-  //   action.value = false;
-  //   imageUrl = ''.obs;
-  //   update();
-  // }
+  void setCategoryId(String catId, String catTitle) {
+    categoryId = catId;
+    categoryName!.value = catTitle;
+  }
+
+  CourseModel? courseModel;
+  void addCourse() async {
+    action.value = true;
+    try {
+      final imagePath = await CourseStorage().uploadCourseImage(
+        imageCourse!.value,
+        title,
+      );
+      final uuid = Uuid();
+      final courseId = uuid.v4();
+
+      courseModel = CourseModel(
+        courseId: courseId,
+        categoryId: categoryId,
+        doctorId: AppConstants.userId,
+        title: title,
+        description: description,
+        image: imagePath,
+        price: double.parse(price),
+      );
+
+      await FireStoreCourse()
+          .addCourseToFirestore(courseModel!)
+          .then((value) async {
+        Get.snackbar(
+          'Successfully',
+          'Create Course Successfully',
+          snackPosition: SnackPosition.TOP,
+          colorText: Colors.green,
+        );
+      });
+
+      action.value = false;
+      imageCourse = ''.obs;
+      screenIndex.value = 0;
+      update();
+    } catch (error) {
+      Get.snackbar(
+        'Error',
+        error.toString(),
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red,
+      );
+    }
+    action.value = false;
+    imageCourse = ''.obs;
+    update();
+  }
+
+  String lessonTitle = '', lessonDescription = '', lessonVideoUrl = '';
+  LessonModel? lessonModel;
+  void addLesson(BuildContext context, String coId) async {
+    action.value = true;
+    try {
+      final uuid = Uuid();
+      final lessonId = uuid.v4();
+
+      lessonModel = LessonModel(
+        lessonId: lessonId,
+        title: lessonTitle,
+        description: lessonDescription,
+        pathFile: lessonVideoUrl,
+      );
+
+      await FireStoreCourse()
+          .addLessonToCourse(coId, lessonModel!)
+          .then((value) async {
+        Get.snackbar(
+          'Successfully',
+          'Create Lesson Successfully',
+          snackPosition: SnackPosition.TOP,
+          colorText: Colors.green,
+        );
+      });
+
+      action.value = false;
+      update();
+      Navigator.of(context).pop();
+    } catch (error) {
+      Get.snackbar(
+        'Error',
+        error.toString(),
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red,
+      );
+    }
+    action.value = false;
+    update();
+  }
 
   void signOut() async {
     await FirebaseAuth.instance.signOut();

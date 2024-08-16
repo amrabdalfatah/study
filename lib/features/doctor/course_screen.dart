@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:study_academy/core/view_model/doctor_viewmodel.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/model/category_model.dart';
 
 class CourseScreen extends GetWidget<DoctorViewModel> {
   CourseScreen({super.key});
@@ -44,7 +46,7 @@ class CourseScreen extends GetWidget<DoctorViewModel> {
                               children: [
                                 GetX<DoctorViewModel>(
                                   builder: (imageCtrl) {
-                                    return imageCtrl.imageUrl!.value.isEmpty
+                                    return imageCtrl.imageCourse!.value.isEmpty
                                         ? Container(
                                             height: Dimensions.height100 +
                                                 Dimensions.height100,
@@ -64,7 +66,8 @@ class CourseScreen extends GetWidget<DoctorViewModel> {
                                             width: double.infinity,
                                             color: Colors.grey[400],
                                             child: Image.file(
-                                              File(imageCtrl.imageUrl!.value),
+                                              File(
+                                                  imageCtrl.imageCourse!.value),
                                               fit: BoxFit.cover,
                                             ),
                                           );
@@ -209,44 +212,63 @@ class CourseScreen extends GetWidget<DoctorViewModel> {
                               SizedBox(
                                 height: Dimensions.height10,
                               ),
-                              // TODO: Add selected category
-                              PopupMenuButton<String>(
-                                initialValue: 'Amr',
-                                child: Container(
-                                  height: Dimensions.height64,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      Dimensions.width4,
-                                    ),
-                                    color: Colors.grey[200],
-                                  ),
-                                  padding: EdgeInsets.all(Dimensions.height10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SmallText(
-                                        text: 'Amr',
-                                        color: Colors.black,
-                                        size: Dimensions.font16,
-                                      ),
-                                      Icon(
-                                        Icons.arrow_drop_down,
-                                        color: AppColors.mainColor,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                itemBuilder: (context) {
-                                  return [
-                                    PopupMenuItem(
-                                      child: Text('Amr'),
-                                    ),
-                                    PopupMenuItem(
-                                      child: Text('Ali'),
-                                    ),
-                                  ];
+                              FutureBuilder(
+                                future: FirebaseFirestore.instance
+                                    .collection('Categories')
+                                    .get(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return const Text(
+                                        'Error when getting data');
+                                  }
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                      child: CupertinoActivityIndicator(),
+                                    );
+                                  }
+                                  List<CategoryModel> categories = [];
+                                  if (snapshot.hasData) {
+                                    snapshot.data!.docs.forEach(
+                                      (element) {
+                                        categories.add(CategoryModel.fromJson(
+                                            element.data()
+                                                as Map<String, dynamic>));
+                                      },
+                                    );
+                                  }
+                                  controller.setCategoryId(
+                                    categories[0].categoryId!,
+                                    categories[0].title!,
+                                  );
+                                  return GetX<DoctorViewModel>(
+                                    builder: (con) {
+                                      return DropdownButton<String>(
+                                        value: controller.categoryName!.value,
+                                        isExpanded: true,
+                                        padding:
+                                            EdgeInsets.all(Dimensions.height10),
+                                        items: List.generate(
+                                          categories.length,
+                                          (index) {
+                                            return DropdownMenuItem(
+                                              value: categories[index].title!,
+                                              child: Text(
+                                                  categories[index].title!),
+                                            );
+                                          },
+                                        ),
+                                        onChanged: (value) {
+                                          final catId =
+                                              categories.firstWhere((element) {
+                                            return element.title == value;
+                                          }).categoryId;
+                                          controller.setCategoryId(
+                                              catId!, value!);
+                                        },
+                                      );
+                                    },
+                                  );
                                 },
                               ),
                             ],
@@ -267,10 +289,10 @@ class CourseScreen extends GetWidget<DoctorViewModel> {
                                       onTap: () {
                                         _formKey.currentState!.save();
                                         if (controller
-                                            .imageUrl!.value.isNotEmpty) {
+                                            .imageCourse!.value.isNotEmpty) {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            // controller.addDoctor();
+                                            controller.addCourse();
                                           }
                                         } else {
                                           Get.snackbar(
