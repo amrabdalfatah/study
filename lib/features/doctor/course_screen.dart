@@ -6,19 +6,21 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
-import 'package:study_academy/core/view_model/admin_viewmodel.dart';
+import 'package:study_academy/core/view_model/doctor_viewmodel.dart';
+import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 
-class AddDoctorScreen extends GetWidget<AdminViewModel> {
-  AddDoctorScreen({super.key});
+class CourseScreen extends GetWidget<DoctorViewModel> {
+  CourseScreen({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return GetX<AdminViewModel>(
-      builder: (dataCtrl) {
-        return dataCtrl.action.value
+    controller.setImageUrl();
+    return GetX<DoctorViewModel>(
+      builder: (courseCtrl) {
+        return courseCtrl.action.value
             ? const Scaffold(
                 body: Center(
                   child: CupertinoActivityIndicator(
@@ -27,25 +29,6 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                 ),
               )
             : Scaffold(
-                appBar: AppBar(
-                  backgroundColor: AppColors.mainColor,
-                  leading: IconButton(
-                    onPressed: () {
-                      controller.setImageUrl();
-                      Get.back();
-                    },
-                    icon: const Icon(
-                      CupertinoIcons.back,
-                      color: Colors.white,
-                    ),
-                  ),
-                  title: const Text(
-                    'Add Doctor',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
                 body: Padding(
                   padding: EdgeInsets.all(Dimensions.height15),
                   child: Form(
@@ -54,21 +37,35 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                       child: Column(
                         children: [
                           SizedBox(
-                            height: Dimensions.height100,
+                            height: Dimensions.height100 + Dimensions.height100,
+                            width: double.infinity,
                             child: Stack(
                               alignment: Alignment.bottomRight,
                               children: [
-                                GetX<AdminViewModel>(
+                                GetX<DoctorViewModel>(
                                   builder: (imageCtrl) {
                                     return imageCtrl.imageUrl!.value.isEmpty
-                                        ? CircleAvatar(
-                                            radius: Dimensions.height50,
-                                            backgroundColor: Colors.grey[400],
+                                        ? Container(
+                                            height: Dimensions.height100 +
+                                                Dimensions.height100,
+                                            width: double.infinity,
+                                            color: Colors.grey[400],
+                                            child: Center(
+                                              child: BigText(
+                                                text: 'Course Thumbnail',
+                                                color: Colors.white,
+                                                size: Dimensions.height20,
+                                              ),
+                                            ),
                                           )
-                                        : CircleAvatar(
-                                            radius: Dimensions.height50,
-                                            backgroundImage: FileImage(
+                                        : Container(
+                                            height: Dimensions.height100 +
+                                                Dimensions.height100,
+                                            width: double.infinity,
+                                            color: Colors.grey[400],
+                                            child: Image.file(
                                               File(imageCtrl.imageUrl!.value),
+                                              fit: BoxFit.cover,
                                             ),
                                           );
                                   },
@@ -100,7 +97,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SmallText(
-                                text: 'First Name',
+                                text: 'Course Title',
                                 color: Colors.black,
                                 size: Dimensions.font16,
                               ),
@@ -117,11 +114,11 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                   fillColor: Colors.grey[200],
                                 ),
                                 onSaved: (value) {
-                                  controller.firstName = value!;
+                                  controller.title = value!;
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return 'Please, Enter First Name';
+                                    return 'Please, Enter Course Title';
                                   }
                                   return null;
                                 },
@@ -135,7 +132,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SmallText(
-                                text: 'Last Name',
+                                text: 'Description',
                                 color: Colors.black,
                                 size: Dimensions.font16,
                               ),
@@ -152,11 +149,11 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                   fillColor: Colors.grey[200],
                                 ),
                                 onSaved: (value) {
-                                  controller.lastName = value!;
+                                  controller.description = value!;
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return 'Please, Enter Last Name';
+                                    return 'Please, Enter Description';
                                   }
                                   return null;
                                 },
@@ -170,7 +167,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SmallText(
-                                text: 'Phone',
+                                text: 'Price',
                                 color: Colors.black,
                                 size: Dimensions.font16,
                               ),
@@ -178,7 +175,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                 height: Dimensions.height10,
                               ),
                               TextFormField(
-                                keyboardType: TextInputType.phone,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(
                                     borderSide: BorderSide.none,
@@ -187,11 +184,11 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                   fillColor: Colors.grey[200],
                                 ),
                                 onSaved: (value) {
-                                  controller.phone = value!;
+                                  controller.price = value!;
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return 'Please, Enter Phone';
+                                    return 'Please, Enter Price';
                                   }
                                   return null;
                                 },
@@ -205,94 +202,43 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SmallText(
-                                text: 'Email',
+                                text: 'Category',
                                 color: Colors.black,
                                 size: Dimensions.font16,
                               ),
                               SizedBox(
                                 height: Dimensions.height10,
                               ),
-                              TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  border: const OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                ),
-                                onSaved: (value) {
-                                  controller.email = value!;
-                                },
-                                validator: (value) {
-                                  final regex = RegExp(
-                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-                                  if (value!.isEmpty) {
-                                    return 'Please, Enter Email';
-                                  } else if (!regex.hasMatch(value)) {
-                                    return 'Email is not valid';
-                                  }
-                                  return null;
-                                },
-                              ),
+                              // TODO: Add selected category
+                              // TextFormField(
+                              //   keyboardType: TextInputType.emailAddress,
+                              //   decoration: InputDecoration(
+                              //     border: const OutlineInputBorder(
+                              //       borderSide: BorderSide.none,
+                              //     ),
+                              //     filled: true,
+                              //     fillColor: Colors.grey[200],
+                              //   ),
+                              //   onSaved: (value) {
+                              //     controller.email = value!;
+                              //   },
+                              //   validator: (value) {
+                              //     final regex = RegExp(
+                              //         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+                              //     if (value!.isEmpty) {
+                              //       return 'Please, Enter Email';
+                              //     } else if (!regex.hasMatch(value)) {
+                              //       return 'Email is not valid';
+                              //     }
+                              //     return null;
+                              //   },
+                              // ),
                             ],
                           ),
                           SizedBox(
                             height: Dimensions.height15,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SmallText(
-                                text: 'Password',
-                                color: Colors.black,
-                                size: Dimensions.font16,
-                              ),
-                              SizedBox(
-                                height: Dimensions.height10,
-                              ),
-                              GetX<AdminViewModel>(
-                                builder: (ctrl) {
-                                  return TextFormField(
-                                    keyboardType: TextInputType.visiblePassword,
-                                    obscureText: ctrl.shownPassword.value,
-                                    decoration: InputDecoration(
-                                      border: const OutlineInputBorder(
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.grey[200],
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          controller.shownPassword.value
-                                              ? Icons.remove_red_eye_rounded
-                                              : Icons.visibility_off,
-                                        ),
-                                        onPressed: () {
-                                          controller.changeShownPassword();
-                                        },
-                                      ),
-                                    ),
-                                    onSaved: (value) {
-                                      controller.password = value!;
-                                    },
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Please, Enter Password';
-                                      } else if (value.length < 6) {
-                                        return 'Password is not valid';
-                                      }
-                                      return null;
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: Dimensions.height15,
-                          ),
-                          GetX<AdminViewModel>(
+                          GetX<DoctorViewModel>(
                             builder: (process) {
                               return process.action.value
                                   ? const Center(
@@ -308,7 +254,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                             .imageUrl!.value.isNotEmpty) {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            controller.addDoctor();
+                                            // controller.addDoctor();
                                           }
                                         } else {
                                           Get.snackbar(

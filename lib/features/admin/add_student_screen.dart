@@ -31,6 +31,7 @@ class AddStudentScreen extends GetWidget<AdminViewModel> {
                   backgroundColor: AppColors.mainColor,
                   leading: IconButton(
                     onPressed: () {
+                      controller.setImageUrl();
                       Get.back();
                     },
                     icon: const Icon(

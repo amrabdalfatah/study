@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:study_academy/core/services/firestore_admin.dart';
+import 'package:study_academy/core/services/firestore_doctor.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/features/admin/admin_homeview.dart';
+import 'package:study_academy/features/doctor/doctor_homeview.dart';
 import 'package:study_academy/model/admin_model.dart';
+import 'package:study_academy/model/doctor_model.dart';
 
 class AuthViewModel extends GetxController {
   late final FirebaseAuth _auth;
@@ -44,6 +47,7 @@ class AuthViewModel extends GetxController {
         box.write('userid', value.user!.uid);
         if (email == AppConstants.adminEmail) {
           AppConstants.typePerson = TypePerson.admin;
+          box.write('usertype', TypePerson.admin.index);
           AppConstants.userId = value.user!.uid;
           AdminModel? adminData;
           await FireStoreAdmin().getCurrentUser(value.user!.uid).then((value) {
@@ -52,7 +56,7 @@ class AuthViewModel extends GetxController {
           }).whenComplete(() async {
             if (adminData!.firstName != null) {
               action.value = false;
-              Get.off(() => const AdminHomeView());
+              Get.offAll(() => const AdminHomeView());
             } else {
               await FireStoreAdmin().addUserToFirestore(
                 AdminModel(
@@ -66,12 +70,32 @@ class AuthViewModel extends GetxController {
               Get.off(() => const AdminHomeView());
             }
           });
+        } else if (await FireStoreDoctor().checkDoctor(value.user!.uid)) {
+          AppConstants.typePerson = TypePerson.doctor;
+          box.write('usertype', TypePerson.doctor.index);
+          AppConstants.userId = value.user!.uid;
+          DoctorModel? doctorData;
+          await FireStoreDoctor()
+              .getCurrentDoctor(value.user!.uid)
+              .then((value) {
+            doctorData =
+                DoctorModel.fromJson(value.data() as Map<dynamic, dynamic>?);
+          }).whenComplete(() async {
+            if (doctorData!.isActive!) {
+              action.value = false;
+              Get.offAll(() => const DoctorHomeView());
+            } else {
+              action.value = false;
+              Get.snackbar(
+                'Error Login',
+                'You are not active \nplease contact us to activate your account',
+                snackPosition: SnackPosition.BOTTOM,
+                colorText: Colors.red,
+              );
+            }
+          });
         }
-        // else if (await FireStoreMember().checkMember(value.user!.uid)) {
-        //   AppConstants.typePerson = TypePerson.member;
-        //   action.value = false;
-        //   Get.offAll(() => const HomeView());
-        // } else {
+        // else {
         //   AppConstants.typePerson = TypePerson.securityCompany;
         //   action.value = false;
         //   Get.offAll(() => const SecurityPage());

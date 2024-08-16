@@ -20,8 +20,13 @@ class ShowStudent extends StatefulWidget {
 }
 
 class _ShowStudentState extends State<ShowStudent> {
-  void deleteStudent(String sId) async {
-    await FireStoreStudent().deleteStudent(sId);
+  void deleteStudent(String sId, bool active) async {
+    bool newActive = !active;
+    await FireStoreStudent().updateStudentInfo(
+      key: 'isActive',
+      value: newActive,
+      studentId: sId,
+    );
     setState(() {});
   }
 
@@ -69,26 +74,38 @@ class _ShowStudentState extends State<ShowStudent> {
                           size: Dimensions.font12,
                         ),
                         SizedBox(height: Dimensions.height10),
+                        SmallText(
+                          text: widget.member.isActive! ? 'Active' : 'Deactive',
+                          color: widget.member.isActive!
+                              ? Colors.green[800]
+                              : Colors.red,
+                          size: Dimensions.font12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        SizedBox(height: Dimensions.height10),
                         Expanded(
                           child: Row(
                             children: [
                               Expanded(
                                 child: MainButton(
-                                  text: 'Delete',
+                                  text: widget.member.isActive!
+                                      ? 'Delete'
+                                      : 'Active',
                                   onTap: () {
                                     showDialog(
                                       context: context,
                                       builder: (_) {
                                         return CupertinoAlertDialog(
                                           title: const Text('Delete Student'),
-                                          content: const Text(
-                                            'Are you sure to delete this student?',
+                                          content: Text(
+                                            'Are you sure to ${widget.member.isActive! ? 'deactivate' : 'active'} this student?',
                                           ),
                                           actions: [
                                             TextButton(
                                               onPressed: () {
                                                 deleteStudent(
                                                   widget.member.studentId!,
+                                                  widget.member.isActive!,
                                                 );
                                                 Navigator.pop(context);
                                               },

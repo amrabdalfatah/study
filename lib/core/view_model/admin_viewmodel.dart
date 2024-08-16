@@ -73,6 +73,11 @@ class AdminViewModel extends GetxController {
       phone = '',
       id = '';
   RxString? imageUrl = ''.obs;
+  void setImageUrl() {
+    imageUrl = ''.obs;
+    update();
+  }
+
   // Select Image for Doctor
   XFile? mediaFile;
   final ImagePicker _picker = ImagePicker();
@@ -212,81 +217,9 @@ class AdminViewModel extends GetxController {
     await FirebaseAuth.instance.signOut();
     final box = GetStorage();
     box.remove('userid');
+    box.remove('usertype');
     Get.offAll(() => const SplashView());
   }
-
-//   // Add Members Screen
-//   void createMemberWithEmailAndPassword({
-//     int? index,
-//     String image = '',
-//     String faceId = '',
-//   }) async {
-//     try {
-//       manageFaces.value = true;
-//       await _auth
-//           .createUserWithEmailAndPassword(
-//         email: email,
-//         password: password,
-//       )
-//           .then((user) async {
-//         memberId = user.user!.uid;
-//         userData!.membersId!.add(memberId);
-
-//         MemberModel member = MemberModel(
-//           memberId: memberId,
-//           userId: AppConstants.userId,
-//           email: email,
-//           firstName: firstName,
-//           lastName: lastName,
-//           image: image,
-//           cameraId: userData!.cameraId,
-//           faceId: faceId,
-//         );
-//         await FireStoreMember()
-//             .addMemberToFirestore(member)
-//             .then((value) async {
-//           await FireStoreUser().updateUserInfo(
-//             key: 'membersId',
-//             value: userData!.membersId,
-//             userModel: userData!,
-//           );
-//           await FireStoreUser().updateUserInfo(
-//             key: 'numberFamilyMembers',
-//             value: userData!.membersId!.length,
-//             userModel: userData!,
-//           );
-//           await FireStoreCamera().updateFaceWithUserId(
-//             cameraId: userData!.cameraId!,
-//             doc: faceId,
-//             value: memberId,
-//           );
-//           Get.snackbar(
-//             'Successfully',
-//             'Create Member Successfully',
-//             snackPosition: SnackPosition.TOP,
-//             colorText: Colors.green,
-//           );
-//           manageFaces.value = false;
-//           if (index != null) {
-//             if (index != userData!.numberFamilyMembers) {
-//               pageController.jumpToPage(index);
-//             } else {
-//               userData!.membersId!.forEach((String element) {
-//                 getMembers(element);
-//               });
-//               Get.off(() => const HomeView());
-//             }
-//           }
-//         });
-//         return user;
-//       });
-//     } catch (e) {
-//       Get.snackbar(
-//         'Error Add Member',
-//         e.toString(),
-//       );
-//     }
-//   }
 
 //   // Manage Faces Screen
 //   List<MemberModel> members = [];
@@ -360,59 +293,5 @@ class AdminViewModel extends GetxController {
 //       manageFaces.value = false;
 //       previewFace(face);
 //     }
-//   }
-
-//   Future<void> addFaceToOwner(String imageUrl, String faceId) async {
-//     return await FireStoreUser()
-//         .updateUserInfo(
-//       key: 'image',
-//       value: imageUrl,
-//       userModel: userData!,
-//     )
-//         .then((value) async {
-//       await FireStoreUser().updateUserInfo(
-//         key: 'faceId',
-//         value: faceId,
-//         userModel: userData!,
-//       );
-//     });
-//   }
-
-//   Future<void> addFaceToMember(String imageUrl) async {}
-
-//   deleteFace() {}
-
-//   // Delete Member
-//   deleteMember(MemberModel member) async {
-//     manageFaces.value = true;
-
-//     await FireStoreCamera()
-//         .deleteFaceById(
-//       cameraId: member.cameraId!,
-//       faceId: member.faceId!,
-//     )
-//         .then((value) async {
-//       userData!.numberFamilyMembers = userData!.numberFamilyMembers! - 1;
-//       userData!.membersId!.removeWhere((element) => element == member.memberId);
-//       await FireStoreUser().updateUserInfo(
-//         key: 'membersId',
-//         value: userData!.membersId,
-//         userModel: userData!,
-//       );
-//       await FireStoreUser().updateUserInfo(
-//         key: 'numberFamilyMembers',
-//         value: userData!.numberFamilyMembers,
-//         userModel: userData!,
-//       );
-//     });
-//     await FireStoreMember().deleteMember(member.memberId!).then((value) {
-//       manageFaces.value = false;
-//       Get.snackbar(
-//         'Successfully',
-//         'Delete Member Successfully',
-//         snackPosition: SnackPosition.BOTTOM,
-//         colorText: Colors.green,
-//       );
-//     });
 //   }
 }

@@ -5,7 +5,8 @@ class StudentModel {
   String? email;
   String? phone;
   String? image;
-  List? courses;
+  bool? isActive;
+  List<String>? courses;
 
   StudentModel({
     this.studentId,
@@ -14,6 +15,7 @@ class StudentModel {
     this.firstName,
     this.lastName,
     this.image,
+    this.isActive = true,
     this.courses,
   });
 
@@ -27,6 +29,7 @@ class StudentModel {
     email = map['email'];
     phone = map['phone'];
     image = map['image'];
+    isActive = map['isActive'];
     courses = List.from(map['courses']);
   }
 
@@ -38,6 +41,7 @@ class StudentModel {
       'email': email,
       'phone': phone,
       'image': image,
+      'isActive': isActive,
       'courses': courses,
     };
   }
