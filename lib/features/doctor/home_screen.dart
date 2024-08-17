@@ -87,6 +87,10 @@ class HomeScreen extends StatelessWidget {
                             future: FirebaseFirestore.instance
                                 .collection('Courses')
                                 .where(
+                                  'doctorId',
+                                  isEqualTo: AppConstants.userId,
+                                )
+                                .where(
                                   'active',
                                   isEqualTo: false,
                                 )

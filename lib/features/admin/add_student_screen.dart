@@ -102,7 +102,7 @@ class AddStudentScreen extends GetWidget<AdminViewModel> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SmallText(
-                                text: 'First Name',
+                                text: 'Full Name',
                                 color: Colors.black,
                                 size: Dimensions.font16,
                               ),
@@ -123,7 +123,7 @@ class AddStudentScreen extends GetWidget<AdminViewModel> {
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return 'Please, Enter First Name';
+                                    return 'Please, Enter Full Name';
                                   }
                                   return null;
                                 },
@@ -137,7 +137,7 @@ class AddStudentScreen extends GetWidget<AdminViewModel> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SmallText(
-                                text: 'Last Name',
+                                text: 'Code',
                                 color: Colors.black,
                                 size: Dimensions.font16,
                               ),
@@ -158,7 +158,7 @@ class AddStudentScreen extends GetWidget<AdminViewModel> {
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return 'Please, Enter Last Name';
+                                    return 'Please, Enter Code';
                                   }
                                   return null;
                                 },

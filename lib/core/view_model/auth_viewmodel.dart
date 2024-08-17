@@ -5,11 +5,14 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:study_academy/core/services/firestore_admin.dart';
 import 'package:study_academy/core/services/firestore_doctor.dart';
+import 'package:study_academy/core/services/firestore_student.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/features/admin/admin_homeview.dart';
 import 'package:study_academy/features/doctor/doctor_homeview.dart';
+import 'package:study_academy/features/student/student_homeview.dart';
 import 'package:study_academy/model/admin_model.dart';
 import 'package:study_academy/model/doctor_model.dart';
+import 'package:study_academy/model/student_model.dart';
 
 class AuthViewModel extends GetxController {
   late final FirebaseAuth _auth;
@@ -94,12 +97,31 @@ class AuthViewModel extends GetxController {
               );
             }
           });
+        } else {
+          AppConstants.typePerson = TypePerson.student;
+          box.write('usertype', TypePerson.student.index);
+          AppConstants.userId = value.user!.uid;
+          StudentModel? studentData;
+          await FireStoreStudent()
+              .getCurrentStudent(value.user!.uid)
+              .then((value) {
+            studentData =
+                StudentModel.fromJson(value.data() as Map<dynamic, dynamic>?);
+          }).whenComplete(() async {
+            if (studentData!.isActive!) {
+              action.value = false;
+              Get.offAll(() => const StudentHomeView());
+            } else {
+              action.value = false;
+              Get.snackbar(
+                'Error Login',
+                'You are not active \nplease contact us to activate your account',
+                snackPosition: SnackPosition.BOTTOM,
+                colorText: Colors.red,
+              );
+            }
+          });
         }
-        // else {
-        //   AppConstants.typePerson = TypePerson.securityCompany;
-        //   action.value = false;
-        //   Get.offAll(() => const SecurityPage());
-        // }
       });
     } catch (e) {
       action.value = false;

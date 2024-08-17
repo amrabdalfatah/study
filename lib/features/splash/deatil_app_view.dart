@@ -31,8 +31,11 @@ class _DeatilAppViewState extends State<DeatilAppView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              ImagesStrings.logo,
+            SizedBox(
+              height: Dimensions.heightImage,
+              child: Image.asset(
+                ImagesStrings.logo,
+              ),
             ),
             SizedBox(
               height: Dimensions.height15,
