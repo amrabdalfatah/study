@@ -4,6 +4,7 @@ class AdminModel {
   String? lastName;
   String? email;
   String? image;
+  String? phone;
 
   AdminModel({
     this.adminId,
@@ -11,6 +12,7 @@ class AdminModel {
     this.lastName,
     this.email,
     this.image,
+    this.phone,
   });
 
   AdminModel.fromJson(Map<dynamic, dynamic>? map) {
@@ -22,6 +24,7 @@ class AdminModel {
     lastName = map['lastName'];
     email = map['email'];
     image = map['image'];
+    phone = map['phone'];
   }
 
   toJson() {
@@ -31,6 +34,7 @@ class AdminModel {
       'lastName': lastName,
       'email': email,
       'image': image,
+      'phone': phone,
     };
   }
 }

@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:study_academy/core/services/firestore_admin.dart';
-import 'package:study_academy/core/services/firestore_doctor.dart';
-import 'package:study_academy/core/services/firestore_student.dart';
+import 'package:study_academy/core/services/firestore/firestore_admin.dart';
+import 'package:study_academy/core/services/firestore/firestore_doctor.dart';
+import 'package:study_academy/core/services/firestore/firestore_student.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/features/admin/admin_homeview.dart';
 import 'package:study_academy/features/doctor/doctor_homeview.dart';
@@ -16,11 +16,9 @@ import 'package:study_academy/model/student_model.dart';
 
 class AuthViewModel extends GetxController {
   late final FirebaseAuth _auth;
-  // // final LocalStorageData localStorageData = Get.find();
   late RxBool shownPassword;
   late RxBool action;
   String email = '', password = '';
-  String userId = '';
 
   @override
   void onInit() {
@@ -45,7 +43,6 @@ class AuthViewModel extends GetxController {
         password: password,
       )
           .then((value) async {
-        AppConstants.loginId = value.user!.uid;
         final box = GetStorage();
         box.write('userid', value.user!.uid);
         if (email == AppConstants.adminEmail) {
@@ -67,6 +64,8 @@ class AuthViewModel extends GetxController {
                   firstName: 'Study',
                   lastName: 'Academy',
                   email: AppConstants.adminEmail,
+                  phone: AppConstants.phoneNumber,
+                  image: '',
                 ),
               );
               action.value = false;
@@ -124,6 +123,7 @@ class AuthViewModel extends GetxController {
         }
       });
     } catch (e) {
+      print('Failed to upload image');
       action.value = false;
       Get.snackbar(
         'Error Login',
