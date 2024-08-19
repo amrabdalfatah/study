@@ -123,7 +123,6 @@ class AuthViewModel extends GetxController {
         }
       });
     } catch (e) {
-      print('Failed to upload image');
       action.value = false;
       Get.snackbar(
         'Error Login',

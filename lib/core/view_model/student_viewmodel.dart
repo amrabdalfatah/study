@@ -4,42 +4,43 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:study_academy/core/services/firestore/firestore_course.dart';
-import 'package:study_academy/core/services/firestore/firestore_doctor.dart';
+import 'package:study_academy/core/services/firestore/firestore_student.dart';
 import 'package:study_academy/core/services/storage/course_storage.dart';
 import 'package:study_academy/core/utils/constants.dart';
-import 'package:study_academy/features/doctor/chat_screen.dart';
-import 'package:study_academy/features/doctor/course_screen.dart';
-import 'package:study_academy/features/doctor/home_screen.dart';
-import 'package:study_academy/features/doctor/profile_screen.dart';
 import 'package:study_academy/features/splash/splash_view.dart';
+import 'package:study_academy/features/student/chat_screen.dart';
+import 'package:study_academy/features/student/course_screen.dart';
+import 'package:study_academy/features/student/home_screen.dart';
+import 'package:study_academy/features/student/profile_screen.dart';
 import 'package:study_academy/model/course_model.dart';
-import 'package:study_academy/model/doctor_model.dart';
 import 'package:study_academy/model/lesson_model.dart';
+import 'package:study_academy/model/student_model.dart';
 import 'package:uuid/uuid.dart';
 
-class DoctorViewModel extends GetxController {
-  DoctorModel? doctorData;
+class StudentViewModel extends GetxController {
+  StudentModel? studentData;
   List<Widget> screens = [
-    const HomeScreen(),
+    HomeScreen(),
     CourseScreen(),
-    const ChatScreen(),
-    const ProfileScreen(),
+    ChatScreen(),
+    ProfileScreen(),
   ];
   RxBool action = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    getDoctor();
+    getStudent();
   }
 
   ValueNotifier<bool> dataLoaded = ValueNotifier(true);
-  Future<void> getDoctor() async {
+  Future<void> getStudent() async {
     dataLoaded.value = false;
-    await FireStoreDoctor()
-        .getCurrentDoctor(AppConstants.userId!)
+    await FireStoreStudent()
+        .getCurrentStudent(AppConstants.userId!)
         .then((value) {
-      doctorData = DoctorModel.fromJson(value.data() as Map<dynamic, dynamic>?);
+      studentData =
+          StudentModel.fromJson(value.data() as Map<dynamic, dynamic>?);
     }).whenComplete(
       () {},
     );
@@ -192,78 +193,4 @@ class DoctorViewModel extends GetxController {
     box.remove('usertype');
     Get.offAll(() => const SplashView());
   }
-
-//   // Manage Faces Screen
-//   List<MemberModel> members = [];
-//   Future<void> getMembers(String mid) async {
-//     return await FireStoreMember().getCurrentMember(mid).then(
-//       (value) {
-//         var member =
-//             MemberModel.fromJson(value.data() as Map<dynamic, dynamic>?);
-//         members.add(member);
-//       },
-//     );
-//   }
-
-//   // Manage Faces Handling
-//   RxBool manageFaces = false.obs;
-//   Future<void> handleManageFaces(
-//     String value,
-//     String face,
-//     String id,
-//   ) async {
-//     manageFaces.value = true;
-//     if (value == 'addToOwner') {
-//       await addFaceToOwner(face, id).then((value) async {
-//         await getUser();
-//         await FireStoreCamera()
-//             .updateFaceWithUserId(
-//           cameraId: userData!.cameraId!,
-//           doc: id,
-//           value: userData!.userId!,
-//         )
-//             .then((value) {
-//           Get.dialog(
-//             CupertinoAlertDialog(
-//               title: const Text('Success'),
-//               content: const Text('Change Image for Owner'),
-//               actions: [
-//                 CupertinoButton(
-//                   onPressed: () {
-//                     Get.back();
-//                     manageFaces.value = false;
-//                   },
-//                   child: const Text('Ok'),
-//                 ),
-//               ],
-//             ),
-//           );
-//         });
-//       });
-//     } else if (value == 'addToMember') {
-//       Get.to(
-//         () => AddMembersWithFaceView(
-//           imageUrl: face,
-//           faceId: id,
-//         ),
-//       );
-//     } else if (value == 'editToMember') {
-//       Get.to(
-//         () => EditMembersWithFaceView(
-//           imageUrl: face,
-//           faceId: id,
-//         ),
-//       );
-//       manageFaces.value = false;
-//     } else if (value == 'deleteIntruder') {
-//       await FireStoreCamera().deleteIntruderById(
-//         cameraId: userData!.cameraId!,
-//         faceId: id,
-//       );
-//       manageFaces.value = false;
-//     } else {
-//       manageFaces.value = false;
-//       previewFace(face);
-//     }
-//   }
 }

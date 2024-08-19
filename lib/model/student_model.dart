@@ -1,7 +1,7 @@
 class StudentModel {
   String? studentId;
-  String? firstName;
-  String? lastName;
+  String? fullName;
+  String? code;
   String? email;
   String? phone;
   String? image;
@@ -12,8 +12,8 @@ class StudentModel {
     this.studentId,
     this.email,
     this.phone,
-    this.firstName,
-    this.lastName,
+    this.fullName,
+    this.code,
     this.image,
     this.isActive = true,
     this.courses,
@@ -24,8 +24,8 @@ class StudentModel {
       return;
     }
     studentId = map['studentId'];
-    firstName = map['firstName'];
-    lastName = map['lastName'];
+    fullName = map['fullName'];
+    code = map['code'];
     email = map['email'];
     phone = map['phone'];
     image = map['image'];
@@ -36,8 +36,8 @@ class StudentModel {
   toJson() {
     return {
       'studentId': studentId,
-      'firstName': firstName,
-      'lastName': lastName,
+      'fullName': fullName,
+      'code': code,
       'email': email,
       'phone': phone,
       'image': image,

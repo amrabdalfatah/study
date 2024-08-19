@@ -10,7 +10,7 @@ class AdminStorage {
       customMetadata: {'picked-file-path': path},
     );
     await adminStorage.child('admin/logo').putFile(File(path), metadata);
-    return adminStorage.child('doctors/logo').getDownloadURL();
+    return adminStorage.child('admin/logo').getDownloadURL();
   }
 
   Future<void> deleteLogo() async {

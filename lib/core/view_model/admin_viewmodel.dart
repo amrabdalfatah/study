@@ -74,6 +74,8 @@ class AdminViewModel extends GetxController {
       password = '',
       firstName = '',
       lastName = '',
+      fullName = '',
+      code = '',
       phone = '',
       id = '';
   RxString? imageUrl = ''.obs;
@@ -182,8 +184,8 @@ class AdminViewModel extends GetxController {
         studentModel = StudentModel(
           studentId: id,
           email: email,
-          firstName: firstName,
-          lastName: lastName,
+          fullName: fullName,
+          code: code,
           image: imagePath,
           phone: phone,
           courses: [],

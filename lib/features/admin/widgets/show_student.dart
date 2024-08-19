@@ -56,8 +56,12 @@ class _ShowStudentState extends State<ShowStudent> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BigText(
-                          text:
-                              '${widget.member.firstName} ${widget.member.lastName}',
+                          text: '${widget.member.code}',
+                          color: Colors.black,
+                          size: Dimensions.font16,
+                        ),
+                        BigText(
+                          text: '${widget.member.fullName}',
                           color: Colors.black,
                           size: Dimensions.font16,
                         ),
