@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 
 class NewMessage extends StatefulWidget {
-  const NewMessage({super.key});
+  final String roomId;
+  const NewMessage({
+    super.key,
+    required this.roomId,
+  });
 
   @override
   State<NewMessage> createState() => _NewMessageState();
@@ -27,9 +31,13 @@ class _NewMessageState extends State<NewMessage> {
     }
     FocusScope.of(context).unfocus();
     _messageController.clear();
-    // TODO: Send message to firestore
+
     final user = FirebaseAuth.instance.currentUser!;
-    await FirebaseFirestore.instance.collection('chat').add({
+    await FirebaseFirestore.instance
+        .collection('Rooms')
+        .doc(widget.roomId)
+        .collection('Chat')
+        .add({
       'text': enteredMessage,
       'createdAt': Timestamp.now(),
       'userId': user.uid,

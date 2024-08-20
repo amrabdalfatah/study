@@ -5,14 +5,21 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/message_bubble.dart';
 
 class ChatMessages extends StatelessWidget {
-  const ChatMessages({super.key});
+  final String roomId;
+  const ChatMessages({
+    super.key,
+    required this.roomId,
+  });
+  // TODO: Edit Here
 
   @override
   Widget build(BuildContext context) {
     final authUser = FirebaseAuth.instance.currentUser!;
     return StreamBuilder(
       stream: FirebaseFirestore.instance
-          .collection('chat')
+          .collection('Rooms')
+          .doc(roomId)
+          .collection('Chat')
           .orderBy('createdAt', descending: true)
           .snapshots(),
       builder: (ctx, snapshot) {

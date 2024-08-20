@@ -212,7 +212,7 @@ class CourseScreen extends GetWidget<AdminViewModel> {
                                                           ),
                                                           SmallText(
                                                             text:
-                                                                'Status: Pending',
+                                                                'Status: ${courses[index].active! ? 'Active' : 'Pending'}',
                                                             color: Colors
                                                                 .grey[300],
                                                             size: Dimensions

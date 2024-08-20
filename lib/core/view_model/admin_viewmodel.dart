@@ -68,7 +68,8 @@ class AdminViewModel extends GetxController {
     update();
   }
 
-  void acceptCourse(String courseId, String doctorId) async {
+  void acceptCourse(
+      String courseId, String courseName, String image, String doctorId) async {
     action.value = true;
     try {
       await FireStoreCourse().updateCourseInfo(
@@ -76,6 +77,11 @@ class AdminViewModel extends GetxController {
         value: true,
         courseId: courseId,
       );
+      await FirebaseFirestore.instance.collection('Rooms').doc(courseId).set({
+        'name': courseName,
+        'image': image,
+        'roomId': courseId,
+      });
       await FirebaseFirestore.instance
           .collection('Rooms')
           .doc(courseId)

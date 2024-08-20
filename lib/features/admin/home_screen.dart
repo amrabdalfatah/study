@@ -45,165 +45,163 @@ class HomeScreen extends GetWidget<AdminViewModel> {
             SizedBox(height: Dimensions.height10),
             Expanded(
               child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('Courses')
-                      .where(
-                        'active',
-                        isEqualTo: false,
-                      )
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    List<CourseModel> courses = [];
-                    if (snapshot.hasError) {
-                      return const Text('Something went wrong');
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CupertinoActivityIndicator(),
-                      );
-                    }
-                    if (snapshot.hasData) {
-                      courses = snapshot.data!.docs.map((e) {
-                        return CourseModel.fromJson(e.data());
-                      }).toList();
-                    }
-                    return courses.isEmpty
-                        ? Center(
-                            child: SmallText(
-                              text: 'There are not pending courses',
-                              color: Colors.black,
-                              size: Dimensions.font20,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          )
-                        : ListView.separated(
-                            itemBuilder: (context, index) {
-                              return FutureBuilder(
-                                future: FirebaseFirestore.instance
-                                    .collection('Doctors')
-                                    .doc(courses[index].doctorId)
-                                    .get(),
-                                builder: (ctx, snapshot) {
-                                  if (snapshot.hasError) {
-                                    return const Text('Something went wrong');
-                                  }
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const Center(
-                                      child: CupertinoActivityIndicator(),
-                                    );
-                                  }
-                                  DoctorModel? doctor;
-                                  if (snapshot.hasData) {
-                                    doctor = DoctorModel.fromJson(
-                                        snapshot.data!.data());
-                                  }
-                                  return FutureBuilder(
-                                    future: FirebaseFirestore.instance
-                                        .collection('Categories')
-                                        .doc(courses[index].categoryId)
-                                        .get(),
-                                    builder: (ctx, snapshot) {
-                                      if (snapshot.hasError) {
-                                        return const Text(
-                                            'Something went wrong');
-                                      }
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
-                                          child: CupertinoActivityIndicator(),
-                                        );
-                                      }
-                                      CategoryModel? category;
-                                      if (snapshot.hasData) {
-                                        category = CategoryModel.fromJson(
-                                            snapshot.data!.data());
-                                      }
-                                      return Card(
-                                        color: AppColors.mainColor,
-                                        child: Padding(
-                                          padding: EdgeInsets.all(
-                                            Dimensions.height10,
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    BigText(
-                                                      text:
-                                                          'Title: ${courses[index].title!}',
-                                                      color: Colors.white,
-                                                      size: Dimensions.font20,
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                    ),
-                                                    Divider(
-                                                      color: Colors.grey[100],
-                                                    ),
-                                                    SmallText(
-                                                      text: 'Status: Pending',
-                                                      color: Colors.grey[300],
-                                                      size: Dimensions.font16,
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                    ),
-                                                    SmallText(
-                                                      text:
-                                                          'By: ${doctor!.firstName} ${doctor.lastName}',
-                                                      color: Colors.grey[300],
-                                                      size: Dimensions.font16,
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                    ),
-                                                    SmallText(
-                                                      text:
-                                                          'Category: ${category!.title}',
-                                                      color: Colors.grey[300],
-                                                      size: Dimensions.font16,
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              controller.action.value
-                                                  ? const Center(
-                                                      child:
-                                                          CupertinoActivityIndicator(),
-                                                    )
-                                                  : IconButton(
-                                                      onPressed: () {
-                                                        // TODO: Change active
-                                                        controller.acceptCourse(
-                                                          courses[index]
-                                                              .courseId!,
-                                                          doctor!.doctorId!,
-                                                        );
-                                                        // TODO: Add chat room
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons
-                                                            .check_circle_outline,
-                                                        color: Colors.green,
-                                                      ),
-                                                    ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
+                stream: FirebaseFirestore.instance
+                    .collection('Courses')
+                    .where(
+                      'active',
+                      isEqualTo: false,
+                    )
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  List<CourseModel> courses = [];
+                  if (snapshot.hasError) {
+                    return const Text('Something went wrong');
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CupertinoActivityIndicator(),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    courses = snapshot.data!.docs.map((e) {
+                      return CourseModel.fromJson(e.data());
+                    }).toList();
+                  }
+                  return courses.isEmpty
+                      ? Center(
+                          child: SmallText(
+                            text: 'There are not pending courses',
+                            color: Colors.black,
+                            size: Dimensions.font20,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      : ListView.separated(
+                          itemBuilder: (context, index) {
+                            return FutureBuilder(
+                              future: FirebaseFirestore.instance
+                                  .collection('Doctors')
+                                  .doc(courses[index].doctorId)
+                                  .get(),
+                              builder: (ctx, snapshot) {
+                                if (snapshot.hasError) {
+                                  return const Text('Something went wrong');
+                                }
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CupertinoActivityIndicator(),
                                   );
-                                },
-                              );
-                            },
-                            separatorBuilder: (context, index) =>
-                                SizedBox(height: Dimensions.height10),
-                            itemCount: courses.length,
-                          );
-                  }),
+                                }
+                                DoctorModel? doctor;
+                                if (snapshot.hasData) {
+                                  doctor = DoctorModel.fromJson(
+                                      snapshot.data!.data());
+                                }
+                                return FutureBuilder(
+                                  future: FirebaseFirestore.instance
+                                      .collection('Categories')
+                                      .doc(courses[index].categoryId)
+                                      .get(),
+                                  builder: (ctx, snapshot) {
+                                    if (snapshot.hasError) {
+                                      return const Text('Something went wrong');
+                                    }
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                        child: CupertinoActivityIndicator(),
+                                      );
+                                    }
+                                    CategoryModel? category;
+                                    if (snapshot.hasData) {
+                                      category = CategoryModel.fromJson(
+                                          snapshot.data!.data());
+                                    }
+                                    return Card(
+                                      color: AppColors.mainColor,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(
+                                          Dimensions.height10,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  BigText(
+                                                    text:
+                                                        'Title: ${courses[index].title!}',
+                                                    color: Colors.white,
+                                                    size: Dimensions.font20,
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                  Divider(
+                                                    color: Colors.grey[100],
+                                                  ),
+                                                  SmallText(
+                                                    text: 'Status: Pending',
+                                                    color: Colors.grey[300],
+                                                    size: Dimensions.font16,
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                  SmallText(
+                                                    text:
+                                                        'By: ${doctor!.firstName} ${doctor.lastName}',
+                                                    color: Colors.grey[300],
+                                                    size: Dimensions.font16,
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                  SmallText(
+                                                    text:
+                                                        'Category: ${category!.title}',
+                                                    color: Colors.grey[300],
+                                                    size: Dimensions.font16,
+                                                    textAlign: TextAlign.start,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            controller.action.value
+                                                ? const Center(
+                                                    child:
+                                                        CupertinoActivityIndicator(),
+                                                  )
+                                                : IconButton(
+                                                    onPressed: () {
+                                                      // TODO: Change active
+                                                      controller.acceptCourse(
+                                                        courses[index]
+                                                            .courseId!,
+                                                        courses[index].title!,
+                                                        courses[index].image!,
+                                                        doctor!.doctorId!,
+                                                      );
+                                                      // TODO: Add chat room
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons
+                                                          .check_circle_outline,
+                                                      color: Colors.green,
+                                                    ),
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: Dimensions.height10),
+                          itemCount: courses.length,
+                        );
+                },
+              ),
             ),
           ],
         ),
