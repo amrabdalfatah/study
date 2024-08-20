@@ -18,105 +18,110 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(Dimensions.height15),
+        padding: EdgeInsets.only(
+          left: Dimensions.height15,
+          right: Dimensions.height15,
+          top: Dimensions.height15,
+        ),
         child: Column(
           children: [
             SizedBox(
-              height: Dimensions.height100 * 2,
-              child: GridView(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                ),
+              height: Dimensions.height100,
+              child: Row(
                 children: [
-                  GridTile(
-                    child: Card(
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          BigText(
-                            text: 'All Courses',
-                            color: Colors.black,
-                            size: Dimensions.font16,
-                          ),
-                          FutureBuilder(
-                            future: FirebaseFirestore.instance
-                                .collection('Courses')
-                                .where(
-                                  'doctorId',
-                                  isEqualTo: AppConstants.userId,
-                                )
-                                .get(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return const Text('Error when getting data');
-                              }
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CupertinoActivityIndicator(),
+                  Expanded(
+                    child: GridTile(
+                      child: Card(
+                        color: Colors.white,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            BigText(
+                              text: 'All Courses',
+                              color: Colors.black,
+                              size: Dimensions.font16,
+                            ),
+                            FutureBuilder(
+                              future: FirebaseFirestore.instance
+                                  .collection('Courses')
+                                  .where(
+                                    'doctorId',
+                                    isEqualTo: AppConstants.userId,
+                                  )
+                                  .get(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return const Text('Error when getting data');
+                                }
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CupertinoActivityIndicator(),
+                                  );
+                                }
+                                int length = 0;
+                                if (snapshot.hasData) {
+                                  length = snapshot.data!.docs.length;
+                                }
+                                return BigText(
+                                  text: '$length',
+                                  color: AppColors.mainColor,
+                                  size: Dimensions.font32,
                                 );
-                              }
-                              int length = 0;
-                              if (snapshot.hasData) {
-                                length = snapshot.data!.docs.length;
-                              }
-                              return BigText(
-                                text: '$length',
-                                color: AppColors.mainColor,
-                                size: Dimensions.font32,
-                              );
-                            },
-                          ),
-                        ],
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  GridTile(
-                    child: Card(
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          BigText(
-                            text: 'Pending Courses',
-                            color: Colors.black,
-                            size: Dimensions.font16,
-                          ),
-                          FutureBuilder(
-                            future: FirebaseFirestore.instance
-                                .collection('Courses')
-                                .where(
-                                  'doctorId',
-                                  isEqualTo: AppConstants.userId,
-                                )
-                                .where(
-                                  'active',
-                                  isEqualTo: false,
-                                )
-                                .get(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return const Text('Error when getting data');
-                              }
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CupertinoActivityIndicator(),
+                  Expanded(
+                    child: GridTile(
+                      child: Card(
+                        color: Colors.white,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            BigText(
+                              text: 'Pending Courses',
+                              color: Colors.black,
+                              size: Dimensions.font16,
+                            ),
+                            FutureBuilder(
+                              future: FirebaseFirestore.instance
+                                  .collection('Courses')
+                                  .where(
+                                    'doctorId',
+                                    isEqualTo: AppConstants.userId,
+                                  )
+                                  .where(
+                                    'active',
+                                    isEqualTo: false,
+                                  )
+                                  .get(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return const Text('Error when getting data');
+                                }
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CupertinoActivityIndicator(),
+                                  );
+                                }
+                                int length = 0;
+                                if (snapshot.hasData) {
+                                  length = snapshot.data!.docs.length;
+                                }
+                                return BigText(
+                                  text: '$length',
+                                  color: AppColors.mainColor,
+                                  size: Dimensions.font32,
                                 );
-                              }
-                              int length = 0;
-                              if (snapshot.hasData) {
-                                length = snapshot.data!.docs.length;
-                              }
-                              return BigText(
-                                text: '$length',
-                                color: AppColors.mainColor,
-                                size: Dimensions.font32,
-                              );
-                            },
-                          ),
-                        ],
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -159,6 +164,7 @@ class HomeScreen extends StatelessWidget {
                         )
                       : ListView.separated(
                           itemBuilder: (context, index) {
+                            // TODO: ADD student number
                             return ListTile(
                               tileColor: courses[index].active!
                                   ? Colors.green

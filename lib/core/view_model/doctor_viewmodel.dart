@@ -25,6 +25,12 @@ class DoctorViewModel extends GetxController {
     const ChatScreen(),
     const ProfileScreen(),
   ];
+  List<String> appBars = [
+    'Home',
+    'Add Course',
+    'Chat Room',
+    'Profile',
+  ];
   RxBool action = false.obs;
 
   @override

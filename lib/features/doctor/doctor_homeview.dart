@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
-import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/view_model/doctor_viewmodel.dart';
 
 class DoctorHomeView extends StatelessWidget {
@@ -17,33 +16,12 @@ class DoctorHomeView extends StatelessWidget {
             ? Scaffold(
                 appBar: AppBar(
                   backgroundColor: AppColors.mainColor,
-                  leading: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        controller.doctorData!.image!,
-                      ),
-                    ),
-                  ),
                   title: Text(
-                    '${controller.doctorData!.firstName} ${controller.doctorData!.lastName}',
+                    controller.appBars[controller.screenIndex.value],
                     style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        controller.signOut();
-                      },
-                      icon: const Icon(
-                        Icons.logout,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
                 ),
                 body: controller.screens[controller.screenIndex.value],
                 bottomNavigationBar: BottomNavigationBar(
