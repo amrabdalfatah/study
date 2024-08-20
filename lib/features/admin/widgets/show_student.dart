@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:study_academy/core/services/firestore/firestore_student.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/features/admin/add_student_course_view.dart';
 import 'package:study_academy/model/student_model.dart';
 
 class ShowStudent extends StatefulWidget {
@@ -42,12 +44,13 @@ class _ShowStudentState extends State<ShowStudent> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: constraints.maxHeight / 3,
-                    width: double.infinity,
-                    child: Image.network(
-                      widget.member.image!,
-                      fit: BoxFit.fill,
+                  Center(
+                    child: CircleAvatar(
+                      radius: Dimensions.height50,
+                      backgroundColor: Colors.grey,
+                      foregroundImage: NetworkImage(
+                        widget.member.image!,
+                      ),
                     ),
                   ),
                   SizedBox(height: Dimensions.height10),
@@ -56,14 +59,15 @@ class _ShowStudentState extends State<ShowStudent> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BigText(
-                          text: '${widget.member.code}',
-                          color: Colors.black,
-                          size: Dimensions.font16,
-                        ),
-                        BigText(
                           text: '${widget.member.fullName}',
                           color: Colors.black,
                           size: Dimensions.font16,
+                        ),
+                        SizedBox(height: Dimensions.height10),
+                        SmallText(
+                          text: widget.member.code!,
+                          color: Colors.black,
+                          size: Dimensions.font12,
                         ),
                         SizedBox(height: Dimensions.height10),
                         SmallText(
@@ -143,7 +147,12 @@ class _ShowStudentState extends State<ShowStudent> {
                               Expanded(
                                 child: MainButton(
                                   text: 'Courses',
-                                  onTap: () {},
+                                  onTap: () {
+                                    Get.to(() => AddStudentCourseView(
+                                          studentId: widget.member.studentId!,
+                                          studentName: widget.member.fullName!,
+                                        ));
+                                  },
                                   color: AppColors.mainColor,
                                 ),
                               ),

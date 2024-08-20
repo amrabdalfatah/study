@@ -236,7 +236,6 @@ class AdminViewModel extends GetxController {
           code: code,
           image: imagePath,
           phone: phone,
-          courses: [],
         );
         await FireStoreStudent()
             .addStudentToFirestore(studentModel!)
@@ -349,6 +348,33 @@ class AdminViewModel extends GetxController {
     }
     action.value = false;
     imageCat = ''.obs;
+    update();
+  }
+
+  registerCourseToStudent(
+      String courseId, String studentId, bool isRegistered) async {
+    action.value = true;
+    final uuid = Uuid();
+    final regId = uuid.v4();
+    if (!isRegistered) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('Registers')
+            .doc(regId)
+            .set({
+          'courseId': courseId,
+          'studentId': studentId,
+        });
+      } catch (e) {
+        Get.snackbar(
+          'Error',
+          e.toString(),
+          snackPosition: SnackPosition.TOP,
+          colorText: Colors.red,
+        );
+      }
+    }
+    action.value = false;
     update();
   }
 

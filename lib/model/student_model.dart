@@ -6,7 +6,6 @@ class StudentModel {
   String? phone;
   String? image;
   bool? isActive;
-  List<String>? courses;
 
   StudentModel({
     this.studentId,
@@ -16,7 +15,6 @@ class StudentModel {
     this.code,
     this.image,
     this.isActive = true,
-    this.courses,
   });
 
   StudentModel.fromJson(Map<dynamic, dynamic>? map) {
@@ -30,7 +28,6 @@ class StudentModel {
     phone = map['phone'];
     image = map['image'];
     isActive = map['isActive'];
-    courses = List.from(map['courses']);
   }
 
   toJson() {
@@ -42,7 +39,6 @@ class StudentModel {
       'phone': phone,
       'image': image,
       'isActive': isActive,
-      'courses': courses,
     };
   }
 }

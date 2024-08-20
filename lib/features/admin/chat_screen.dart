@@ -70,14 +70,6 @@ class ChatScreen extends StatelessWidget {
                 );
         },
       ),
-      // body: Column(
-      //   children: [
-      //     Expanded(
-      //       child: ChatMessages(),
-      //     ),
-      //     NewMessage(),
-      //   ],
-      // ),
     );
   }
 }

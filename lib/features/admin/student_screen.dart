@@ -54,7 +54,7 @@ class StudentScreen extends StatelessWidget {
                         crossAxisCount: 2,
                         mainAxisSpacing: Dimensions.height10,
                         crossAxisSpacing: Dimensions.height10,
-                        childAspectRatio: 0.7,
+                        childAspectRatio: 0.6,
                       ),
                       itemCount: students.length,
                       itemBuilder: (context, index) {

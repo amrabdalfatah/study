@@ -119,7 +119,7 @@ class AddStudentScreen extends GetWidget<AdminViewModel> {
                                   fillColor: Colors.grey[200],
                                 ),
                                 onSaved: (value) {
-                                  controller.firstName = value!;
+                                  controller.fullName = value!;
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -154,7 +154,7 @@ class AddStudentScreen extends GetWidget<AdminViewModel> {
                                   fillColor: Colors.grey[200],
                                 ),
                                 onSaved: (value) {
-                                  controller.lastName = value!;
+                                  controller.code = value!;
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
