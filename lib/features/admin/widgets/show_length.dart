@@ -25,8 +25,8 @@ class ShowLength extends StatelessWidget {
               color: Colors.black,
               size: Dimensions.font20,
             ),
-            FutureBuilder(
-              future: FirebaseFirestore.instance.collection(title).get(),
+            StreamBuilder(
+              stream: FirebaseFirestore.instance.collection(title).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Text('Error when getting data');

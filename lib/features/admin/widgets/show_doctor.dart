@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:study_academy/core/services/firestore/firestore_doctor.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
@@ -7,6 +8,8 @@ import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 import 'package:study_academy/model/doctor_model.dart';
+
+import '../show_courses_doctor_screen.dart';
 
 class ShowDoctor extends StatefulWidget {
   final DoctorModel member;
@@ -34,7 +37,7 @@ class _ShowDoctorState extends State<ShowDoctor> {
   Widget build(BuildContext context) {
     return GridTile(
       child: Card(
-        color: Colors.white,
+        color: Colors.grey[200],
         child: Padding(
           padding: EdgeInsets.all(Dimensions.height10),
           child: LayoutBuilder(
@@ -45,9 +48,11 @@ class _ShowDoctorState extends State<ShowDoctor> {
                   SizedBox(
                     height: constraints.maxHeight / 3,
                     width: double.infinity,
-                    child: Image.network(
-                      widget.member.image!,
-                      fit: BoxFit.fill,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      foregroundImage: NetworkImage(
+                        widget.member.image!,
+                      ),
                     ),
                   ),
                   SizedBox(height: Dimensions.height10),
@@ -139,7 +144,13 @@ class _ShowDoctorState extends State<ShowDoctor> {
                               Expanded(
                                 child: MainButton(
                                   text: 'Courses',
-                                  onTap: () {},
+                                  onTap: () {
+                                    Get.to(
+                                      () => ShowCoursesDoctorScreen(
+                                        doctorId: widget.member.doctorId!,
+                                      ),
+                                    );
+                                  },
                                   color: AppColors.mainColor,
                                 ),
                               ),

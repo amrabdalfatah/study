@@ -12,6 +12,8 @@ import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 import 'package:study_academy/model/category_model.dart';
+import 'package:study_academy/model/course_model.dart';
+import 'package:study_academy/model/doctor_model.dart';
 
 class CourseScreen extends GetWidget<AdminViewModel> {
   CourseScreen({super.key});
@@ -23,11 +25,8 @@ class CourseScreen extends GetWidget<AdminViewModel> {
       body: Padding(
         padding: EdgeInsets.all(Dimensions.height15),
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('Categories')
-              // .where('userId',
-              // isEqualTo: controller.userData!.userId)
-              .snapshots(),
+          stream:
+              FirebaseFirestore.instance.collection('Categories').snapshots(),
           builder: (context, snapshot) {
             List<CategoryModel> categories = [];
             if (snapshot.hasError) {
@@ -62,27 +61,47 @@ class CourseScreen extends GetWidget<AdminViewModel> {
                             scrollDirection: Axis.horizontal,
                             itemCount: categories.length,
                             itemBuilder: (context, index) {
-                              return Card(
-                                color: Colors.grey[100],
-                                child: Padding(
-                                  padding: EdgeInsets.all(Dimensions.height10),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                            categories[index].image!,
-                                          ),
+                              return GetX<AdminViewModel>(
+                                builder: (categoryIndex) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      categoryIndex.changeCat(index);
+                                    },
+                                    child: Card(
+                                      color:
+                                          categoryIndex.catIndex.value == index
+                                              ? AppColors.mainColor
+                                              : Colors.grey[100],
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.all(Dimensions.height10),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Expanded(
+                                              child: CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                  categories[index].image!,
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              categories[index].title!,
+                                              style: TextStyle(
+                                                color:
+                                                    controller.catIndex.value ==
+                                                            index
+                                                        ? Colors.white
+                                                        : null,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      Text(
-                                        categories[index].title!,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                    ),
+                                  );
+                                },
                               );
                             },
                           ),
@@ -97,17 +116,145 @@ class CourseScreen extends GetWidget<AdminViewModel> {
                         ),
                         SizedBox(height: Dimensions.height10),
                         Expanded(
-                          child: ListView.separated(
-                            separatorBuilder: (context, index) =>
-                                SizedBox(height: Dimensions.height10),
-                            itemBuilder: (context, index) {
-                              return Container(
-                                height: Dimensions.height100,
-                                width: double.infinity,
-                                color: Colors.green,
-                              );
+                          child: GetX<AdminViewModel>(
+                            builder: (catContr) {
+                              return StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('Courses')
+                                      .where(
+                                        'active',
+                                        isEqualTo: true,
+                                      )
+                                      .where(
+                                        'categoryId',
+                                        isEqualTo:
+                                            categories[catContr.catIndex.value]
+                                                .categoryId,
+                                      )
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    List<CourseModel> courses = [];
+                                    if (snapshot.hasError) {
+                                      return const Text('Something went wrong');
+                                    }
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                        child: CupertinoActivityIndicator(),
+                                      );
+                                    }
+                                    if (snapshot.hasData) {
+                                      courses = snapshot.data!.docs.map((e) {
+                                        return CourseModel.fromJson(e.data());
+                                      }).toList();
+                                    }
+                                    return courses.isEmpty
+                                        ? Center(
+                                            child: SmallText(
+                                              text: 'There are no courses',
+                                              color: Colors.black,
+                                              size: Dimensions.font20,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          )
+                                        : ListView.separated(
+                                            itemBuilder: (context, index) {
+                                              return FutureBuilder(
+                                                future: FirebaseFirestore
+                                                    .instance
+                                                    .collection('Doctors')
+                                                    .doc(
+                                                        courses[index].doctorId)
+                                                    .get(),
+                                                builder: (ctx, snapshot) {
+                                                  if (snapshot.hasError) {
+                                                    return const Text(
+                                                        'Something went wrong');
+                                                  }
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return const Center(
+                                                      child:
+                                                          CupertinoActivityIndicator(),
+                                                    );
+                                                  }
+                                                  DoctorModel? doctor;
+                                                  if (snapshot.hasData) {
+                                                    doctor =
+                                                        DoctorModel.fromJson(
+                                                            snapshot.data!
+                                                                .data());
+                                                  }
+                                                  return Card(
+                                                    color: AppColors.mainColor,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.all(
+                                                        Dimensions.height10,
+                                                      ),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          BigText(
+                                                            text:
+                                                                'Title: ${courses[index].title!}',
+                                                            color: Colors.white,
+                                                            size: Dimensions
+                                                                .font20,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                          ),
+                                                          Divider(
+                                                            color: Colors
+                                                                .grey[100],
+                                                          ),
+                                                          SmallText(
+                                                            text:
+                                                                'Status: Pending',
+                                                            color: Colors
+                                                                .grey[300],
+                                                            size: Dimensions
+                                                                .font16,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                          ),
+                                                          SmallText(
+                                                            text:
+                                                                'By: ${doctor!.firstName} ${doctor.lastName}',
+                                                            color: Colors
+                                                                .grey[300],
+                                                            size: Dimensions
+                                                                .font16,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                          ),
+                                                          SmallText(
+                                                            text:
+                                                                'Category: ${categories[index]!.title}',
+                                                            color: Colors
+                                                                .grey[300],
+                                                            size: Dimensions
+                                                                .font16,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            separatorBuilder:
+                                                (context, index) => SizedBox(
+                                                    height:
+                                                        Dimensions.height10),
+                                            itemCount: courses.length,
+                                          );
+                                  });
                             },
-                            itemCount: 10,
                           ),
                         ),
                       ],

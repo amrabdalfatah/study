@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:study_academy/core/services/firestore/firestore_admin.dart';
 import 'package:study_academy/core/services/firestore/firestore_category.dart';
+import 'package:study_academy/core/services/firestore/firestore_course.dart';
 import 'package:study_academy/core/services/firestore/firestore_doctor.dart';
 import 'package:study_academy/core/services/firestore/firestore_student.dart';
 import 'package:study_academy/core/services/storage/category_storage.dart';
@@ -63,6 +65,46 @@ class AdminViewModel extends GetxController {
 
   void changeScreen(int selected) {
     screenIndex.value = selected;
+    update();
+  }
+
+  void acceptCourse(String courseId, String doctorId) async {
+    action.value = true;
+    try {
+      await FireStoreCourse().updateCourseInfo(
+        key: 'active',
+        value: true,
+        courseId: courseId,
+      );
+      await FirebaseFirestore.instance
+          .collection('Rooms')
+          .doc(courseId)
+          .collection('People')
+          .add({
+        'id': AppConstants.userId,
+      });
+      await FirebaseFirestore.instance
+          .collection('Rooms')
+          .doc(courseId)
+          .collection('People')
+          .add({
+        'id': doctorId,
+      });
+      Get.snackbar(
+        'Success',
+        'Added New Chat for this Course',
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.green,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red,
+      );
+    }
+    action.value = false;
     update();
   }
 
@@ -254,6 +296,12 @@ class AdminViewModel extends GetxController {
     }
   }
 
+  RxInt catIndex = 0.obs;
+  void changeCat(int index) {
+    catIndex.value = index;
+    update();
+  }
+
   String catTitle = '';
   CategoryModel? categoryModel;
   void addCategory(BuildContext context) async {
@@ -265,6 +313,7 @@ class AdminViewModel extends GetxController {
       );
       final uuid = Uuid();
       final catId = uuid.v4();
+
       categoryModel = CategoryModel(
         categoryId: catId,
         title: catTitle,

@@ -37,7 +37,7 @@ class ProfileView extends StatelessWidget {
           title: BigText(
             text: fullName,
             color: Colors.black,
-            size: Dimensions.font20,
+            size: Dimensions.font16,
             textAlign: TextAlign.start,
           ),
         ),
@@ -50,7 +50,7 @@ class ProfileView extends StatelessWidget {
           title: BigText(
             text: email,
             color: Colors.black,
-            size: Dimensions.font20,
+            size: Dimensions.font16,
             textAlign: TextAlign.start,
           ),
         ),
@@ -63,7 +63,7 @@ class ProfileView extends StatelessWidget {
           title: BigText(
             text: phone,
             color: Colors.black,
-            size: Dimensions.font20,
+            size: Dimensions.font16,
             textAlign: TextAlign.start,
           ),
         ),
