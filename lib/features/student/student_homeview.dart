@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
-import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/view_model/student_viewmodel.dart';
 
 class StudentHomeView extends StatelessWidget {
@@ -17,33 +16,12 @@ class StudentHomeView extends StatelessWidget {
             ? Scaffold(
                 appBar: AppBar(
                   backgroundColor: AppColors.mainColor,
-                  leading: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        controller.studentData!.image!,
-                      ),
-                    ),
-                  ),
                   title: Text(
-                    '${controller.studentData!.fullName}',
+                    controller.appBars[controller.screenIndex.value],
                     style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        controller.signOut();
-                      },
-                      icon: const Icon(
-                        Icons.logout,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
                 ),
                 body: controller.screens[controller.screenIndex.value],
                 bottomNavigationBar: BottomNavigationBar(
