@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:video_player/video_player.dart';
@@ -23,7 +22,6 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
   bool isVideoLoading = true;
   late File videoFile;
   late VideoPlayerController _controller;
-  late ChewieController _chewieController;
 
   @override
   void initState() {
@@ -40,14 +38,6 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
       _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url));
       await _controller.initialize();
 
-      _chewieController = ChewieController(
-        videoPlayerController: _controller,
-        autoPlay: false,
-        looping: false,
-        autoInitialize: false,
-        aspectRatio: 16 / 9,
-      );
-
       isVideoLoading = false;
       setState(() {});
     } on Exception catch (e) {
@@ -58,7 +48,6 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
   @override
   void dispose() {
     _controller.dispose();
-    _chewieController.dispose();
     super.dispose();
   }
 
@@ -71,17 +60,12 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
       ),
       body: AspectRatio(
         aspectRatio: 16 / 9,
-        child: isVideoLoading
-            ? Container(
-                width: MediaQuery.sizeOf(context).width,
-                color: Colors.black,
-                alignment: Alignment.center,
-                child: const CircularProgressIndicator(color: Colors.white),
-              )
-            : Chewie(
-                key: Key("chewie-key-${widget.url}"),
-                controller: _chewieController,
-              ),
+        child: Container(
+          width: MediaQuery.sizeOf(context).width,
+          color: Colors.black,
+          alignment: Alignment.center,
+          child: const CircularProgressIndicator(color: Colors.white),
+        ),
       ),
     );
   }

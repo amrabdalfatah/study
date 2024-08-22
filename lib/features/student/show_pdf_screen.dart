@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:study_academy/core/utils/colors.dart';
 
 class ShowPdfScreen extends StatefulWidget {
@@ -23,9 +22,13 @@ class _ShowPdfScreenState extends State<ShowPdfScreen> {
         backgroundColor: AppColors.mainColor,
         title: Text(widget.title),
       ),
-      body: PDF(
-        swipeHorizontal: true,
-      ).cachedFromUrl(widget.url),
+      body: const Center(
+        child: Text('PDF'),
+      ),
     );
   }
 }
+
+// body: PDF(
+//   swipeHorizontal: true,
+// ).cachedFromUrl(widget.url),
