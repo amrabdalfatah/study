@@ -4,9 +4,8 @@ import 'package:get/get.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
-import 'package:study_academy/features/student/show_pdf_screen.dart';
-import 'package:study_academy/features/student/show_video_screen.dart';
 import 'package:study_academy/model/course_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TypeView extends StatefulWidget {
   final String title;
@@ -64,20 +63,31 @@ class _TypeViewState extends State<TypeView> {
                 itemBuilder: (ctx, index) {
                   final video = loadedData[index].data();
                   return ListTile(
-                    onTap: () {
-                      widget.type == 'Files'
-                          ? Get.to(
-                              () => ShowPdfScreen(
-                                title: video['title'],
-                                url: video['url'],
-                              ),
-                            )
-                          : Get.to(
-                              () => ShowVideoScreen(
-                                title: video['title'],
-                                url: video['url'],
-                              ),
-                            );
+                    onTap: () async {
+                      final Uri _url = Uri.parse(video['url']);
+                      try {
+                        await launchUrl(_url);
+                      } catch (e) {
+                        Get.snackbar(
+                          'Error',
+                          'There is an error with this File ${e.toString()}',
+                          snackPosition: SnackPosition.TOP,
+                          colorText: Colors.red,
+                        );
+                      }
+                      // widget.type == 'Files'
+                      //     ? Get.to(
+                      //         () => ShowPdfScreen(
+                      //           title: video['title'],
+                      //           url: video['url'],
+                      //         ),
+                      //       )
+                      //     : Get.to(
+                      //         () => ShowVideoScreen(
+                      //           title: video['title'],
+                      //           url: video['url'],
+                      //         ),
+                      //       );
                     },
                     leading: SmallText(
                       text: '${index + 1}',
