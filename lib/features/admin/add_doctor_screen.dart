@@ -100,7 +100,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SmallText(
-                                text: 'First Name',
+                                text: 'Full Name',
                                 color: Colors.black,
                                 size: Dimensions.font16,
                               ),
@@ -117,11 +117,11 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                   fillColor: Colors.grey[200],
                                 ),
                                 onSaved: (value) {
-                                  controller.firstName = value!;
+                                  controller.fullName = value!;
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return 'Please, Enter First Name';
+                                    return 'Please, Enter Full Name';
                                   }
                                   return null;
                                 },
@@ -135,7 +135,7 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SmallText(
-                                text: 'Last Name',
+                                text: 'Code',
                                 color: Colors.black,
                                 size: Dimensions.font16,
                               ),
@@ -152,11 +152,11 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                   fillColor: Colors.grey[200],
                                 ),
                                 onSaved: (value) {
-                                  controller.lastName = value!;
+                                  controller.code = value!;
                                 },
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return 'Please, Enter Last Name';
+                                    return 'Please, Enter Code';
                                   }
                                   return null;
                                 },

@@ -1,15 +1,13 @@
 class AdminModel {
   String? adminId;
-  String? firstName;
-  String? lastName;
+  String? fullName;
   String? email;
   String? image;
   String? phone;
 
   AdminModel({
     this.adminId,
-    this.firstName,
-    this.lastName,
+    this.fullName,
     this.email,
     this.image,
     this.phone,
@@ -20,8 +18,7 @@ class AdminModel {
       return;
     }
     adminId = map['adminId'];
-    firstName = map['firstName'];
-    lastName = map['lastName'];
+    fullName = map['fullName'];
     email = map['email'];
     image = map['image'];
     phone = map['phone'];
@@ -30,8 +27,7 @@ class AdminModel {
   toJson() {
     return {
       'adminId': adminId,
-      'firstName': firstName,
-      'lastName': lastName,
+      'fullName': fullName,
       'email': email,
       'image': image,
       'phone': phone,

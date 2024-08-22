@@ -37,7 +37,7 @@ class ProfileScreen extends GetWidget<DoctorViewModel> {
               doctorModel = DoctorModel.fromJson(snapshot.data!.data());
             }
             return ProfileView(
-              fullName: '${doctorModel!.firstName} ${doctorModel.lastName}',
+              fullName: '${doctorModel!.fullName}',
               image: doctorModel.image!,
               email: doctorModel.email!,
               phone: doctorModel.phone!,

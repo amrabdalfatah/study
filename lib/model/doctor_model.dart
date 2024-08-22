@@ -1,8 +1,9 @@
 class DoctorModel {
   String? doctorId;
-  String? firstName;
-  String? lastName;
+  String? fullName;
+  String? code;
   String? email;
+  String? password;
   String? phone;
   String? image;
   bool? isActive;
@@ -10,9 +11,10 @@ class DoctorModel {
   DoctorModel({
     this.doctorId,
     this.email,
+    this.password,
     this.phone,
-    this.firstName,
-    this.lastName,
+    this.fullName,
+    this.code,
     this.image,
     this.isActive = true,
   });
@@ -22,9 +24,10 @@ class DoctorModel {
       return;
     }
     doctorId = map['doctorId'];
-    firstName = map['firstName'];
-    lastName = map['lastName'];
+    fullName = map['fullName'];
+    code = map['code'];
     email = map['email'];
+    password = map['password'];
     phone = map['phone'];
     image = map['image'];
     isActive = map['isActive'];
@@ -33,9 +36,10 @@ class DoctorModel {
   toJson() {
     return {
       'doctorId': doctorId,
-      'firstName': firstName,
-      'lastName': lastName,
+      'fullName': fullName,
+      'code': code,
       'email': email,
+      'password': password,
       'phone': phone,
       'image': image,
       'isActive': isActive,

@@ -282,7 +282,7 @@ class HomeScreen extends StatelessWidget {
                                                                 ),
                                                                 SmallText(
                                                                   text:
-                                                                      'By: ${doctor!.firstName} ${doctor.lastName}',
+                                                                      'By: ${doctor!.fullName}',
                                                                   color: Colors
                                                                           .grey[
                                                                       300],

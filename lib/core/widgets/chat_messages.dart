@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/message_bubble.dart';
 
@@ -53,7 +54,9 @@ class ChatMessages extends StatelessWidget {
             final bool nextUserIsSame =
                 nextMessageUserId == currentMessageUserId;
             // Test this
-            return MessageBubble.next(
+            return MessageBubble.first(
+              userImage: null,
+              username: AppConstants.userName,
               message: chatMessage['text'],
               isMe: authUser.uid == currentMessageUserId,
             );

@@ -29,7 +29,7 @@ class AdminHomeView extends StatelessWidget {
                     ),
                   ),
                   title: Text(
-                    '${controller.adminData!.firstName} ${controller.adminData!.lastName}',
+                    '${controller.adminData!.fullName}',
                     style: const TextStyle(
                       color: Colors.white,
                     ),

@@ -2,8 +2,6 @@ admin@study.academy
 Admin123456
 
 1- Clickable for category to filter courses
-2- Student => FullName
-            => Code
 
 3- Course => mid => files
                  => videos
@@ -11,9 +9,14 @@ Admin123456
                          => Video
           => final     => Files
                        => videos
-amr@gmail.com
 
-amr@study.academy
+========================================================
+App Bundle for Google Play Store
+Built build/app/outputs/bundle/release/app-release.aab
+========================================================
+Apk android:
+Built build/app/outputs/flutter-apk/app-release.apk
+========================================================
+IOS:
 
-=> deviceIP
 

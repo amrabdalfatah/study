@@ -40,9 +40,6 @@ class AdminViewModel extends GetxController {
   DoctorModel? doctorModel;
   StudentModel? studentModel;
 
-//   Stream<QuerySnapshot>? cameraSettings;
-//   CameraModel cameraModel = CameraModel();
-//   // List<CameraFace> cameraFaces = [];
   ValueNotifier<bool> dataLoaded = ValueNotifier(true);
   ValueNotifier<int> screenIndex = ValueNotifier(0);
 
@@ -120,8 +117,6 @@ class AdminViewModel extends GetxController {
 
   String email = '',
       password = '',
-      firstName = '',
-      lastName = '',
       fullName = '',
       code = '',
       phone = '',
@@ -180,8 +175,8 @@ class AdminViewModel extends GetxController {
         doctorModel = DoctorModel(
           doctorId: id,
           email: email,
-          firstName: firstName,
-          lastName: lastName,
+          password: password,
+          fullName: fullName,
           image: imagePath,
           phone: phone,
         );
@@ -232,6 +227,7 @@ class AdminViewModel extends GetxController {
         studentModel = StudentModel(
           studentId: id,
           email: email,
+          password: password,
           fullName: fullName,
           code: code,
           image: imagePath,

@@ -1,9 +1,10 @@
-import 'dart:developer';
-import 'dart:io';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
-import 'package:video_player/video_player.dart';
+import 'package:study_academy/core/utils/dimensions.dart';
+import 'package:study_academy/core/widgets/big_text.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class ShowVideoScreen extends StatefulWidget {
   final String title;
@@ -19,54 +20,81 @@ class ShowVideoScreen extends StatefulWidget {
 }
 
 class _ShowVideoScreenState extends State<ShowVideoScreen> {
-  bool isVideoLoading = true;
-  late File videoFile;
-  late VideoPlayerController _controller;
+  final controller = WebViewController();
+  bool isLoading = true;
 
   @override
   void initState() {
-    print(widget.url);
-    loadVideo();
     super.initState();
-  }
-
-  loadVideo() async {
-    try {
-      // File cacheFile = await DefaultCacheManager().getSingleFile(widget.url);
-      // videoFile = cacheFile;
-
-      _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url));
-      await _controller.initialize();
-
-      isVideoLoading = false;
-      setState(() {});
-    } on Exception catch (e) {
-      log(e.toString());
-    }
+    controller
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (progress) {},
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {
+            controller.runJavaScript('''
+      var element = document.querySelector('#ast-mobile-header.ast-mobile-header-wrap[data-type="dropdown"]');
+      if (element) {
+        element.style.display = 'none';
+      }
+    ''');
+            isLoading = false;
+            setState(() {});
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.url));
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    // controller.clearCache();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.mainColor,
-        title: Text(widget.title),
-      ),
-      body: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Container(
-          width: MediaQuery.sizeOf(context).width,
-          color: Colors.black,
-          alignment: Alignment.center,
-          child: const CircularProgressIndicator(color: Colors.white),
-        ),
-      ),
+      body: (isLoading)
+          ? const Center(child: CupertinoActivityIndicator())
+          : Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                WebViewWidget(
+                  controller: controller,
+                ),
+                Container(
+                  height: Dimensions.height100 * 1.5,
+                  color: AppColors.mainColor,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.height10,
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => Get.back(),
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Expanded(
+                          child: BigText(
+                            text: widget.title,
+                            color: Colors.white,
+                            size: Dimensions.font20,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

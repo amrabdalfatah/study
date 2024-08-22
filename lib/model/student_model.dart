@@ -3,6 +3,7 @@ class StudentModel {
   String? fullName;
   String? code;
   String? email;
+  String? password;
   String? phone;
   String? image;
   bool? isActive;
@@ -16,6 +17,7 @@ class StudentModel {
     this.code,
     this.image,
     this.deviceId,
+    this.password,
     this.isActive = true,
   });
 
@@ -27,6 +29,7 @@ class StudentModel {
     fullName = map['fullName'];
     code = map['code'];
     email = map['email'];
+    password = map['password'];
     phone = map['phone'];
     image = map['image'];
     isActive = map['isActive'];
@@ -39,6 +42,7 @@ class StudentModel {
       'fullName': fullName,
       'code': code,
       'email': email,
+      'password': password,
       'phone': phone,
       'image': image,
       'isActive': isActive,

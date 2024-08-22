@@ -7,6 +7,7 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/features/admin/widgets/profile_page.dart';
 import 'package:study_academy/model/doctor_model.dart';
 
 import '../show_courses_doctor_screen.dart';
@@ -61,8 +62,7 @@ class _ShowDoctorState extends State<ShowDoctor> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BigText(
-                          text:
-                              '${widget.member.firstName} ${widget.member.lastName}',
+                          text: '${widget.member.fullName}',
                           color: Colors.black,
                           size: Dimensions.font16,
                         ),
@@ -93,48 +93,58 @@ class _ShowDoctorState extends State<ShowDoctor> {
                             children: [
                               Expanded(
                                 child: MainButton(
-                                  text: widget.member.isActive!
-                                      ? 'Delete'
-                                      : 'Active',
+                                  text: 'Info',
                                   onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return CupertinoAlertDialog(
-                                          title: const Text('Delete Doctor'),
-                                          content: Text(
-                                            'Are you sure to ${widget.member.isActive! ? 'deactivate' : 'active'} this doctor?',
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                deleteDoctor(
-                                                  widget.member.doctorId!,
-                                                  widget.member.isActive!,
-                                                );
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text(
-                                                'Yes',
-                                                style: TextStyle(
-                                                  color: Colors.green,
+                                    Get.to(
+                                      () => ProfilePage(
+                                        fullName: widget.member.fullName!,
+                                        image: widget.member.image!,
+                                        email: widget.member.email!,
+                                        password: widget.member.password!,
+                                        phone: widget.member.password!,
+                                        deactive: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) {
+                                              return CupertinoAlertDialog(
+                                                title:
+                                                    const Text('Delete Doctor'),
+                                                content: Text(
+                                                  'Are you sure to ${widget.member.isActive! ? 'deactivate' : 'active'} this doctor?',
                                                 ),
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text(
-                                                'No',
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      deleteDoctor(
+                                                        widget.member.doctorId!,
+                                                        widget.member.isActive!,
+                                                      );
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text(
+                                                      'Yes',
+                                                      style: TextStyle(
+                                                        color: Colors.green,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text(
+                                                      'No',
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
                                     );
                                   },
                                   color: Colors.red,

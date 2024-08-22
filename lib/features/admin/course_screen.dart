@@ -222,7 +222,7 @@ class CourseScreen extends GetWidget<AdminViewModel> {
                                                           ),
                                                           SmallText(
                                                             text:
-                                                                'By: ${doctor!.firstName} ${doctor.lastName}',
+                                                                'By: ${doctor!.fullName}',
                                                             color: Colors
                                                                 .grey[300],
                                                             size: Dimensions

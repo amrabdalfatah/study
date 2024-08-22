@@ -53,16 +53,16 @@ class AuthViewModel extends GetxController {
           await FireStoreAdmin().getCurrentUser(value.user!.uid).then((value) {
             adminData =
                 AdminModel.fromJson(value.data() as Map<dynamic, dynamic>?);
+            AppConstants.userName = '${adminData!.fullName}';
           }).whenComplete(() async {
-            if (adminData!.firstName != null) {
+            if (adminData!.fullName != null) {
               action.value = false;
               Get.offAll(() => const AdminHomeView());
             } else {
               await FireStoreAdmin().addUserToFirestore(
                 AdminModel(
                   adminId: AppConstants.userId,
-                  firstName: 'Study',
-                  lastName: 'Academy',
+                  fullName: 'Study Academy',
                   email: AppConstants.adminEmail,
                   phone: AppConstants.phoneNumber,
                   image: '',
@@ -82,6 +82,7 @@ class AuthViewModel extends GetxController {
               .then((value) {
             doctorData =
                 DoctorModel.fromJson(value.data() as Map<dynamic, dynamic>?);
+            AppConstants.userName = '${doctorData!.fullName}';
           }).whenComplete(() async {
             if (doctorData!.isActive!) {
               action.value = false;
@@ -107,6 +108,7 @@ class AuthViewModel extends GetxController {
               .then((value) {
             studentData =
                 StudentModel.fromJson(value.data() as Map<dynamic, dynamic>?);
+            AppConstants.userName = '${studentData!.fullName}';
           }).whenComplete(() async {
             if (studentData!.isActive!) {
               action.value = false;

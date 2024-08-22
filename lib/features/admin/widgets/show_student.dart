@@ -8,6 +8,7 @@ import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 import 'package:study_academy/features/admin/add_student_course_view.dart';
+import 'package:study_academy/features/admin/widgets/profile_page.dart';
 import 'package:study_academy/model/student_model.dart';
 
 class ShowStudent extends StatefulWidget {
@@ -96,48 +97,59 @@ class _ShowStudentState extends State<ShowStudent> {
                             children: [
                               Expanded(
                                 child: MainButton(
-                                  text: widget.member.isActive!
-                                      ? 'Delete'
-                                      : 'Active',
+                                  text: 'Info',
                                   onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return CupertinoAlertDialog(
-                                          title: const Text('Delete Student'),
-                                          content: Text(
-                                            'Are you sure to ${widget.member.isActive! ? 'deactivate' : 'active'} this student?',
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                deleteStudent(
-                                                  widget.member.studentId!,
-                                                  widget.member.isActive!,
-                                                );
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text(
-                                                'Yes',
-                                                style: TextStyle(
-                                                  color: Colors.green,
+                                    Get.to(
+                                      () => ProfilePage(
+                                        fullName: widget.member.fullName!,
+                                        image: widget.member.image!,
+                                        email: widget.member.email!,
+                                        password: widget.member.password!,
+                                        phone: widget.member.phone!,
+                                        deactive: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) {
+                                              return CupertinoAlertDialog(
+                                                title: const Text(
+                                                    'Delete Student'),
+                                                content: Text(
+                                                  'Are you sure to ${widget.member.isActive! ? 'deactivate' : 'active'} this student?',
                                                 ),
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text(
-                                                'No',
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      deleteStudent(
+                                                        widget
+                                                            .member.studentId!,
+                                                        widget.member.isActive!,
+                                                      );
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text(
+                                                      'Yes',
+                                                      style: TextStyle(
+                                                        color: Colors.green,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text(
+                                                      'No',
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
                                     );
                                   },
                                   color: Colors.red,
