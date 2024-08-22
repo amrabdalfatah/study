@@ -3,6 +3,7 @@ class AppConstants {
   static const String adminEmail = 'admin@study.academy';
   static String? userId;
   static String? userName;
+  static String? userCode;
   static TypePerson? typePerson;
 }
 

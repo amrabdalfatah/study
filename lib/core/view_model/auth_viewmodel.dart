@@ -53,7 +53,6 @@ class AuthViewModel extends GetxController {
           await FireStoreAdmin().getCurrentUser(value.user!.uid).then((value) {
             adminData =
                 AdminModel.fromJson(value.data() as Map<dynamic, dynamic>?);
-            AppConstants.userName = '${adminData!.fullName}';
           }).whenComplete(() async {
             if (adminData!.fullName != null) {
               action.value = false;
@@ -83,6 +82,7 @@ class AuthViewModel extends GetxController {
             doctorData =
                 DoctorModel.fromJson(value.data() as Map<dynamic, dynamic>?);
             AppConstants.userName = '${doctorData!.fullName}';
+            AppConstants.userCode = '${doctorData!.code}';
           }).whenComplete(() async {
             if (doctorData!.isActive!) {
               action.value = false;
@@ -109,6 +109,7 @@ class AuthViewModel extends GetxController {
             studentData =
                 StudentModel.fromJson(value.data() as Map<dynamic, dynamic>?);
             AppConstants.userName = '${studentData!.fullName}';
+            AppConstants.userCode = '${studentData!.code}';
           }).whenComplete(() async {
             if (studentData!.isActive!) {
               action.value = false;

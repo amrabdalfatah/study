@@ -177,6 +177,7 @@ class AdminViewModel extends GetxController {
           email: email,
           password: password,
           fullName: fullName,
+          code: code,
           image: imagePath,
           phone: phone,
         );
