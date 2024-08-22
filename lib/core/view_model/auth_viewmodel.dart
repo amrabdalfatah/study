@@ -100,6 +100,7 @@ class AuthViewModel extends GetxController {
           AppConstants.typePerson = TypePerson.student;
           box.write('usertype', TypePerson.student.index);
           AppConstants.userId = value.user!.uid;
+          // final deviceId = await NetworkInfo().getWifiIP();
           StudentModel? studentData;
           await FireStoreStudent()
               .getCurrentStudent(value.user!.uid)
@@ -110,6 +111,26 @@ class AuthViewModel extends GetxController {
             if (studentData!.isActive!) {
               action.value = false;
               Get.offAll(() => const StudentHomeView());
+              // if (studentData!.deviceId!.isEmpty) {
+              //   await FireStoreStudent().updateStudentInfo(
+              //     key: 'deviceId',
+              //     value: deviceId!,
+              //     studentId: value.user!.uid,
+              //   );
+              //   action.value = false;
+              //   Get.offAll(() => const StudentHomeView());
+              // } else if (studentData!.deviceId! == deviceId!) {
+              //   action.value = false;
+              //   Get.offAll(() => const StudentHomeView());
+              // } else {
+              //   action.value = false;
+              //   Get.snackbar(
+              //     'Error Login',
+              //     'You are not using the same ip for your device',
+              //     snackPosition: SnackPosition.BOTTOM,
+              //     colorText: Colors.red,
+              //   );
+              // }
             } else {
               action.value = false;
               Get.snackbar(

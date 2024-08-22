@@ -236,6 +236,7 @@ class AdminViewModel extends GetxController {
           code: code,
           image: imagePath,
           phone: phone,
+          deviceId: '',
         );
         await FireStoreStudent()
             .addStudentToFirestore(studentModel!)
@@ -385,78 +386,4 @@ class AdminViewModel extends GetxController {
     box.remove('usertype');
     Get.offAll(() => const SplashView());
   }
-
-//   // Manage Faces Screen
-//   List<MemberModel> members = [];
-//   Future<void> getMembers(String mid) async {
-//     return await FireStoreMember().getCurrentMember(mid).then(
-//       (value) {
-//         var member =
-//             MemberModel.fromJson(value.data() as Map<dynamic, dynamic>?);
-//         members.add(member);
-//       },
-//     );
-//   }
-
-//   // Manage Faces Handling
-//   RxBool manageFaces = false.obs;
-//   Future<void> handleManageFaces(
-//     String value,
-//     String face,
-//     String id,
-//   ) async {
-//     manageFaces.value = true;
-//     if (value == 'addToOwner') {
-//       await addFaceToOwner(face, id).then((value) async {
-//         await getUser();
-//         await FireStoreCamera()
-//             .updateFaceWithUserId(
-//           cameraId: userData!.cameraId!,
-//           doc: id,
-//           value: userData!.userId!,
-//         )
-//             .then((value) {
-//           Get.dialog(
-//             CupertinoAlertDialog(
-//               title: const Text('Success'),
-//               content: const Text('Change Image for Owner'),
-//               actions: [
-//                 CupertinoButton(
-//                   onPressed: () {
-//                     Get.back();
-//                     manageFaces.value = false;
-//                   },
-//                   child: const Text('Ok'),
-//                 ),
-//               ],
-//             ),
-//           );
-//         });
-//       });
-//     } else if (value == 'addToMember') {
-//       Get.to(
-//         () => AddMembersWithFaceView(
-//           imageUrl: face,
-//           faceId: id,
-//         ),
-//       );
-//     } else if (value == 'editToMember') {
-//       Get.to(
-//         () => EditMembersWithFaceView(
-//           imageUrl: face,
-//           faceId: id,
-//         ),
-//       );
-//       manageFaces.value = false;
-//     } else if (value == 'deleteIntruder') {
-//       await FireStoreCamera().deleteIntruderById(
-//         cameraId: userData!.cameraId!,
-//         faceId: id,
-//       );
-//       manageFaces.value = false;
-//     } else {
-//       manageFaces.value = false;
-//       previewFace(face);
-//     }
-//   }
 }

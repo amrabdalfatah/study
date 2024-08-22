@@ -6,6 +6,7 @@ class StudentModel {
   String? phone;
   String? image;
   bool? isActive;
+  String? deviceId;
 
   StudentModel({
     this.studentId,
@@ -14,6 +15,7 @@ class StudentModel {
     this.fullName,
     this.code,
     this.image,
+    this.deviceId,
     this.isActive = true,
   });
 
@@ -28,6 +30,7 @@ class StudentModel {
     phone = map['phone'];
     image = map['image'];
     isActive = map['isActive'];
+    deviceId = map['deviceId'];
   }
 
   toJson() {
@@ -39,6 +42,7 @@ class StudentModel {
       'phone': phone,
       'image': image,
       'isActive': isActive,
+      'deviceId': deviceId,
     };
   }
 }
