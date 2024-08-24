@@ -1,1 +1,52 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"study-a7154","appId":"1:942953101996:android:e7d64b3e134e1ccbdc7d09","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"study-a7154","appId":"1:942953101996:ios:80f4b1039d5a846edc7d09","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"macos":{"default":{"projectId":"study-a7154","appId":"1:942953101996:ios:80f4b1039d5a846edc7d09","uploadDebugSymbols":false,"fileOutput":"macos/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"study-a7154","configurations":{"android":"1:942953101996:android:e7d64b3e134e1ccbdc7d09","ios":"1:942953101996:ios:80f4b1039d5a846edc7d09","macos":"1:942953101996:ios:80f4b1039d5a846edc7d09","web":"1:942953101996:web:3fa41d46e3e30b6cdc7d09","windows":"1:942953101996:web:56e635b8786f7a51dc7d09"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "study-a7154",
+          "appId": "1:942953101996:android:e7d64b3e134e1ccbdc7d09",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "study-a7154",
+          "appId": "1:942953101996:ios:80f4b1039d5a846edc7d09",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "study-a7154",
+          "appId": "1:942953101996:ios:80f4b1039d5a846edc7d09",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "study-a7154",
+          "configurations": {
+            "android": "1:942953101996:android:e7d64b3e134e1ccbdc7d09",
+            "ios": "1:942953101996:ios:80f4b1039d5a846edc7d09",
+            "macos": "1:942953101996:ios:80f4b1039d5a846edc7d09",
+            "web": "1:942953101996:web:3fa41d46e3e30b6cdc7d09",
+            "windows": "1:942953101996:web:56e635b8786f7a51dc7d09"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "source": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "frameworksBackend": {
+      "region": "us-central1"
+    }
+  }
+}
