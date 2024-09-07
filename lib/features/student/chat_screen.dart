@@ -75,10 +75,10 @@ class ChatScreen extends GetWidget<StudentViewModel> {
                             ? SizedBox(
                                 width: Dimensions.width100,
                                 height: Dimensions.height100,
-                                child: null,
-                                // child: WebImage(
-                                //   imageUrl: dataRooms['image'],
-                                // ),
+                                // child: null,
+                                child: WebImage(
+                                  imageUrl: dataRooms['image'],
+                                ),
                               )
                             : CircleAvatar(
                                 backgroundColor: Colors.grey,

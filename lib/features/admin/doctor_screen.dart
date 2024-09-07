@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
@@ -18,11 +19,7 @@ class DoctorScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.all(Dimensions.height15),
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('Doctors')
-              // .where('userId',
-              // isEqualTo: controller.userData!.userId)
-              .snapshots(),
+          stream: FirebaseFirestore.instance.collection('Doctors').snapshots(),
           builder: (context, snapshot) {
             List<DoctorModel> doctors = [];
             if (snapshot.hasError) {
@@ -53,7 +50,7 @@ class DoctorScreen extends StatelessWidget {
                         crossAxisCount: 2,
                         mainAxisSpacing: Dimensions.height10,
                         crossAxisSpacing: Dimensions.height10,
-                        childAspectRatio: 0.7,
+                        childAspectRatio: kIsWeb ? 1 : 0.7,
                       ),
                       itemCount: doctors.length,
                       itemBuilder: (context, index) {

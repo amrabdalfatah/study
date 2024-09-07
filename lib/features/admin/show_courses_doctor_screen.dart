@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/model/course_model.dart';
 
 class ShowCoursesDoctorScreen extends StatelessWidget {
@@ -58,6 +60,7 @@ class ShowCoursesDoctorScreen extends StatelessWidget {
                         crossAxisCount: 2,
                         mainAxisSpacing: Dimensions.height10,
                         crossAxisSpacing: Dimensions.height10,
+                        childAspectRatio: kIsWeb ? 1 : 0.7,
                       ),
                       itemCount: courses.length,
                       itemBuilder: (context, index) {
@@ -75,10 +78,14 @@ class ShowCoursesDoctorScreen extends StatelessWidget {
                                       SizedBox(
                                         height: constraints.maxHeight / 2,
                                         width: double.infinity,
-                                        child: Image.network(
-                                          courses[index].image!,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child: kIsWeb
+                                            ? WebImage(
+                                                imageUrl: courses[index].image!,
+                                              )
+                                            : Image.network(
+                                                courses[index].image!,
+                                                fit: BoxFit.cover,
+                                              ),
                                       ),
                                       SizedBox(height: Dimensions.height10),
                                       Expanded(

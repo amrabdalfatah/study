@@ -32,10 +32,10 @@ class ProfileView extends StatelessWidget {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: null,
-                // child: WebImage(
-                //   imageUrl: image,
-                // ),
+                // child: null,
+                child: WebImage(
+                  imageUrl: image,
+                ),
               )
             : CircleAvatar(
                 radius: Dimensions.height100,

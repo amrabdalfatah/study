@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -67,11 +68,15 @@ class AddStudentScreen extends GetWidget<AdminViewModel> {
                                           )
                                         : CircleAvatar(
                                             radius: Dimensions.height50,
-                                            backgroundImage: FileImage(
-                                              File(
-                                                imageCtrl.imageUrl!.value,
-                                              ),
-                                            ),
+                                            backgroundImage: kIsWeb
+                                                ? NetworkImage(
+                                                    imageCtrl.imageUrl!.value,
+                                                  )
+                                                : FileImage(
+                                                    File(
+                                                      imageCtrl.imageUrl!.value,
+                                                    ),
+                                                  ),
                                           );
                                   },
                                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/services/firestore/firestore_student.dart';
@@ -7,6 +8,7 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/features/admin/add_student_course_view.dart';
 import 'package:study_academy/features/admin/widgets/profile_page.dart';
 import 'package:study_academy/model/student_model.dart';
@@ -46,13 +48,17 @@ class _ShowStudentState extends State<ShowStudent> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: CircleAvatar(
-                      radius: Dimensions.height50,
-                      backgroundColor: Colors.grey,
-                      foregroundImage: NetworkImage(
-                        widget.member.image!,
-                      ),
-                    ),
+                    child: kIsWeb
+                        ? WebImage(
+                            imageUrl: widget.member.image!,
+                          )
+                        : CircleAvatar(
+                            radius: Dimensions.height50,
+                            backgroundColor: Colors.grey,
+                            foregroundImage: NetworkImage(
+                              widget.member.image!,
+                            ),
+                          ),
                   ),
                   SizedBox(height: Dimensions.height10),
                   Expanded(

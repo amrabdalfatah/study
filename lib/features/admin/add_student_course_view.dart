@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
@@ -7,6 +8,7 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/model/course_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -205,17 +207,30 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
                         }
                         return ListTile(
                           onTap: () {},
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            foregroundImage: NetworkImage(
-                              course!.image!,
-                            ),
-                          ),
-                          title: BigText(
-                            text: course.title!,
-                            color: Colors.black,
-                            size: Dimensions.font20,
-                            textAlign: TextAlign.start,
+                          title: Row(
+                            children: [
+                              kIsWeb
+                                  ? SizedBox(
+                                      width: Dimensions.width100,
+                                      height: Dimensions.height100,
+                                      child: WebImage(
+                                        imageUrl: course!.image!,
+                                      ),
+                                    )
+                                  : CircleAvatar(
+                                      backgroundColor: Colors.grey,
+                                      foregroundImage: NetworkImage(
+                                        course!.image!,
+                                      ),
+                                    ),
+                              SizedBox(width: Dimensions.width20),
+                              BigText(
+                                text: course.title!,
+                                color: Colors.black,
+                                size: Dimensions.font20,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
                           ),
                         );
                       },

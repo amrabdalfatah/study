@@ -73,8 +73,9 @@ class AddDoctorScreen extends GetWidget<AdminViewModel> {
                                                     imageCtrl.imageUrl!.value,
                                                   )
                                                 : FileImage(
-                                                    File(imageCtrl
-                                                        .imageUrl!.value),
+                                                    File(
+                                                      imageCtrl.imageUrl!.value,
+                                                    ),
                                                   ),
                                           );
                                   },

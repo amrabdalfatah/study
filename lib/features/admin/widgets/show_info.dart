@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
+import 'package:study_academy/core/widgets/web_image.dart';
 
 class ShowInfo extends StatelessWidget {
   final String fullName;
@@ -25,11 +27,16 @@ class ShowInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CircleAvatar(
-          radius: Dimensions.height100,
-          backgroundColor: Colors.grey,
-          foregroundImage: NetworkImage(image),
-        ),
+        kIsWeb
+            ? SizedBox(
+                height: Dimensions.height100 * 2,
+                child: WebImage(imageUrl: image),
+              )
+            : CircleAvatar(
+                radius: Dimensions.height100,
+                backgroundColor: Colors.grey,
+                foregroundImage: NetworkImage(image),
+              ),
         SizedBox(height: Dimensions.height10),
         ListTile(
           leading: const Icon(

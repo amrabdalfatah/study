@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +12,7 @@ import 'package:study_academy/core/view_model/admin_viewmodel.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/model/category_model.dart';
 import 'package:study_academy/model/course_model.dart';
 import 'package:study_academy/model/doctor_model.dart';
@@ -80,11 +82,25 @@ class CourseScreen extends GetWidget<AdminViewModel> {
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Expanded(
-                                              child: CircleAvatar(
-                                                backgroundImage: NetworkImage(
-                                                  categories[index].image!,
-                                                ),
-                                              ),
+                                              child: kIsWeb
+                                                  ? SizedBox(
+                                                      width:
+                                                          Dimensions.width100,
+                                                      height:
+                                                          Dimensions.height100,
+                                                      child: WebImage(
+                                                        imageUrl:
+                                                            categories[index]
+                                                                .image!,
+                                                      ),
+                                                    )
+                                                  : CircleAvatar(
+                                                      backgroundImage:
+                                                          NetworkImage(
+                                                        categories[index]
+                                                            .image!,
+                                                      ),
+                                                    ),
                                             ),
                                             Text(
                                               categories[index].title!,

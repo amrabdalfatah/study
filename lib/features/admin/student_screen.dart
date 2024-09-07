@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
@@ -19,11 +20,7 @@ class StudentScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.all(Dimensions.height15),
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('Students')
-              // .where('userId',
-              // isEqualTo: controller.userData!.userId)
-              .snapshots(),
+          stream: FirebaseFirestore.instance.collection('Students').snapshots(),
           builder: (context, snapshot) {
             List<StudentModel> students = [];
             if (snapshot.hasError) {
@@ -54,7 +51,7 @@ class StudentScreen extends StatelessWidget {
                         crossAxisCount: 2,
                         mainAxisSpacing: Dimensions.height10,
                         crossAxisSpacing: Dimensions.height10,
-                        childAspectRatio: 0.6,
+                        childAspectRatio: kIsWeb ? 1.0 : 0.6,
                       ),
                       itemCount: students.length,
                       itemBuilder: (context, index) {

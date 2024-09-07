@@ -256,10 +256,15 @@ class AdminViewModel extends GetxController {
       )
           .then((user) async {
         id = user.user!.uid;
-        final imagePath = await StudentStorage().uploadStudentImage(
-          imageUrl!.value,
-          email,
-        );
+        final imagePath = kIsWeb
+            ? await StudentStorage().uploadStudentImageWeb(
+                uploadedImage,
+                email,
+              )
+            : await StudentStorage().uploadStudentImage(
+                imageUrl!.value,
+                email,
+              );
         studentModel = StudentModel(
           studentId: id,
           email: email,

@@ -132,13 +132,13 @@ class HomeScreen extends StatelessWidget {
                                                               .height50,
                                                           width: Dimensions
                                                               .height50,
-                                                          child: null,
-                                                          // child: WebImage(
-                                                          //   imageUrl:
-                                                          //       categories[
-                                                          //               index]
-                                                          //           .image!,
-                                                          // ),
+                                                          // child: null,
+                                                          child: WebImage(
+                                                            imageUrl:
+                                                                categories[
+                                                                        index]
+                                                                    .image!,
+                                                          ),
                                                         )
                                                       : Expanded(
                                                           child: CircleAvatar(

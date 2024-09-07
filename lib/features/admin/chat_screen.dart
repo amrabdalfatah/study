@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
@@ -51,17 +52,28 @@ class ChatScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        foregroundImage: NetworkImage(
-                          rooms[index]['image']!,
-                        ),
-                      ),
-                      title: BigText(
-                        text: rooms[index]['name']!,
-                        color: Colors.black,
-                        size: Dimensions.font20,
-                        textAlign: TextAlign.start,
+                      title: Row(
+                        children: [
+                          kIsWeb
+                              ? SizedBox(
+                                  width: Dimensions.width100,
+                                  height: Dimensions.height100,
+                                  child: null,
+                                )
+                              : CircleAvatar(
+                                  backgroundColor: Colors.grey,
+                                  foregroundImage: NetworkImage(
+                                    rooms[index]['image']!,
+                                  ),
+                                ),
+                          SizedBox(width: Dimensions.width20),
+                          BigText(
+                            text: rooms[index]['name']!,
+                            color: Colors.black,
+                            size: Dimensions.font20,
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
                       ),
                     );
                   },

@@ -50,7 +50,7 @@ class CourseDetails extends StatelessWidget {
                 bottomRight: Radius.circular(Dimensions.height20),
               ),
               child: kIsWeb
-                  ? null // WebImage(imageUrl: course.image!)
+                  ? WebImage(imageUrl: course.image!)
                   : Image.network(
                       course.image!,
                       fit: BoxFit.cover,
