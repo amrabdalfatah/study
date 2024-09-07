@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -28,6 +30,13 @@ import 'package:uuid/uuid.dart';
 
 class AdminViewModel extends GetxController {
   AdminModel? adminData;
+  List<String> appBars = [
+    'Home',
+    'Doctors',
+    'Courses',
+    'Students',
+    'Chats',
+  ];
   List<Widget> screens = [
     const HomeScreen(),
     const DoctorScreen(),
@@ -138,16 +147,35 @@ class AdminViewModel extends GetxController {
     update();
   }
 
+  Uint8List? uploadedImage;
+
   Future<void> onImageButtonPressed(
     ImageSource source, {
     required BuildContext context,
   }) async {
     if (context.mounted) {
       try {
-        final XFile? pickedFile = await _picker.pickImage(
-          source: source,
-        );
-        _setImageFileFromFile(pickedFile);
+        if (kIsWeb) {
+          print('Here in set image file from file');
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+            type: FileType.custom,
+            allowMultiple: false,
+            onFileLoading: (FilePickerStatus status) => print(status),
+            allowedExtensions: ['png', 'jpg', 'jpeg'],
+          );
+          print('Before if statement');
+          if (result != null) {
+            imageUrl!.value = result.xFiles.first.path;
+            uploadedImage = result.files.single.bytes;
+          }
+          print('Before Update');
+        } else {
+          final XFile? pickedFile = await _picker.pickImage(
+            source: source,
+          );
+          _setImageFileFromFile(pickedFile);
+        }
+        update();
       } catch (e) {
         Get.snackbar(
           'Error',
@@ -170,10 +198,15 @@ class AdminViewModel extends GetxController {
       )
           .then((user) async {
         id = user.user!.uid;
-        final imagePath = await DoctorStorage().uploadDoctorImage(
-          imageUrl!.value,
-          email,
-        );
+        final imagePath = kIsWeb
+            ? await DoctorStorage().uploadDoctorImageWeb(
+                uploadedImage,
+                email,
+              )
+            : await DoctorStorage().uploadDoctorImage(
+                imageUrl!.value,
+                email,
+              );
         doctorModel = DoctorModel(
           doctorId: id,
           email: email,

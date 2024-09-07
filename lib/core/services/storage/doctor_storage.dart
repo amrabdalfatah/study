@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 
 class DoctorStorage {
   final doctorStorage = FirebaseStorage.instance.ref();
@@ -12,6 +13,14 @@ class DoctorStorage {
     await doctorStorage
         .child('doctors/$doctorEmail')
         .putFile(File(path), metadata);
+    return doctorStorage.child('doctors/$doctorEmail').getDownloadURL();
+  }
+
+  Future<String> uploadDoctorImageWeb(
+      Uint8List? path, String doctorEmail) async {
+    await doctorStorage.child('doctors/$doctorEmail').putData(
+          path!,
+        );
     return doctorStorage.child('doctors/$doctorEmail').getDownloadURL();
   }
 

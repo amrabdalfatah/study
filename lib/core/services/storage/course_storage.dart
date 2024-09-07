@@ -10,9 +10,6 @@ class CourseStorage {
       contentType: 'image/jpeg',
       customMetadata: {'picked-file-path': path},
     );
-    print('/////////////////');
-    print(path);
-    print('/////////////////');
     await courseStorage
         .child('courses/$courseTitle/$courseTitle')
         .putFile(File(path), metadata);
@@ -23,10 +20,6 @@ class CourseStorage {
 
   Future<String> uploadCourseImageWeb(
       Uint8List? path, String courseTitle) async {
-    // final metadata = SettableMetadata(
-    //   contentType: 'image/jpeg',
-    //   customMetadata: {'picked-file-path': path.toString()},
-    // );
     await courseStorage.child('courses/$courseTitle/$courseTitle').putData(
           path!,
         );

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,13 +36,14 @@ class MyApp extends StatelessWidget {
 class Controller extends GetxController {
   final box = GetStorage();
   bool get isDark => box.read('darkmode') ?? false;
+  String get language => box.read('language') ?? 'English';
   String? get userId => box.read('userid');
   int? get userType => box.read('usertype');
   void setUserId() {
     AppConstants.userId = userId;
   }
 
-  Widget get mainScreen => kIsWeb
+  Widget get mainScreen => kIsWeb || Platform.isWindows || Platform.isMacOS
       ? userId == null
           ? const HomeWebView()
           : userType == TypePerson.admin.index
@@ -51,4 +54,5 @@ class Controller extends GetxController {
       : const SplashView();
   ThemeData get theme => isDark ? ThemeData.dark() : ThemeData.light();
   void changeTheme(bool val) => box.write('darkmode', val);
+  void changeLang(String val) => box.write('language', val);
 }
