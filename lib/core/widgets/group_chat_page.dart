@@ -24,21 +24,9 @@ class GroupChatPage extends StatelessWidget {
           onTap: () {
             Get.back();
           },
-          child: Row(
-            children: [
-              const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-              ),
-              Expanded(
-                child: CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  foregroundImage: NetworkImage(
-                    image,
-                  ),
-                ),
-              ),
-            ],
+          child: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
           ),
         ),
         title: Text(groupName),

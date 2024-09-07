@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -5,6 +6,7 @@ import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/features/admin/admin_homeview.dart';
 import 'package:study_academy/features/doctor/doctor_homeview.dart';
 import 'package:study_academy/features/splash/splash_view.dart';
+import 'package:study_academy/features/web/home_web_view.dart';
 
 import 'core/utils/colors.dart';
 import 'features/student/student_homeview.dart';
@@ -38,13 +40,15 @@ class Controller extends GetxController {
     AppConstants.userId = userId;
   }
 
-  Widget get mainScreen => userId == null
-      ? const SplashView()
-      : userType == TypePerson.admin.index
-          ? const AdminHomeView()
-          : userType == TypePerson.doctor.index
-              ? const DoctorHomeView()
-              : const StudentHomeView();
+  Widget get mainScreen => kIsWeb
+      ? userId == null
+          ? const HomeWebView()
+          : userType == TypePerson.admin.index
+              ? const AdminHomeView()
+              : userType == TypePerson.doctor.index
+                  ? const DoctorHomeView()
+                  : const StudentHomeView()
+      : const SplashView();
   ThemeData get theme => isDark ? ThemeData.dark() : ThemeData.light();
   void changeTheme(bool val) => box.write('darkmode', val);
 }

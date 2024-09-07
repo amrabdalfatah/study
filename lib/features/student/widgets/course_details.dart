@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/model/course_model.dart';
 
 import '../lessons_details.dart';
@@ -47,10 +49,12 @@ class CourseDetails extends StatelessWidget {
                 bottomLeft: Radius.circular(Dimensions.height20),
                 bottomRight: Radius.circular(Dimensions.height20),
               ),
-              child: Image.network(
-                course.image!,
-                fit: BoxFit.cover,
-              ),
+              child: kIsWeb
+                  ? null // WebImage(imageUrl: course.image!)
+                  : Image.network(
+                      course.image!,
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           Expanded(
@@ -61,7 +65,7 @@ class CourseDetails extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Divider(),
+                  const Divider(),
                   SizedBox(height: Dimensions.height10),
                   SmallText(
                     text: 'Lessons',

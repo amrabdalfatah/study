@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:study_academy/core/utils/constants.dart';
+import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/utils/image_strings.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
-import 'package:study_academy/core/widgets/main_button.dart';
-import 'package:study_academy/features/auth/signin_view.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:study_academy/core/widgets/login_button.dart';
+import 'package:study_academy/core/widgets/register_button.dart';
 
 class DeatilAppView extends StatefulWidget {
   const DeatilAppView({super.key});
@@ -16,29 +14,36 @@ class DeatilAppView extends StatefulWidget {
 }
 
 class _DeatilAppViewState extends State<DeatilAppView> {
-  final Uri _url = Uri.parse('https://wa.me/${AppConstants.phoneNumber}');
+  double screenHeight = 0;
 
-  Future<void> _launchUrl() async {
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
-    }
+  @override
+  void initState() {
+    super.initState();
+    screenHeight = Dimensions.screenHeight;
+  }
+
+  void changeScreen() {
+    setState(() {
+      screenHeight = Dimensions.screenHeight;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    changeScreen();
     return Scaffold(
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: Dimensions.heightImage,
+              height: screenHeight * 0.4,
               child: Image.asset(
                 ImagesStrings.logo,
               ),
             ),
             SizedBox(
-              height: Dimensions.height15,
+              height: screenHeight * 0.01,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +55,7 @@ class _DeatilAppViewState extends State<DeatilAppView> {
                 ),
                 BigText(
                   text: 'Perfect',
-                  color: Colors.orange,
+                  color: AppColors.mainColor,
                   size: Dimensions.font32,
                 ),
               ],
@@ -60,7 +65,7 @@ class _DeatilAppViewState extends State<DeatilAppView> {
               children: [
                 BigText(
                   text: 'Course ',
-                  color: Colors.orange,
+                  color: AppColors.mainColor,
                   size: Dimensions.font32,
                 ),
                 BigText(
@@ -74,17 +79,12 @@ class _DeatilAppViewState extends State<DeatilAppView> {
               padding: EdgeInsets.only(
                 left: Dimensions.height15,
                 right: Dimensions.height15,
-                top: Dimensions.height70,
+                top: screenHeight * 0.03,
               ),
-              child: MainButton(
-                text: 'Let\'s get Started',
-                onTap: () {
-                  Get.to(() => SignInView());
-                },
-              ),
+              child: const LoginButton(),
             ),
             SizedBox(
-              height: Dimensions.height20,
+              height: screenHeight * 0.01,
             ),
             BigText(
               text: 'OR',
@@ -96,11 +96,7 @@ class _DeatilAppViewState extends State<DeatilAppView> {
                 horizontal: Dimensions.height15,
                 vertical: Dimensions.height20,
               ),
-              child: MainButton(
-                text: 'Contact Us to Register',
-                color: Colors.green,
-                onTap: _launchUrl,
-              ),
+              child: const RegisterButton(),
             ),
           ],
         ),

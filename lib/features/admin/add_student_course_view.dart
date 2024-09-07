@@ -28,7 +28,7 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
   String courseName = '';
   registerCourseToStudent(
       String courseId, String studentId, bool isRegistered) async {
-    final uuid = Uuid();
+    const uuid = Uuid();
     final regId = uuid.v4();
     if (!isRegistered) {
       try {
@@ -97,8 +97,11 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
                   if (snapshot.hasData) {
                     snapshot.data!.docs.forEach(
                       (element) {
-                        courses.add(CourseModel.fromJson(
-                            element.data() as Map<String, dynamic>));
+                        courses.add(
+                          CourseModel.fromJson(
+                            element.data(),
+                          ),
+                        );
                       },
                     );
                   }

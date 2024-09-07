@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/constants.dart';
@@ -7,6 +8,7 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/view_model/student_viewmodel.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/group_chat_page.dart';
+import 'package:study_academy/core/widgets/web_image.dart';
 
 class ChatScreen extends GetWidget<StudentViewModel> {
   const ChatScreen({super.key});
@@ -57,6 +59,7 @@ class ChatScreen extends GetWidget<StudentViewModel> {
                     dataRooms = snapshot.data!.data()!;
                   }
                   return ListTile(
+                    minTileHeight: Dimensions.height100,
                     onTap: () {
                       Get.to(
                         () => GroupChatPage(
@@ -66,17 +69,31 @@ class ChatScreen extends GetWidget<StudentViewModel> {
                         ),
                       );
                     },
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      foregroundImage: NetworkImage(
-                        dataRooms['image']!,
-                      ),
-                    ),
-                    title: BigText(
-                      text: dataRooms['name']!,
-                      color: Colors.black,
-                      size: Dimensions.font20,
-                      textAlign: TextAlign.start,
+                    title: Row(
+                      children: [
+                        kIsWeb
+                            ? SizedBox(
+                                width: Dimensions.width100,
+                                height: Dimensions.height100,
+                                child: null,
+                                // child: WebImage(
+                                //   imageUrl: dataRooms['image'],
+                                // ),
+                              )
+                            : CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                foregroundImage: NetworkImage(
+                                  dataRooms['image']!,
+                                ),
+                              ),
+                        SizedBox(width: Dimensions.width20),
+                        BigText(
+                          text: dataRooms['name']!,
+                          color: Colors.black,
+                          size: Dimensions.font32,
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
                     ),
                   );
                 },

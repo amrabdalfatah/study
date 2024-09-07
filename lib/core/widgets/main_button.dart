@@ -31,7 +31,7 @@ class MainButton extends StatelessWidget {
             color: Colors.white,
             fontFamily: "Urbanist",
             fontWeight: FontWeight.w500,
-            size: Dimensions.font12,
+            size: Dimensions.font16,
           ),
         ),
       ),

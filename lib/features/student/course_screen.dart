@@ -57,14 +57,12 @@ class CourseScreen extends StatelessWidget {
                   }
                   return ListTile(
                     tileColor: Colors.green,
+                    minTileHeight: Dimensions.height100,
                     title: BigText(
                       text: course!.title!,
                       color: Colors.black,
                       size: Dimensions.font20,
                       textAlign: TextAlign.start,
-                    ),
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios,
                     ),
                     onTap: () {
                       Get.to(

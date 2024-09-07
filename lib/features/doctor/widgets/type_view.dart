@@ -1,6 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
@@ -24,26 +32,72 @@ class TypeView extends StatefulWidget {
 
 class _TypeViewState extends State<TypeView> {
   final _title = TextEditingController();
-  final _url = TextEditingController();
+  String videoLesson = '';
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void dispose() {
-    super.dispose();
     _title.dispose();
-    _url.dispose();
+    super.dispose();
   }
 
-  _upload() async {
-    final enteredTitle = _title.text;
-    final enteredUrl = _url.text;
+  Uint8List? uploadedVideo;
+  Future<void> selectedVideo() async {
+    try {
+      if (kIsWeb) {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowMultiple: false,
+          onFileLoading: (FilePickerStatus status) => print(status),
+          allowedExtensions: ['mp4', 'avi', 'mpeg'],
+        );
+        if (result != null) {
+          videoLesson = result.xFiles.first.path;
+          uploadedVideo = result.files.single.bytes;
+        }
+      } else {
+        final XFile? pickedFile = await _picker.pickVideo(
+          source: ImageSource.gallery,
+        );
+        videoLesson = pickedFile!.path;
+      }
+      setState(() {});
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red,
+      );
+    }
+  }
 
-    if (enteredTitle.trim().isEmpty || enteredUrl.trim().isEmpty) {
+  bool _isLoading = false;
+
+  _upload() async {
+    _isLoading = true;
+    final enteredTitle = _title.text;
+
+    if (enteredTitle.trim().isEmpty || videoLesson.isEmpty) {
       return;
     }
-
-    FocusScope.of(context).unfocus();
-    _title.clear();
-    _url.clear();
+    await FirebaseStorage.instance
+        .ref()
+        .child(
+            'courses/${widget.course.title}/${widget.title}/${widget.type}/$enteredTitle')
+        .putData(
+          uploadedVideo!,
+        )
+        .then((value) {
+      setState(() {
+        _isLoading = true;
+      });
+    });
+    final String videoUrl = await FirebaseStorage.instance
+        .ref()
+        .child(
+            'courses/${widget.course.title}/${widget.title}/${widget.type}/$enteredTitle')
+        .getDownloadURL();
 
     await FirebaseFirestore.instance
         .collection('Courses')
@@ -54,10 +108,12 @@ class _TypeViewState extends State<TypeView> {
         .add({
       'title': enteredTitle,
       'createdAt': Timestamp.now(),
-      'url': enteredUrl,
+      'url': videoUrl,
+    });
+    setState(() {
+      _isLoading = false;
     });
     Get.back();
-    setState(() {});
   }
 
   void showDialog() {
@@ -83,24 +139,68 @@ class _TypeViewState extends State<TypeView> {
               ),
             ),
             SizedBox(height: Dimensions.height15),
-            TextField(
-              controller: _url,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(Dimensions.width4),
-                labelText: 'Lesson URL',
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.white,
+            SizedBox(
+              height: Dimensions.height100,
+              width: double.infinity,
+              child: Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  videoLesson.isEmpty
+                      ? Container(
+                          height: Dimensions.height100,
+                          width: double.infinity,
+                          color: Colors.grey[400],
+                          child: Center(
+                            child: BigText(
+                              text: 'Lesson File',
+                              color: Colors.white,
+                              size: Dimensions.height20,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: Dimensions.height100 + Dimensions.height100,
+                          width: double.infinity,
+                          color: Colors.grey[400],
+                          child: kIsWeb
+                              ? Image.network(
+                                  videoLesson,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.file(
+                                  File(
+                                    videoLesson,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                  GestureDetector(
+                    onTap: () {
+                      selectedVideo();
+                    },
+                    child: CircleAvatar(
+                      radius: Dimensions.height15,
+                      backgroundColor: AppColors.mainColor,
+                      child: Icon(
+                        CupertinoIcons.video_camera,
+                        color: Colors.white,
+                        size: Dimensions.height20,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: Dimensions.height15),
-            MainButton(
-              text: 'Add Lesson',
-              onTap: _upload,
-            ),
+            _isLoading
+                ? CupertinoActivityIndicator()
+                : MainButton(
+                    text: 'Add Lesson',
+                    onTap: () {
+                      _upload();
+                    },
+                    // onTap: _upload,
+                  ),
           ],
         ),
       ),

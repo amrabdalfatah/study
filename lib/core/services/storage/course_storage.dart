@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 
 class CourseStorage {
   final courseStorage = FirebaseStorage.instance.ref();
@@ -9,11 +10,34 @@ class CourseStorage {
       contentType: 'image/jpeg',
       customMetadata: {'picked-file-path': path},
     );
+    print('/////////////////');
+    print(path);
+    print('/////////////////');
     await courseStorage
         .child('courses/$courseTitle/$courseTitle')
         .putFile(File(path), metadata);
     return courseStorage
         .child('courses/$courseTitle/$courseTitle')
+        .getDownloadURL();
+  }
+
+  Future<String> uploadCourseImageWeb(
+      Uint8List? path, String courseTitle) async {
+    // final metadata = SettableMetadata(
+    //   contentType: 'image/jpeg',
+    //   customMetadata: {'picked-file-path': path.toString()},
+    // );
+    await courseStorage.child('courses/$courseTitle/$courseTitle').putData(
+          path!,
+        );
+    return courseStorage
+        .child('courses/$courseTitle/$courseTitle')
+        .getDownloadURL();
+  }
+
+  Future<String> getVideo(String courseTitle) async {
+    return await courseStorage
+        .child('courses/courses/$courseTitle/videos/')
         .getDownloadURL();
   }
 

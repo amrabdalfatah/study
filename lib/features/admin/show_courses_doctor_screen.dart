@@ -19,7 +19,7 @@ class ShowCoursesDoctorScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.mainColor,
-        title: Text('Courses'),
+        title: const Text('Courses'),
       ),
       body: Padding(
         padding: EdgeInsets.all(Dimensions.height15),

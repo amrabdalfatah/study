@@ -40,41 +40,51 @@ class SignInView extends StatelessWidget {
                   ),
                   SizedBox(
                     height: Dimensions.height80,
+                    width: double.infinity,
                   ),
-                  InputField(
-                    label: 'Email',
-                    isPassword: false,
-                    controller: controller,
+                  SizedBox(
+                    width: Dimensions.width100 * 3,
+                    child: InputField(
+                      label: 'Email',
+                      isPassword: false,
+                      controller: controller,
+                    ),
                   ),
                   SizedBox(
                     height: Dimensions.height15,
                   ),
-                  InputField(
-                    label: 'Password',
-                    isPassword: true,
-                    controller: controller,
+                  SizedBox(
+                    width: Dimensions.width100 * 3,
+                    child: InputField(
+                      label: 'Password',
+                      isPassword: true,
+                      controller: controller,
+                    ),
                   ),
                   SizedBox(
                     height: Dimensions.height30,
                   ),
-                  GetX<AuthViewModel>(
-                    builder: (process) {
-                      return process.action.value
-                          ? const Center(
-                              child: CupertinoActivityIndicator(
-                                color: AppColors.mainColor,
-                              ),
-                            )
-                          : MainButton(
-                              text: 'Login',
-                              onTap: () {
-                                _formKey.currentState!.save();
-                                if (_formKey.currentState!.validate()) {
-                                  controller.signInWithEmailAndPassword();
-                                }
-                              },
-                            );
-                    },
+                  SizedBox(
+                    width: Dimensions.width100 * 3,
+                    child: GetX<AuthViewModel>(
+                      builder: (process) {
+                        return process.action.value
+                            ? const Center(
+                                child: CupertinoActivityIndicator(
+                                  color: AppColors.mainColor,
+                                ),
+                              )
+                            : MainButton(
+                                text: 'Login',
+                                onTap: () {
+                                  _formKey.currentState!.save();
+                                  if (_formKey.currentState!.validate()) {
+                                    controller.signInWithEmailAndPassword();
+                                  }
+                                },
+                              );
+                      },
+                    ),
                   ),
                 ],
               ),

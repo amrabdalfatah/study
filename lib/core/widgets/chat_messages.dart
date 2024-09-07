@@ -10,7 +10,6 @@ class ChatMessages extends StatelessWidget {
     super.key,
     required this.roomId,
   });
-  // TODO: Edit Here
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +43,7 @@ class ChatMessages extends StatelessWidget {
           reverse: true,
           itemBuilder: (ctx, index) {
             final chatMessage = loadedMessages[index].data();
-            final nextMessage = index + 1 < loadedMessages.length
-                ? loadedMessages[index + 1].data()
-                : null;
             final currentMessageUserId = chatMessage['userId'];
-            final nextMessageUserId =
-                nextMessage != null ? nextMessage['userId'] : null;
-            final bool nextUserIsSame =
-                nextMessageUserId == currentMessageUserId;
-            // Test this
             return MessageBubble.first(
               userImage: null,
               username: chatMessage['userCode'],

@@ -164,36 +164,60 @@ class HomeScreen extends StatelessWidget {
                         )
                       : ListView.separated(
                           itemBuilder: (context, index) {
-                            // TODO: ADD student number
-                            return ListTile(
-                              tileColor: courses[index].active!
-                                  ? Colors.green
-                                  : Colors.orange,
-                              title: BigText(
-                                text: courses[index].title!,
-                                color: Colors.black,
-                                size: Dimensions.font20,
-                                textAlign: TextAlign.start,
-                              ),
-                              subtitle: SmallText(
-                                text: courses[index].active!
-                                    ? 'Active'
-                                    : 'Pending',
-                                color: Colors.white,
-                                size: Dimensions.font16,
-                                textAlign: TextAlign.start,
-                              ),
-                              trailing: const Icon(
-                                Icons.arrow_forward_ios,
-                              ),
-                              onTap: () {
-                                Get.to(
-                                  () => CourseDetails(
-                                    course: courses[index],
-                                  ),
-                                );
-                              },
-                            );
+                            return FutureBuilder(
+                                future: FirebaseFirestore.instance
+                                    .collection('Registers')
+                                    .where(
+                                      'courseId',
+                                      isEqualTo: courses[index].courseId,
+                                    )
+                                    .get(),
+                                builder: (context, snapshot) {
+                                  int length = 0;
+                                  if (snapshot.hasData) {
+                                    length = snapshot.data!.docs.length;
+                                  }
+                                  return ListTile(
+                                    tileColor: courses[index].active!
+                                        ? Colors.green
+                                        : Colors.orange,
+                                    title: BigText(
+                                      text: courses[index].title!,
+                                      color: Colors.black,
+                                      size: Dimensions.font20,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                    subtitle: Row(
+                                      children: [
+                                        SmallText(
+                                          text: courses[index].active!
+                                              ? 'Status: Active'
+                                              : 'Status: Pending',
+                                          color: Colors.white,
+                                          size: Dimensions.font16,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                        SizedBox(width: Dimensions.width20),
+                                        SmallText(
+                                          text: 'Total Student: $length',
+                                          color: Colors.white,
+                                          size: Dimensions.font16,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ],
+                                    ),
+                                    trailing: const Icon(
+                                      Icons.arrow_forward_ios,
+                                    ),
+                                    onTap: () {
+                                      Get.to(
+                                        () => CourseDetails(
+                                          course: courses[index],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                });
                           },
                           separatorBuilder: (context, index) =>
                               SizedBox(height: Dimensions.height10),

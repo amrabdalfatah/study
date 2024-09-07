@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:study_academy/app.dart';
 import 'package:study_academy/core/services/firestore/firestore_admin.dart';
 import 'package:study_academy/core/services/firestore/firestore_category.dart';
 import 'package:study_academy/core/services/firestore/firestore_course.dart';
@@ -19,7 +20,6 @@ import 'package:study_academy/features/admin/course_screen.dart';
 import 'package:study_academy/features/admin/doctor_screen.dart';
 import 'package:study_academy/features/admin/home_screen.dart';
 import 'package:study_academy/features/admin/student_screen.dart';
-import 'package:study_academy/features/splash/splash_view.dart';
 import 'package:study_academy/model/admin_model.dart';
 import 'package:study_academy/model/category_model.dart';
 import 'package:study_academy/model/doctor_model.dart';
@@ -39,9 +39,21 @@ class AdminViewModel extends GetxController {
   RxBool action = false.obs;
   DoctorModel? doctorModel;
   StudentModel? studentModel;
-
   ValueNotifier<bool> dataLoaded = ValueNotifier(true);
   ValueNotifier<int> screenIndex = ValueNotifier(0);
+  String email = '',
+      password = '',
+      fullName = '',
+      code = '',
+      phone = '',
+      id = '';
+  RxString? imageUrl = ''.obs;
+  XFile? mediaFile;
+  final ImagePicker _picker = ImagePicker();
+  RxString? imageCat = ''.obs;
+  RxInt catIndex = 0.obs;
+  String catTitle = '';
+  CategoryModel? categoryModel;
 
   @override
   void onInit() {
@@ -115,21 +127,11 @@ class AdminViewModel extends GetxController {
     shownPassword.value = !shownPassword.value;
   }
 
-  String email = '',
-      password = '',
-      fullName = '',
-      code = '',
-      phone = '',
-      id = '';
-  RxString? imageUrl = ''.obs;
   void setImageUrl() {
     imageUrl = ''.obs;
     update();
   }
 
-  // Select Image for Doctor
-  XFile? mediaFile;
-  final ImagePicker _picker = ImagePicker();
   void _setImageFileFromFile(XFile? value) {
     mediaFile = value;
     imageUrl!.value = mediaFile!.path;
@@ -159,9 +161,9 @@ class AdminViewModel extends GetxController {
 
   void addDoctor() async {
     action.value = true;
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
     try {
-      await _auth
+      await auth
           .createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -212,9 +214,9 @@ class AdminViewModel extends GetxController {
 
   void addStudent() async {
     action.value = true;
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
     try {
-      await _auth
+      await auth
           .createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -264,9 +266,6 @@ class AdminViewModel extends GetxController {
     update();
   }
 
-  // ---------------------------------------------------------------------
-  // Add Category
-  RxString? imageCat = ''.obs;
   void setImageCat() {
     imageCat = ''.obs;
     update();
@@ -299,14 +298,11 @@ class AdminViewModel extends GetxController {
     }
   }
 
-  RxInt catIndex = 0.obs;
   void changeCat(int index) {
     catIndex.value = index;
     update();
   }
 
-  String catTitle = '';
-  CategoryModel? categoryModel;
   void addCategory(BuildContext context) async {
     action.value = true;
     try {
@@ -314,7 +310,7 @@ class AdminViewModel extends GetxController {
         imageCat!.value,
         catTitle,
       );
-      final uuid = Uuid();
+      const uuid = Uuid();
       final catId = uuid.v4();
 
       categoryModel = CategoryModel(
@@ -352,7 +348,7 @@ class AdminViewModel extends GetxController {
   registerCourseToStudent(
       String courseId, String studentId, bool isRegistered) async {
     action.value = true;
-    final uuid = Uuid();
+    const uuid = Uuid();
     final regId = uuid.v4();
     if (!isRegistered) {
       try {
@@ -381,6 +377,6 @@ class AdminViewModel extends GetxController {
     final box = GetStorage();
     box.remove('userid');
     box.remove('usertype');
-    Get.offAll(() => const SplashView());
+    Get.offAll(() => Controller().mainScreen);
   }
 }

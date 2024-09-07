@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:study_academy/core/utils/dimensions.dart';
+import 'package:study_academy/core/widgets/web_image.dart';
 
 // A MessageBubble for showing a single chat message on the ChatScreen.
 class MessageBubble extends StatelessWidget {
@@ -44,8 +47,7 @@ class MessageBubble extends StatelessWidget {
               radius: 23,
             ),
           ),
-        Container(
-          // margin: const EdgeInsets.symmetric(horizontal: 46),
+        SizedBox(
           child: Row(
             mainAxisAlignment:
                 isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -94,16 +96,43 @@ class MessageBubble extends StatelessWidget {
                       vertical: 4,
                       horizontal: 12,
                     ),
-                    child: Text(
-                      message,
-                      style: TextStyle(
-                        height: 1.3,
-                        color: isMe
-                            ? Colors.black87
-                            : theme.colorScheme.onSecondary,
-                      ),
-                      softWrap: true,
-                    ),
+                    child: message.length > 200
+                        ? Container(
+                            height: Dimensions.height100 * 3,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft:
+                                    Radius.circular(Dimensions.height20),
+                                bottomRight:
+                                    Radius.circular(Dimensions.height20),
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft:
+                                    Radius.circular(Dimensions.height20),
+                                bottomRight:
+                                    Radius.circular(Dimensions.height20),
+                              ),
+                              child: kIsWeb
+                                  ? null // WebImage(imageUrl: message)
+                                  : Image.network(
+                                      message,
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                          )
+                        : Text(
+                            message,
+                            style: TextStyle(
+                              height: 1.3,
+                              color: isMe
+                                  ? Colors.black87
+                                  : theme.colorScheme.onSecondary,
+                            ),
+                            softWrap: true,
+                          ),
                   ),
                 ],
               ),

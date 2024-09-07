@@ -171,7 +171,6 @@ class HomeScreen extends GetWidget<AdminViewModel> {
                                                   )
                                                 : IconButton(
                                                     onPressed: () {
-                                                      // TODO: Change active
                                                       controller.acceptCourse(
                                                         courses[index]
                                                             .courseId!,
@@ -179,7 +178,6 @@ class HomeScreen extends GetWidget<AdminViewModel> {
                                                         courses[index].image!,
                                                         doctor!.doctorId!,
                                                       );
-                                                      // TODO: Add chat room
                                                     },
                                                     icon: const Icon(
                                                       Icons

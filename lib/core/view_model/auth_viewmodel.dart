@@ -1,8 +1,8 @@
-// import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:study_academy/core/services/firestore/firestore_admin.dart';
 import 'package:study_academy/core/services/firestore/firestore_doctor.dart';
 import 'package:study_academy/core/services/firestore/firestore_student.dart';
@@ -28,12 +28,27 @@ class AuthViewModel extends GetxController {
     action = false.obs;
   }
 
-  // This method to change Password from visible to un_visible
   void changeShownPassword() {
     shownPassword.value = !shownPassword.value;
   }
 
-  // // Method to sign with email and password
+  Future<String?> getIP() async {
+    try {
+      var url = Uri.https('api.ipify.org');
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        print(response.body);
+        return response.body;
+      } else {
+        print(response.body);
+        return null;
+      }
+    } catch (exception) {
+      print(exception);
+      return null;
+    }
+  }
+
   void signInWithEmailAndPassword() async {
     action.value = true;
     try {
@@ -101,7 +116,7 @@ class AuthViewModel extends GetxController {
           AppConstants.typePerson = TypePerson.student;
           box.write('usertype', TypePerson.student.index);
           AppConstants.userId = value.user!.uid;
-          // final deviceId = await NetworkInfo().getWifiIP();
+          final deviceId = await getIP();
           StudentModel? studentData;
           await FireStoreStudent()
               .getCurrentStudent(value.user!.uid)
@@ -112,28 +127,26 @@ class AuthViewModel extends GetxController {
             AppConstants.userCode = '${studentData!.code}';
           }).whenComplete(() async {
             if (studentData!.isActive!) {
-              action.value = false;
-              Get.offAll(() => const StudentHomeView());
-              // if (studentData!.deviceId!.isEmpty) {
-              //   await FireStoreStudent().updateStudentInfo(
-              //     key: 'deviceId',
-              //     value: deviceId!,
-              //     studentId: value.user!.uid,
-              //   );
-              //   action.value = false;
-              //   Get.offAll(() => const StudentHomeView());
-              // } else if (studentData!.deviceId! == deviceId!) {
-              //   action.value = false;
-              //   Get.offAll(() => const StudentHomeView());
-              // } else {
-              //   action.value = false;
-              //   Get.snackbar(
-              //     'Error Login',
-              //     'You are not using the same ip for your device',
-              //     snackPosition: SnackPosition.BOTTOM,
-              //     colorText: Colors.red,
-              //   );
-              // }
+              if (studentData!.deviceId!.isEmpty) {
+                await FireStoreStudent().updateStudentInfo(
+                  key: 'deviceId',
+                  value: deviceId!,
+                  studentId: value.user!.uid,
+                );
+                action.value = false;
+                Get.offAll(() => const StudentHomeView());
+              } else if (studentData!.deviceId! == deviceId!) {
+                action.value = false;
+                Get.offAll(() => const StudentHomeView());
+              } else {
+                action.value = false;
+                Get.snackbar(
+                  'Error Login',
+                  'You are not using the same ip for your device \ncontact us for more details',
+                  snackPosition: SnackPosition.BOTTOM,
+                  colorText: Colors.red,
+                );
+              }
             } else {
               action.value = false;
               Get.snackbar(

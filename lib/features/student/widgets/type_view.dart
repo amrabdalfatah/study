@@ -64,17 +64,6 @@ class _TypeViewState extends State<TypeView> {
                   final video = loadedData[index].data();
                   return ListTile(
                     onTap: () async {
-                      // final Uri _url = Uri.parse(video['url']);
-                      // try {
-                      //   await launchUrl(_url);
-                      // } catch (e) {
-                      //   Get.snackbar(
-                      //     'Error',
-                      //     'There is an error with this File ${e.toString()}',
-                      //     snackPosition: SnackPosition.TOP,
-                      //     colorText: Colors.red,
-                      //   );
-                      // }
                       widget.type == 'Files'
                           ? Get.to(
                               () => ShowVideoScreen(

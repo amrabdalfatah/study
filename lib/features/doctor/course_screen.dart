@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -65,11 +66,19 @@ class CourseScreen extends GetWidget<DoctorViewModel> {
                                                 Dimensions.height100,
                                             width: double.infinity,
                                             color: Colors.grey[400],
-                                            child: Image.file(
-                                              File(
-                                                  imageCtrl.imageCourse!.value),
-                                              fit: BoxFit.cover,
-                                            ),
+                                            child: kIsWeb
+                                                ? Image.network(
+                                                    imageCtrl
+                                                        .imageCourse!.value,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Image.file(
+                                                    File(
+                                                      imageCtrl
+                                                          .imageCourse!.value,
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           );
                                   },
                                 ),
@@ -231,9 +240,11 @@ class CourseScreen extends GetWidget<DoctorViewModel> {
                                   if (snapshot.hasData) {
                                     snapshot.data!.docs.forEach(
                                       (element) {
-                                        categories.add(CategoryModel.fromJson(
-                                            element.data()
-                                                as Map<String, dynamic>));
+                                        categories.add(
+                                          CategoryModel.fromJson(
+                                            element.data(),
+                                          ),
+                                        );
                                       },
                                     );
                                   }

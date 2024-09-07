@@ -232,7 +232,7 @@ class CourseScreen extends GetWidget<AdminViewModel> {
                                                           ),
                                                           SmallText(
                                                             text:
-                                                                'Category: ${categories[index]!.title}',
+                                                                'Category: ${categories[index].title}',
                                                             color: Colors
                                                                 .grey[300],
                                                             size: Dimensions
