@@ -8,7 +8,6 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
-import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/features/admin/add_student_course_view.dart';
 import 'package:study_academy/features/admin/widgets/profile_page.dart';
 import 'package:study_academy/model/student_model.dart';
@@ -49,9 +48,10 @@ class _ShowStudentState extends State<ShowStudent> {
                 children: [
                   Center(
                     child: kIsWeb
-                        ? WebImage(
-                            imageUrl: widget.member.image!,
-                          )
+                        ? null
+                        // ?  WebImage(
+                        //     imageUrl: widget.member.image!,
+                        //   )
                         : CircleAvatar(
                             radius: Dimensions.height50,
                             backgroundColor: Colors.grey,

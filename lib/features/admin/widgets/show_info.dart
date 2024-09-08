@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
-import 'package:study_academy/core/widgets/web_image.dart';
 
 class ShowInfo extends StatelessWidget {
   final String fullName;
@@ -29,9 +28,10 @@ class ShowInfo extends StatelessWidget {
       children: [
         kIsWeb
             ? SizedBox(
-                height: Dimensions.height100 * 2,
-                child: WebImage(imageUrl: image),
-              )
+                height: Dimensions.height100 * 2, child: null // WebImage(
+                // imageUrl: image,
+                // )
+                )
             : CircleAvatar(
                 radius: Dimensions.height100,
                 backgroundColor: Colors.grey,

@@ -8,7 +8,6 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/view_model/student_viewmodel.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
-import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/model/category_model.dart';
 import 'package:study_academy/model/course_model.dart';
 import 'package:study_academy/model/doctor_model.dart';
@@ -132,13 +131,13 @@ class HomeScreen extends StatelessWidget {
                                                               .height50,
                                                           width: Dimensions
                                                               .height50,
-                                                          // child: null,
-                                                          child: WebImage(
-                                                            imageUrl:
-                                                                categories[
-                                                                        index]
-                                                                    .image!,
-                                                          ),
+                                                          child: null,
+                                                          // child: WebImage(
+                                                          //   imageUrl:
+                                                          //       categories[
+                                                          //               index]
+                                                          //           .image!,
+                                                          // ),
                                                         )
                                                       : Expanded(
                                                           child: CircleAvatar(

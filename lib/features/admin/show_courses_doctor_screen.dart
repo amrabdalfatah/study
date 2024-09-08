@@ -6,7 +6,6 @@ import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
-import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/model/course_model.dart';
 
 class ShowCoursesDoctorScreen extends StatelessWidget {
@@ -79,9 +78,10 @@ class ShowCoursesDoctorScreen extends StatelessWidget {
                                         height: constraints.maxHeight / 2,
                                         width: double.infinity,
                                         child: kIsWeb
-                                            ? WebImage(
-                                                imageUrl: courses[index].image!,
-                                              )
+                                            ? null
+                                            // ? WebImage(
+                                            //     imageUrl: courses[index].image!,
+                                            //   )
                                             : Image.network(
                                                 courses[index].image!,
                                                 fit: BoxFit.cover,

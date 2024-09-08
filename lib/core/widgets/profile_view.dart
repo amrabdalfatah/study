@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
-import 'package:study_academy/core/widgets/web_image.dart';
 
 class ProfileView extends StatelessWidget {
   final String fullName;
@@ -32,10 +31,10 @@ class ProfileView extends StatelessWidget {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                // child: null,
-                child: WebImage(
-                  imageUrl: image,
-                ),
+                child: null,
+                // child: WebImage(
+                //   imageUrl: image,
+                // ),
               )
             : CircleAvatar(
                 radius: Dimensions.height100,

@@ -5,7 +5,6 @@ import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
-import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/features/doctor/lessons_details.dart';
 import 'package:study_academy/model/course_model.dart';
 
@@ -49,7 +48,8 @@ class CourseDetails extends StatelessWidget {
                 bottomRight: Radius.circular(Dimensions.height20),
               ),
               child: kIsWeb
-                  ? WebImage(imageUrl: course.image!)
+                  ? null
+                  // ? WebImage(imageUrl: course.image!)
                   : Image.network(
                       course.image!,
                       fit: BoxFit.cover,

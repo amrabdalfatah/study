@@ -8,7 +8,6 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/view_model/student_viewmodel.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/group_chat_page.dart';
-import 'package:study_academy/core/widgets/web_image.dart';
 
 class ChatScreen extends GetWidget<StudentViewModel> {
   const ChatScreen({super.key});
@@ -75,10 +74,10 @@ class ChatScreen extends GetWidget<StudentViewModel> {
                             ? SizedBox(
                                 width: Dimensions.width100,
                                 height: Dimensions.height100,
-                                // child: null,
-                                child: WebImage(
-                                  imageUrl: dataRooms['image'],
-                                ),
+                                child: null,
+                                // child: WebImage(
+                                //   imageUrl: dataRooms['image'],
+                                // ),
                               )
                             : CircleAvatar(
                                 backgroundColor: Colors.grey,

@@ -8,7 +8,6 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
-import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/model/course_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -213,9 +212,10 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
                                   ? SizedBox(
                                       width: Dimensions.width100,
                                       height: Dimensions.height100,
-                                      child: WebImage(
-                                        imageUrl: course!.image!,
-                                      ),
+                                      child: null,
+                                      // child: WebImage(
+                                      //   imageUrl: course!.image!,
+                                      // ),
                                     )
                                   : CircleAvatar(
                                       backgroundColor: Colors.grey,
@@ -225,7 +225,7 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
                                     ),
                               SizedBox(width: Dimensions.width20),
                               BigText(
-                                text: course.title!,
+                                text: course!.title!,
                                 color: Colors.black,
                                 size: Dimensions.font20,
                                 textAlign: TextAlign.start,

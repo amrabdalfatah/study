@@ -8,7 +8,6 @@ import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
-import 'package:study_academy/core/widgets/web_image.dart';
 import 'package:study_academy/features/admin/widgets/profile_page.dart';
 import 'package:study_academy/model/doctor_model.dart';
 
@@ -52,9 +51,9 @@ class _ShowDoctorState extends State<ShowDoctor> {
                     height: constraints.maxHeight / 3,
                     width: double.infinity,
                     child: kIsWeb
-                        ? WebImage(
-                            imageUrl: widget.member.image!,
-                          )
+                        ? null // WebImage(
+                        // imageUrl: widget.member.image!,
+                        // )
                         : CircleAvatar(
                             backgroundColor: Colors.grey,
                             foregroundImage: NetworkImage(
