@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:uuid/uuid.dart';
+import 'package:record/record.dart';
 
 class NewMessage extends StatefulWidget {
   final String roomId;
@@ -24,10 +27,13 @@ class NewMessage extends StatefulWidget {
 class _NewMessageState extends State<NewMessage> {
   final _messageController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
+  bool uploading = false;
+  var record = AudioRecorder();
 
   @override
   void dispose() {
     _messageController.dispose();
+    record.dispose();
     super.dispose();
   }
 
@@ -41,19 +47,24 @@ class _NewMessageState extends State<NewMessage> {
     _messageController.clear();
 
     final user = FirebaseAuth.instance.currentUser!;
+    final uuid = Uuid().v4();
+
     await FirebaseFirestore.instance
         .collection('Rooms')
         .doc(widget.roomId)
         .collection('Chat')
-        .add({
+        .doc(uuid)
+        .set({
       'text': enteredMessage,
+      'type': 'text',
+      'id': uuid,
       'createdAt': Timestamp.now(),
       'userId': user.uid,
       'userCode': AppConstants.userCode,
     });
   }
 
-  String fileChat = '';
+  XFile? fileChat;
   Uint8List? uploadedFile;
 
   _selectedFile() async {
@@ -66,14 +77,14 @@ class _NewMessageState extends State<NewMessage> {
           allowedExtensions: ['png', 'jpg', 'jpeg'],
         );
         if (result != null) {
-          fileChat = result.xFiles.first.path;
+          fileChat = result.xFiles.first;
           uploadedFile = result.files.single.bytes;
         }
       } else {
-        final XFile? pickedFile = await _picker.pickVideo(
+        final XFile? pickedFile = await _picker.pickImage(
           source: ImageSource.gallery,
         );
-        fileChat = pickedFile!.path;
+        fileChat = pickedFile!;
       }
       setState(() {});
     } catch (e) {
@@ -88,36 +99,96 @@ class _NewMessageState extends State<NewMessage> {
 
   _sendFile() async {
     await _selectedFile();
-    if (fileChat.trim().isEmpty) {
+    if (fileChat!.path.isEmpty) {
       return;
     }
-
+    setState(() {
+      uploading = true;
+    });
     const uuid = Uuid();
     final key = uuid.v4();
 
     await FirebaseStorage.instance
         .ref()
         .child('chats/${widget.roomId}/$key')
-        .putData(
-          uploadedFile!,
+        .putFile(
+          File(fileChat!.path),
         );
+
     final fileUrl = await FirebaseStorage.instance
         .ref()
         .child('chats/${widget.roomId}/$key')
         .getDownloadURL();
 
     final user = FirebaseAuth.instance.currentUser!;
+    final uid = Uuid().v4();
     await FirebaseFirestore.instance
         .collection('Rooms')
         .doc(widget.roomId)
         .collection('Chat')
-        .add({
+        .doc(uid)
+        .set({
       'text': fileUrl,
+      'type': 'image',
+      'id': uid,
       'createdAt': Timestamp.now(),
       'userId': user.uid,
       'userCode': AppConstants.userCode,
+    }).whenComplete(() {
+      setState(() {
+        uploading = false;
+      });
     });
-    setState(() {});
+  }
+
+  Future<String?> _recordAudio() async {
+    // Check and request permission if needed
+    if (await record.hasPermission()) {
+      // Start recording to file
+      await record.start(const RecordConfig(), path: 'aFullPath/myFile.m4a');
+    }
+
+// Stop recording...
+    final path = await record.stop();
+    return path;
+  }
+
+  _sendAudio() async {
+    await _recordAudio().then((value) async {
+      setState(() {
+        uploading = true;
+      });
+      const uuid = Uuid();
+      final key = uuid.v4();
+
+      await FirebaseStorage.instance
+          .ref()
+          .child('chats/${widget.roomId}/$key')
+          .putFile(
+            File(value!),
+          );
+      final fileUrl = await FirebaseStorage.instance
+          .ref()
+          .child('chats/${widget.roomId}/$key')
+          .getDownloadURL();
+
+      final user = FirebaseAuth.instance.currentUser!;
+      await FirebaseFirestore.instance
+          .collection('Rooms')
+          .doc(widget.roomId)
+          .collection('Chat')
+          .add({
+        'text': fileUrl,
+        'type': 'audio',
+        'createdAt': Timestamp.now(),
+        'userId': user.uid,
+        'userCode': AppConstants.userCode,
+      }).whenComplete(() {
+        setState(() {
+          uploading = false;
+        });
+      });
+    });
   }
 
   @override
@@ -126,30 +197,40 @@ class _NewMessageState extends State<NewMessage> {
       padding: EdgeInsets.all(
         Dimensions.height10,
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _messageController,
-              enableSuggestions: true,
-              autocorrect: false,
-              textCapitalization: TextCapitalization.none,
+      child: uploading
+          ? const Center(
+              child: LinearProgressIndicator(),
+            )
+          : Row(
+              children: [
+                // IconButton(
+                //   onPressed: _sendAudio,
+                //   icon: const Icon(
+                //     Icons.mic,
+                //   ),
+                // ),
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    enableSuggestions: true,
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                  ),
+                ),
+                IconButton(
+                  onPressed: _sendFile,
+                  icon: const Icon(
+                    Icons.file_copy,
+                  ),
+                ),
+                IconButton(
+                  onPressed: _sendMessage,
+                  icon: const Icon(
+                    Icons.send,
+                  ),
+                ),
+              ],
             ),
-          ),
-          IconButton(
-            onPressed: _sendFile,
-            icon: const Icon(
-              Icons.file_copy,
-            ),
-          ),
-          IconButton(
-            onPressed: _sendMessage,
-            icon: const Icon(
-              Icons.send,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

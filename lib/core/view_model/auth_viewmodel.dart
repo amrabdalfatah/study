@@ -64,6 +64,7 @@ class AuthViewModel extends GetxController {
           AppConstants.typePerson = TypePerson.admin;
           box.write('usertype', TypePerson.admin.index);
           AppConstants.userId = value.user!.uid;
+          AppConstants.userCode = 'admin';
           AdminModel? adminData;
           await FireStoreAdmin().getCurrentUser(value.user!.uid).then((value) {
             adminData =
@@ -82,6 +83,7 @@ class AuthViewModel extends GetxController {
                   image: '',
                 ),
               );
+              
               action.value = false;
               Get.off(() => const AdminHomeView());
             }

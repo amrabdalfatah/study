@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/message_bubble.dart';
 
-class ChatMessages extends StatelessWidget {
+class ChatMessages extends StatefulWidget {
   final String roomId;
   const ChatMessages({
     super.key,
@@ -12,12 +14,17 @@ class ChatMessages extends StatelessWidget {
   });
 
   @override
+  State<ChatMessages> createState() => _ChatMessagesState();
+}
+
+class _ChatMessagesState extends State<ChatMessages> {
+  @override
   Widget build(BuildContext context) {
     final authUser = FirebaseAuth.instance.currentUser!;
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('Rooms')
-          .doc(roomId)
+          .doc(widget.roomId)
           .collection('Chat')
           .orderBy('createdAt', descending: true)
           .snapshots(),
@@ -44,25 +51,52 @@ class ChatMessages extends StatelessWidget {
           itemBuilder: (ctx, index) {
             final chatMessage = loadedMessages[index].data();
             final currentMessageUserId = chatMessage['userId'];
-            return MessageBubble.first(
-              userImage: null,
-              username: chatMessage['userCode'],
-              message: chatMessage['text'],
-              isMe: authUser.uid == currentMessageUserId,
+            return GestureDetector(
+              onTap: () {
+                if (AppConstants.typePerson == TypePerson.admin) {
+                  Get.defaultDialog(
+                    title: 'Delete',
+                    content: const Text('Are you sure to delete this message?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () async {
+                          await FirebaseFirestore.instance
+                              .collection('Rooms')
+                              .doc(widget.roomId)
+                              .collection('Chat')
+                              .doc(chatMessage['id'])
+                              .delete()
+                              .whenComplete(() {
+                            Navigator.of(context).pop();
+                          });
+                        },
+                        child: const Text(
+                          'Yes',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'No',
+                          style: TextStyle(color: Colors.green),
+                        ),
+                      )
+                    ],
+                  );
+                  setState(() {});
+                }
+              },
+              child: MessageBubble.first(
+                userImage: null,
+                username: chatMessage['userCode'],
+                message: chatMessage['text'],
+                type: chatMessage['type'],
+                isMe: authUser.uid == currentMessageUserId,
+              ),
             );
-            // if (nextUserIsSame) {
-            //   return MessageBubble.next(
-            //     message: chatMessage['text'],
-            //     isMe: authUser.uid == currentMessageUserId,
-            //   );
-            // } else {
-            //   return MessageBubble.first(
-            //     userImage: null,
-            //     username: null,
-            //     message: chatMessage['text'],
-            //     isMe: authUser.uid == currentMessageUserId,
-            //   );
-            // }
           },
           itemCount: loadedMessages.length,
         );

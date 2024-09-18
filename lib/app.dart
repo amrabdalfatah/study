@@ -12,7 +12,7 @@ import 'package:study_academy/features/web/home_web_view.dart';
 
 import 'core/utils/colors.dart';
 import 'features/student/student_homeview.dart';
-import 'helper/binding.dart';
+import 'core/helper/binding.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

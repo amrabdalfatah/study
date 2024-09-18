@@ -106,7 +106,7 @@ class _ShowDoctorState extends State<ShowDoctor> {
                                         image: widget.member.image!,
                                         email: widget.member.email!,
                                         password: widget.member.password!,
-                                        phone: widget.member.password!,
+                                        phone: widget.member.phone!,
                                         deactive: () {
                                           showDialog(
                                             context: context,

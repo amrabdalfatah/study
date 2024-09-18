@@ -11,6 +11,7 @@ class MessageBubble extends StatelessWidget {
     required this.userImage,
     required this.username,
     required this.message,
+    required this.type,
     required this.isMe,
   }) : isFirstInSequence = true;
 
@@ -18,6 +19,7 @@ class MessageBubble extends StatelessWidget {
   const MessageBubble.next({
     super.key,
     required this.message,
+    required this.type,
     required this.isMe,
   })  : isFirstInSequence = false,
         userImage = null,
@@ -27,6 +29,7 @@ class MessageBubble extends StatelessWidget {
   final String? userImage;
   final String? username;
   final String message;
+  final String type;
   final bool isMe;
 
   @override
@@ -35,18 +38,6 @@ class MessageBubble extends StatelessWidget {
 
     return Stack(
       children: [
-        if (userImage != null)
-          Positioned(
-            top: 15,
-            right: isMe ? 0 : null,
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                userImage!,
-              ),
-              backgroundColor: theme.colorScheme.primary.withAlpha(180),
-              radius: 23,
-            ),
-          ),
         SizedBox(
           child: Row(
             mainAxisAlignment:
@@ -96,7 +87,7 @@ class MessageBubble extends StatelessWidget {
                       vertical: 4,
                       horizontal: 12,
                     ),
-                    child: message.length > 200
+                    child: type == 'image'
                         ? Container(
                             height: Dimensions.height100 * 3,
                             width: double.infinity,
@@ -119,7 +110,7 @@ class MessageBubble extends StatelessWidget {
                                   ? null // WebImage(imageUrl: message)
                                   : Image.network(
                                       message,
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.contain,
                                     ),
                             ),
                           )

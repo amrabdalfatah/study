@@ -75,7 +75,9 @@ class _TypeViewState extends State<TypeView> {
   bool _isLoading = false;
 
   _upload() async {
-    _isLoading = true;
+    setState(() {
+      _isLoading = true;
+    });
     final enteredTitle = _title.text;
 
     if (enteredTitle.trim().isEmpty || videoLesson.isEmpty) {
@@ -85,14 +87,9 @@ class _TypeViewState extends State<TypeView> {
         .ref()
         .child(
             'courses/${widget.course.title}/${widget.title}/${widget.type}/$enteredTitle')
-        .putData(
-          uploadedVideo!,
-        )
-        .then((value) {
-      setState(() {
-        _isLoading = true;
-      });
-    });
+        .putFile(
+          File(videoLesson),
+        );
     final String videoUrl = await FirebaseStorage.instance
         .ref()
         .child(
@@ -151,10 +148,19 @@ class _TypeViewState extends State<TypeView> {
                           width: double.infinity,
                           color: Colors.grey[400],
                           child: Center(
-                            child: BigText(
-                              text: 'Lesson File',
-                              color: Colors.white,
-                              size: Dimensions.height20,
+                            child: GestureDetector(
+                              onTap: () {
+                                selectedVideo();
+                              },
+                              child: CircleAvatar(
+                                radius: Dimensions.height15,
+                                backgroundColor: AppColors.mainColor,
+                                child: Icon(
+                                  CupertinoIcons.video_camera,
+                                  color: Colors.white,
+                                  size: Dimensions.height20,
+                                ),
+                              ),
                             ),
                           ),
                         )
@@ -162,38 +168,20 @@ class _TypeViewState extends State<TypeView> {
                           height: Dimensions.height100 + Dimensions.height100,
                           width: double.infinity,
                           color: Colors.grey[400],
-                          child: kIsWeb
-                              ? Image.network(
-                                  videoLesson,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.file(
-                                  File(
-                                    videoLesson,
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
+                          child: Center(
+                            child: BigText(
+                              text: 'Choosed Video Success',
+                              color: Colors.black,
+                              size: Dimensions.font16,
+                            ),
+                          ),
                         ),
-                  GestureDetector(
-                    onTap: () {
-                      selectedVideo();
-                    },
-                    child: CircleAvatar(
-                      radius: Dimensions.height15,
-                      backgroundColor: AppColors.mainColor,
-                      child: Icon(
-                        CupertinoIcons.video_camera,
-                        color: Colors.white,
-                        size: Dimensions.height20,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
             SizedBox(height: Dimensions.height15),
             _isLoading
-                ? CupertinoActivityIndicator()
+                ? LinearProgressIndicator()
                 : MainButton(
                     text: 'Add Lesson',
                     onTap: () {

@@ -89,7 +89,7 @@ class ChatScreen extends GetWidget<DoctorViewModel> {
                         BigText(
                           text: dataRooms['name']!,
                           color: Colors.black,
-                          size: Dimensions.font32,
+                          size: Dimensions.font20,
                           textAlign: TextAlign.start,
                         ),
                       ],

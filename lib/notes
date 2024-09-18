@@ -1,22 +1,13 @@
 admin@study.academy
 Admin123456
 
-1- Clickable for category to filter courses
+Doctor:
+ahmed@study.academy
+Ahmed123456
 
-3- Course => mid => files
-                 => videos
-          => Assignments => Files
-                         => Video
-          => final     => Files
-                       => videos
+Student:
+mohamed@study.academy
+123456
 
-========================================================
-App Bundle for Google Play Store
-Built build/app/outputs/bundle/release/app-release.aab
-========================================================
-Apk android:
-Built build/app/outputs/flutter-apk/app-release.apk
-========================================================
-IOS:
 
 
