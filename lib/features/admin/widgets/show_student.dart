@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/services/firestore/firestore_student.dart';
@@ -10,7 +8,6 @@ import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
-import 'package:study_academy/core/widgets/small_text.dart';
 import 'package:study_academy/features/admin/add_student_course_view.dart';
 import 'package:study_academy/features/admin/widgets/profile_page.dart';
 import 'package:study_academy/model/student_model.dart';

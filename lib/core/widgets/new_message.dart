@@ -6,16 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:study_academy/core/cubit/record_cubit.dart';
-import 'package:study_academy/core/cubit/record_state.dart' as state;
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:uuid/uuid.dart';
-import 'package:record/record.dart';
 
 class NewMessage extends StatefulWidget {
   final String roomId;
@@ -32,12 +28,10 @@ class _NewMessageState extends State<NewMessage> {
   final _messageController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   bool uploading = false;
-  var record = AudioRecorder();
 
   @override
   void dispose() {
     _messageController.dispose();
-    record.dispose();
     super.dispose();
   }
 
@@ -145,55 +139,55 @@ class _NewMessageState extends State<NewMessage> {
     });
   }
 
-  Future<String?> _recordAudio() async {
-    // Check and request permission if needed
-    if (await record.hasPermission()) {
-      // Start recording to file
-      await record.start(const RecordConfig(), path: 'aFullPath/myFile.m4a');
-    }
+//   Future<String?> _recordAudio() async {
+//     // Check and request permission if needed
+//     if (await record.hasPermission()) {
+//       // Start recording to file
+//       await record.start(const RecordConfig(), path: 'aFullPath/myFile.m4a');
+//     }
 
-// Stop recording...
-    final path = await record.stop();
-    return path;
-  }
+// // Stop recording...
+//     final path = await record.stop();
+//     return path;
+//   }
 
-  _sendAudio() async {
-    await _recordAudio().then((value) async {
-      setState(() {
-        uploading = true;
-      });
-      const uuid = Uuid();
-      final key = uuid.v4();
+  // _sendAudio() async {
+  //   await _recordAudio().then((value) async {
+  //     setState(() {
+  //       uploading = true;
+  //     });
+  //     const uuid = Uuid();
+  //     final key = uuid.v4();
 
-      await FirebaseStorage.instance
-          .ref()
-          .child('chats/${widget.roomId}/$key')
-          .putFile(
-            File(value!),
-          );
-      final fileUrl = await FirebaseStorage.instance
-          .ref()
-          .child('chats/${widget.roomId}/$key')
-          .getDownloadURL();
+  //     await FirebaseStorage.instance
+  //         .ref()
+  //         .child('chats/${widget.roomId}/$key')
+  //         .putFile(
+  //           File(value!),
+  //         );
+  //     final fileUrl = await FirebaseStorage.instance
+  //         .ref()
+  //         .child('chats/${widget.roomId}/$key')
+  //         .getDownloadURL();
 
-      final user = FirebaseAuth.instance.currentUser!;
-      await FirebaseFirestore.instance
-          .collection('Rooms')
-          .doc(widget.roomId)
-          .collection('Chat')
-          .add({
-        'text': fileUrl,
-        'type': 'audio',
-        'createdAt': Timestamp.now(),
-        'userId': user.uid,
-        'userCode': AppConstants.userCode,
-      }).whenComplete(() {
-        setState(() {
-          uploading = false;
-        });
-      });
-    });
-  }
+  //     final user = FirebaseAuth.instance.currentUser!;
+  //     await FirebaseFirestore.instance
+  //         .collection('Rooms')
+  //         .doc(widget.roomId)
+  //         .collection('Chat')
+  //         .add({
+  //       'text': fileUrl,
+  //       'type': 'audio',
+  //       'createdAt': Timestamp.now(),
+  //       'userId': user.uid,
+  //       'userCode': AppConstants.userCode,
+  //     }).whenComplete(() {
+  //       setState(() {
+  //         uploading = false;
+  //       });
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
