@@ -46,13 +46,8 @@ class StudentScreen extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                     )
-                  : GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: Dimensions.height10,
-                        crossAxisSpacing: Dimensions.height10,
-                        childAspectRatio: kIsWeb ? 1.0 : 0.6,
-                      ),
+                  : ListView.builder(
+                      
                       itemCount: students.length,
                       itemBuilder: (context, index) {
                         return ShowStudent(member: students[index]);

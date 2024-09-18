@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/constants.dart';
@@ -20,7 +21,6 @@ class ChatMessages extends StatefulWidget {
 class _ChatMessagesState extends State<ChatMessages> {
   @override
   Widget build(BuildContext context) {
-    final authUser = FirebaseAuth.instance.currentUser!;
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('Rooms')
@@ -60,6 +60,11 @@ class _ChatMessagesState extends State<ChatMessages> {
                     actions: [
                       TextButton(
                         onPressed: () async {
+                          if (chatMessage['type'] == 'image') {
+                            await FirebaseStorage.instance
+                                .refFromURL(chatMessage['text'])
+                                .delete();
+                          }
                           await FirebaseFirestore.instance
                               .collection('Rooms')
                               .doc(widget.roomId)
@@ -94,7 +99,7 @@ class _ChatMessagesState extends State<ChatMessages> {
                 username: chatMessage['userCode'],
                 message: chatMessage['text'],
                 type: chatMessage['type'],
-                isMe: authUser.uid == currentMessageUserId,
+                isMe: AppConstants.userId == currentMessageUserId,
               ),
             );
           },

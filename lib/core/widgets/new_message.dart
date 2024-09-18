@@ -6,8 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:study_academy/core/cubit/record_cubit.dart';
+import 'package:study_academy/core/cubit/record_state.dart' as state;
+import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:uuid/uuid.dart';
@@ -203,32 +207,54 @@ class _NewMessageState extends State<NewMessage> {
             )
           : Row(
               children: [
-                // IconButton(
-                //   onPressed: _sendAudio,
-                //   icon: const Icon(
-                //     Icons.mic,
-                //   ),
-                // ),
+                IconButton(
+                  onPressed: _sendFile,
+                  icon: const Icon(
+                    Icons.image,
+                    color: AppColors.mainColor,
+                  ),
+                ),
                 Expanded(
                   child: TextField(
                     controller: _messageController,
                     enableSuggestions: true,
                     autocorrect: false,
                     textCapitalization: TextCapitalization.none,
-                  ),
-                ),
-                IconButton(
-                  onPressed: _sendFile,
-                  icon: const Icon(
-                    Icons.file_copy,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
                 IconButton(
                   onPressed: _sendMessage,
                   icon: const Icon(
                     Icons.send,
+                    color: AppColors.mainColor,
                   ),
                 ),
+                // BlocBuilder<RecordCubit, state.RecordState>(
+                //   builder: (context, stat) {
+                //     if (stat is state.RecordStopped ||
+                //         stat is state.RecordInitial) {
+                //       return IconButton(
+                //         onPressed: () {
+                //           context.read<RecordCubit>().startRecording();
+                //         },
+                //         icon: const Icon(Icons.mic),
+                //       );
+                //     } else {
+                //       return IconButton(
+                //         onPressed: () {
+                //           context.read<RecordCubit>().stopRecording();
+
+                //           ///We need to refresh [FilesState] after recording is stopped
+                //           // context.read<FilesCubit>().getFiles();
+                //         },
+                //         icon: const Icon(Icons.record_voice_over),
+                //       );
+                //     }
+                //   },
+                // ),
               ],
             ),
     );
