@@ -20,7 +20,7 @@ class GroupChatPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.mainColor,
-        leading: GestureDetector(
+        leading: GestureDetector( 
           onTap: () {
             Get.back();
           },
@@ -46,4 +46,4 @@ class GroupChatPage extends StatelessWidget {
       ),
     );
   }
-}
+} 

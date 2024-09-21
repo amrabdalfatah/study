@@ -1,7 +1,7 @@
+import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:study_academy/core/utils/image_strings.dart';
-import 'package:video_player/video_player.dart';
 
 class ShowVideoScreen extends StatefulWidget {
   final String title;
@@ -17,12 +17,12 @@ class ShowVideoScreen extends StatefulWidget {
 }
 
 class _ShowVideoScreenState extends State<ShowVideoScreen> {
-  late VideoPlayerController controller;
+  late CachedVideoPlayerPlusController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = VideoPlayerController.networkUrl(Uri.parse(
+    controller = CachedVideoPlayerPlusController.networkUrl(Uri.parse(
       widget.url,
     ))
       ..initialize().then((_) {
@@ -46,7 +46,7 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  VideoPlayer(controller),
+                  CachedVideoPlayerPlus(controller),
                   Image.asset(
                     ImagesStrings.logo,
                     fit: BoxFit.cover,

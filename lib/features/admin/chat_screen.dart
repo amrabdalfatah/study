@@ -19,7 +19,7 @@ class ChatScreen extends StatelessWidget {
         builder: (context, snapshot) {
           List<Map> rooms = [];
           if (snapshot.hasError) {
-            return const Text('Something went wrong');
+            return const Text('Something went wrong'); 
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

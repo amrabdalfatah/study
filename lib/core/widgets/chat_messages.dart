@@ -47,6 +47,7 @@ class _ChatMessagesState extends State<ChatMessages> {
         return ListView.builder(
           padding: EdgeInsets.all(Dimensions.height10),
           reverse: true,
+          itemCount: loadedMessages.length,
           itemBuilder: (ctx, index) {
             final chatMessage = loadedMessages[index].data();
             final currentMessageUserId = chatMessage['userId'];
@@ -93,16 +94,22 @@ class _ChatMessagesState extends State<ChatMessages> {
                   setState(() {});
                 }
               },
-              child: MessageBubble.first(
-                userImage: null,
-                username: chatMessage['userCode'],
-                message: chatMessage['text'],
-                type: chatMessage['type'],
-                isMe: AppConstants.userId == currentMessageUserId,
-              ),
+              child: AppConstants.userId == currentMessageUserId
+                  ? MessageBubble.first(
+                      username: chatMessage['userCode'],
+                      message: chatMessage['text'],
+                      type: chatMessage['type'],
+                      isMe: AppConstants.userId == currentMessageUserId,
+                      fileName: chatMessage['fileName'],
+                    )
+                  : SenderMessageCard(
+                      username: chatMessage['userCode'],
+                      message: chatMessage['text'],
+                      type: chatMessage['type'],
+                      fileName: chatMessage['fileName'],
+                    ),
             );
           },
-          itemCount: loadedMessages.length,
         );
       },
     );
