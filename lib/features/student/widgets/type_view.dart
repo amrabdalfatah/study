@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/features/rooms/widgets/show_pdf_screen.dart';
 import 'package:study_academy/features/student/show_video_screen.dart';
 import 'package:study_academy/model/course_model.dart';
 
@@ -66,9 +67,9 @@ class _TypeViewState extends State<TypeView> {
                     onTap: () async {
                       widget.type == 'Files'
                           ? Get.to(
-                              () => ShowVideoScreen(
-                                title: video['title'],
-                                url: video['url'],
+                              () => ShowPdfScreen(
+                                fileName: video['title'],
+                                fileUrl: video['url'],
                               ),
                             )
                           : Get.to(

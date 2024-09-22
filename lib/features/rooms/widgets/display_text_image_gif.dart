@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
+import 'package:study_academy/features/rooms/widgets/show_pdf_screen.dart';
 import 'package:study_academy/features/rooms/widgets/video_player_item.dart';
-import 'package:study_academy/features/student/show_pdf_screen.dart';
 
 class DisplayTextImageGIF extends StatelessWidget {
   final String message;
@@ -64,8 +64,8 @@ class DisplayTextImageGIF extends StatelessWidget {
                         onTap: () {
                           Get.to(
                             () => ShowPdfScreen(
-                              title: fileName ?? 'PDF',
-                              url: message,
+                              fileName: fileName ?? 'PDF',
+                              fileUrl: message,
                             ),
                           );
                         },

@@ -35,6 +35,26 @@ class _TypeViewState extends State<TypeView> {
   String videoLesson = '';
   final ImagePicker _picker = ImagePicker();
 
+  void selectPdf() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+      if (result != null) {
+        PlatformFile file = result.files.first;
+        upload(file.path!);
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red,
+      );
+    }
+  }
+
   @override
   void dispose() {
     _title.dispose();
@@ -44,26 +64,11 @@ class _TypeViewState extends State<TypeView> {
   Uint8List? uploadedVideo;
   Future<void> selectedVideo() async {
     try {
-      if (kIsWeb) {
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowMultiple: false,
-          onFileLoading: (FilePickerStatus status) => print(status),
-          allowedExtensions: ['mp4', 'avi', 'mpeg'],
-        );
-        if (result != null) {
-          videoLesson = result.xFiles.first.path;
-          uploadedVideo = result.files.single.bytes;
-        }
-      } else {
-        final XFile? pickedFile = await _picker.pickVideo(
-          source: ImageSource.gallery,
-        );
-        setState(() {
-          videoLesson = pickedFile!.path;
-          isSelected = true;
-        });
-      }
+      final XFile? pickedFile = await _picker.pickVideo(
+        source: ImageSource.gallery,
+      );
+      videoLesson = pickedFile!.path;
+      upload(videoLesson);
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -77,12 +82,12 @@ class _TypeViewState extends State<TypeView> {
   bool _isLoading = false;
   bool isSelected = false;
 
-  _upload() async {
+  upload(String filePath) async {
     final enteredTitle = _title.text;
     setState(() {
       _isLoading = true;
     });
-    if (enteredTitle.trim().isEmpty || videoLesson.isEmpty) {
+    if (enteredTitle.trim().isEmpty || filePath.isEmpty) {
       setState(() {
         _isLoading = false;
       });
@@ -95,9 +100,9 @@ class _TypeViewState extends State<TypeView> {
           .child(
               'courses/${widget.course.title}/${widget.title}/${widget.type}/$enteredTitle')
           .putFile(
-            File(videoLesson),
+            File(filePath),
           );
-      final String videoUrl = await FirebaseStorage.instance
+      final String fileUrl = await FirebaseStorage.instance
           .ref()
           .child(
               'courses/${widget.course.title}/${widget.title}/${widget.type}/$enteredTitle')
@@ -112,15 +117,16 @@ class _TypeViewState extends State<TypeView> {
           .add({
         'title': enteredTitle,
         'createdAt': Timestamp.now(),
-        'url': videoUrl,
+        'url': fileUrl,
       });
       Get.snackbar(
         'Success',
-        'Uploaded Video Successfully',
+        'Uploaded Successfully',
         snackPosition: SnackPosition.TOP,
         colorText: Colors.green,
       );
       _title.clear();
+      filePath = '';
       videoLesson = '';
       isSelected = false;
       setState(() {
@@ -134,6 +140,7 @@ class _TypeViewState extends State<TypeView> {
         colorText: Colors.red,
       );
       _title.clear();
+      filePath = '';
       videoLesson = '';
       isSelected = false;
       setState(() {
@@ -142,107 +149,107 @@ class _TypeViewState extends State<TypeView> {
     }
   }
 
-  void showDialog() {
-    showBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(Dimensions.height10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _title,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(Dimensions.width4),
-                  labelText: 'Lesson Title',
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-              SizedBox(height: Dimensions.height15),
-              SizedBox(
-                height: Dimensions.height100,
-                width: double.infinity,
-                child: Builder(
-                  builder: (context) {
-                    return Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        !isSelected
-                            ? Container(
-                                height: Dimensions.height100,
-                                width: double.infinity,
-                                color: Colors.grey[400],
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: Dimensions.height15,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: BigText(
-                                        text: 'Select Video',
-                                        size: Dimensions.font16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        await selectedVideo();
-                                        setState(() {});
-                                      },
-                                      child: CircleAvatar(
-                                        radius: Dimensions.height15,
-                                        backgroundColor: AppColors.mainColor,
-                                        child: Icon(
-                                          CupertinoIcons.video_camera,
-                                          color: Colors.white,
-                                          size: Dimensions.height20,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Container(
-                                height:
-                                    Dimensions.height100 + Dimensions.height100,
-                                width: double.infinity,
-                                color: Colors.grey[400],
-                                child: Center(
-                                  child: BigText(
-                                    text: 'Choosed Video Success',
-                                    color: Colors.black,
-                                    size: Dimensions.font16,
-                                  ),
-                                ),
-                              ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: Dimensions.height15),
-              _isLoading
-                  ? LinearProgressIndicator()
-                  : MainButton(
-                      text: 'Add Lesson',
-                      onTap: () {
-                        _upload();
-                      },
-                      // onTap: _upload,
-                    ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void showDialog() {
+  //   showBottomSheet(
+  //     context: context,
+  //     builder: (context) {
+  //       return Container(
+  //         width: double.infinity,
+  //         padding: EdgeInsets.all(Dimensions.height10),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             TextField(
+  //               controller: _title,
+  //               keyboardType: TextInputType.text,
+  //               decoration: InputDecoration(
+  //                 contentPadding: EdgeInsets.all(Dimensions.width4),
+  //                 labelText: 'Lesson Title',
+  //                 border: const OutlineInputBorder(
+  //                   borderSide: BorderSide.none,
+  //                 ),
+  //                 filled: true,
+  //                 fillColor: Colors.white,
+  //               ),
+  //             ),
+  //             SizedBox(height: Dimensions.height15),
+  //             SizedBox(
+  //               height: Dimensions.height100,
+  //               width: double.infinity,
+  //               child: Builder(
+  //                 builder: (context) {
+  //                   return Stack(
+  //                     alignment: Alignment.bottomRight,
+  //                     children: [
+  //                       !isSelected
+  //                           ? Container(
+  //                               height: Dimensions.height100,
+  //                               width: double.infinity,
+  //                               color: Colors.grey[400],
+  //                               padding: EdgeInsets.symmetric(
+  //                                 horizontal: Dimensions.height15,
+  //                               ),
+  //                               child: Row(
+  //                                 children: [
+  //                                   Expanded(
+  //                                     child: BigText(
+  //                                       text: 'Select Video',
+  //                                       size: Dimensions.font16,
+  //                                       color: Colors.black,
+  //                                     ),
+  //                                   ),
+  //                                   GestureDetector(
+  //                                     onTap: () async {
+  //                                       await selectedVideo();
+  //                                       setState(() {});
+  //                                     },
+  //                                     child: CircleAvatar(
+  //                                       radius: Dimensions.height15,
+  //                                       backgroundColor: AppColors.mainColor,
+  //                                       child: Icon(
+  //                                         CupertinoIcons.video_camera,
+  //                                         color: Colors.white,
+  //                                         size: Dimensions.height20,
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             )
+  //                           : Container(
+  //                               height:
+  //                                   Dimensions.height100 + Dimensions.height100,
+  //                               width: double.infinity,
+  //                               color: Colors.grey[400],
+  //                               child: Center(
+  //                                 child: BigText(
+  //                                   text: 'Choosed Video Success',
+  //                                   color: Colors.black,
+  //                                   size: Dimensions.font16,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                     ],
+  //                   );
+  //                 },
+  //               ),
+  //             ),
+  //             SizedBox(height: Dimensions.height15),
+  //             _isLoading
+  //                 ? LinearProgressIndicator()
+  //                 : MainButton(
+  //                     text: 'Add Lesson',
+  //                     onTap: () {
+  //                       widget.type == 'Files' ? selectPdf() : selectedVideo();
+  //                     },
+  //                     // onTap: _upload,
+  //                   ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -276,7 +283,131 @@ class _TypeViewState extends State<TypeView> {
                       MainButton(
                         text: 'Add Lesson',
                         onTap: () {
-                          showDialog();
+                          showBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.all(Dimensions.height10),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextField(
+                                      controller: _title,
+                                      keyboardType: TextInputType.text,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            EdgeInsets.all(Dimensions.width4),
+                                        labelText: 'Lesson Title',
+                                        border: const OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(height: Dimensions.height15),
+                                    SizedBox(
+                                      height: Dimensions.height100,
+                                      width: double.infinity,
+                                      child: StatefulBuilder(
+                                        builder: (context, update) {
+                                          return Stack(
+                                            alignment: Alignment.bottomRight,
+                                            children: [
+                                              !isSelected
+                                                  ? Container(
+                                                      height:
+                                                          Dimensions.height100,
+                                                      width: double.infinity,
+                                                      color: Colors.grey[400],
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                        horizontal:
+                                                            Dimensions.height15,
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: BigText(
+                                                              text:
+                                                                  'Select File',
+                                                              size: Dimensions
+                                                                  .font16,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () async {
+                                                              widget.type ==
+                                                                      'Files'
+                                                                  ? selectPdf()
+                                                                  : await selectedVideo();
+
+                                                              print('selected');
+                                                              update(() {
+                                                                isSelected =
+                                                                    true;
+                                                              });
+                                                            },
+                                                            child: CircleAvatar(
+                                                              radius: Dimensions
+                                                                  .height15,
+                                                              backgroundColor:
+                                                                  AppColors
+                                                                      .mainColor,
+                                                              child: Icon(
+                                                                CupertinoIcons
+                                                                    .folder_fill,
+                                                                color: Colors
+                                                                    .white,
+                                                                size: Dimensions
+                                                                    .height20,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  : Container(
+                                                      height: Dimensions
+                                                              .height100 +
+                                                          Dimensions.height100,
+                                                      width: double.infinity,
+                                                      color: Colors.grey[400],
+                                                      child: Center(
+                                                        child: BigText(
+                                                          text:
+                                                              'Choosed Success',
+                                                          color: Colors.black,
+                                                          size:
+                                                              Dimensions.font16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(height: Dimensions.height15),
+                                    _isLoading
+                                        ? LinearProgressIndicator()
+                                        : MainButton(
+                                            text: 'Add Lesson',
+                                            onTap: () {
+                                              widget.type == 'Files'
+                                                  ? selectPdf()
+                                                  : selectedVideo();
+                                            },
+                                            // onTap: _upload,
+                                          ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
                         },
                       ),
                     ],
@@ -318,7 +449,121 @@ class _TypeViewState extends State<TypeView> {
                   MainButton(
                     text: 'Add Lesson',
                     onTap: () {
-                      showDialog();
+                      showBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(Dimensions.height10),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextField(
+                                  controller: _title,
+                                  keyboardType: TextInputType.text,
+                                  decoration: InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.all(Dimensions.width4),
+                                    labelText: 'Lesson Title',
+                                    border: const OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: Dimensions.height15),
+                                SizedBox(
+                                  height: Dimensions.height100,
+                                  width: double.infinity,
+                                  child: StatefulBuilder(
+                                    builder: (context, update) {
+                                      return Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          !isSelected
+                                              ? Container(
+                                                  height: Dimensions.height100,
+                                                  width: double.infinity,
+                                                  color: Colors.grey[400],
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal:
+                                                        Dimensions.height15,
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: BigText(
+                                                          text: 'Select Video',
+                                                          size:
+                                                              Dimensions.font16,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () async {
+                                                          widget.type == 'Files'
+                                                              ? selectPdf()
+                                                              : await selectedVideo();
+
+                                                          print('selected');
+                                                          update(() {
+                                                            isSelected = true;
+                                                          });
+                                                        },
+                                                        child: CircleAvatar(
+                                                          radius: Dimensions
+                                                              .height15,
+                                                          backgroundColor:
+                                                              AppColors
+                                                                  .mainColor,
+                                                          child: Icon(
+                                                            CupertinoIcons
+                                                                .folder_fill,
+                                                            color: Colors.white,
+                                                            size: Dimensions
+                                                                .height20,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : Container(
+                                                  height: Dimensions.height100 +
+                                                      Dimensions.height100,
+                                                  width: double.infinity,
+                                                  color: Colors.grey[400],
+                                                  child: Center(
+                                                    child: BigText(
+                                                      text: 'Choosed Success',
+                                                      color: Colors.black,
+                                                      size: Dimensions.font16,
+                                                    ),
+                                                  ),
+                                                ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: Dimensions.height15),
+                                _isLoading
+                                    ? LinearProgressIndicator()
+                                    : MainButton(
+                                        text: 'Add Lesson',
+                                        onTap: () {
+                                          widget.type == 'Files'
+                                              ? selectPdf()
+                                              : selectedVideo();
+                                        },
+                                        // onTap: _upload,
+                                      ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
                     },
                   ),
                 ],
