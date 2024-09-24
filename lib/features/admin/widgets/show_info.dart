@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
@@ -11,6 +12,7 @@ class ShowInfo extends StatelessWidget {
   final String password;
   final String phone;
   final void Function() deactive;
+  final void Function() reset;
 
   const ShowInfo({
     super.key,
@@ -20,6 +22,7 @@ class ShowInfo extends StatelessWidget {
     required this.password,
     required this.phone,
     required this.deactive,
+    required this.reset,
   });
 
   @override
@@ -88,6 +91,12 @@ class ShowInfo extends StatelessWidget {
             size: Dimensions.font16,
             textAlign: TextAlign.start,
           ),
+        ),
+        SizedBox(height: Dimensions.height10),
+        MainButton(
+          text: 'Reset Device',
+          onTap: reset,
+          color: AppColors.mainColor,
         ),
         SizedBox(height: Dimensions.height10),
         MainButton(

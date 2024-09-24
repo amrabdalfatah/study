@@ -32,19 +32,21 @@ class AuthViewModel extends GetxController {
     shownPassword.value = !shownPassword.value;
   }
 
+  // Future<String?> getMacAddress() async {
+  //   String? deviceId = await PlatformDeviceId.getDeviceId;
+  //   return deviceId;
+  // }
+
   Future<String?> getIP() async {
     try {
       var url = Uri.https('api.ipify.org');
       var response = await http.get(url);
       if (response.statusCode == 200) {
-        print(response.body);
         return response.body;
       } else {
-        print(response.body);
         return null;
       }
     } catch (exception) {
-      print(exception);
       return null;
     }
   }
@@ -83,7 +85,7 @@ class AuthViewModel extends GetxController {
                   image: '',
                 ),
               );
-              
+
               action.value = false;
               Get.off(() => const AdminHomeView());
             }

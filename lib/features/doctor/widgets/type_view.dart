@@ -345,7 +345,6 @@ class _TypeViewState extends State<TypeView> {
                                                                   ? selectPdf()
                                                                   : await selectedVideo();
 
-                                                              print('selected');
                                                               update(() {
                                                                 isSelected =
                                                                     true;
@@ -393,7 +392,7 @@ class _TypeViewState extends State<TypeView> {
                                     ),
                                     SizedBox(height: Dimensions.height15),
                                     _isLoading
-                                        ? LinearProgressIndicator()
+                                        ? const LinearProgressIndicator()
                                         : MainButton(
                                             text: 'Add Lesson',
                                             onTap: () {
@@ -506,7 +505,6 @@ class _TypeViewState extends State<TypeView> {
                                                               ? selectPdf()
                                                               : await selectedVideo();
 
-                                                          print('selected');
                                                           update(() {
                                                             isSelected = true;
                                                           });
@@ -549,7 +547,7 @@ class _TypeViewState extends State<TypeView> {
                                 ),
                                 SizedBox(height: Dimensions.height15),
                                 _isLoading
-                                    ? LinearProgressIndicator()
+                                    ? const LinearProgressIndicator()
                                     : MainButton(
                                         text: 'Add Lesson',
                                         onTap: () {

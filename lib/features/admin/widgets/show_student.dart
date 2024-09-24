@@ -82,7 +82,7 @@ class _ShowStudentState extends State<ShowStudent> {
                           builder: (_) {
                             return CupertinoAlertDialog(
                               title: const Text('Delete Student'),
-                              content: Text(
+                              content: const Text(
                                 'Are you sure to delete this student?',
                               ),
                               actions: [
@@ -97,7 +97,6 @@ class _ShowStudentState extends State<ShowStudent> {
                                         email: widget.member.email!,
                                         password: widget.member.password!,
                                       );
-                                      print('Get user');
                                       final user = userCred.user;
                                       await user!.delete().then((val) async {
                                         await FireStoreStudent().deleteStudent(
@@ -142,6 +141,13 @@ class _ShowStudentState extends State<ShowStudent> {
                               ],
                             );
                           },
+                        );
+                      },
+                      reset: () async {
+                        await FireStoreStudent().updateStudentInfo(
+                          key: 'deviceId',
+                          value: '',
+                          studentId: widget.member.studentId!,
                         );
                       },
                     ),

@@ -4,6 +4,17 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>UISupportsDocumentBrowser</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Sending Audio to Chat Feature may help a good user experience</string>
 	<key>CFBundleDisplayName</key>
 	<string>Study Academy</string>
 	<key>NSPhotoLibraryUsageDescription</key>

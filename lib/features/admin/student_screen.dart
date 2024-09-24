@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
+import 'package:study_academy/core/view_model/admin_viewmodel.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 import 'package:study_academy/model/student_model.dart';
 
 import 'add_student_screen.dart';
 import 'widgets/show_student.dart';
 
-class StudentScreen extends StatelessWidget {
+class StudentScreen extends GetWidget<AdminViewModel> {
   const StudentScreen({super.key});
 
   @override
@@ -34,6 +35,7 @@ class StudentScreen extends StatelessWidget {
               students = snapshot.data!.docs.map((e) {
                 return StudentModel.fromJson(e.data());
               }).toList();
+              controller.setFinalStudents(students);
             }
             return SizedBox(
               child: students.isEmpty
@@ -45,11 +47,33 @@ class StudentScreen extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                     )
-                  : ListView.builder(
-                      itemCount: students.length,
-                      itemBuilder: (context, index) {
-                        return ShowStudent(member: students[index]);
-                      },
+                  : Column(
+                      children: [
+                        // SizedBox(
+                        //   height: Dimensions.height100,
+                        //   child: TextFormField(
+                        //     onChanged: (val) {
+                        //       controller
+                        //           .setFinalStudents(students.where((elem) {
+                        //         return elem.email!.contains(val);
+                        //       }).toList());
+                        //     },
+                        //     decoration: const InputDecoration(
+                        //       border: OutlineInputBorder(),
+                        //     ),
+                        //   ),
+                        // ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: students.length,
+                            itemBuilder: (context, index) {
+                              return ShowStudent(
+                                member: students[index],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
             );
           },

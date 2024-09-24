@@ -63,6 +63,11 @@ class AdminViewModel extends GetxController {
   RxInt catIndex = 0.obs;
   String catTitle = '';
   CategoryModel? categoryModel;
+  RxList<StudentModel> finalStudents = RxList();
+
+  setFinalStudents(List<StudentModel> students) {
+    finalStudents.value = students;
+  }
 
   @override
   void onInit() {
@@ -156,19 +161,16 @@ class AdminViewModel extends GetxController {
     if (context.mounted) {
       try {
         if (kIsWeb) {
-          print('Here in set image file from file');
           FilePickerResult? result = await FilePicker.platform.pickFiles(
             type: FileType.custom,
             allowMultiple: false,
-            onFileLoading: (FilePickerStatus status) => print(status),
+            onFileLoading: (FilePickerStatus status) {},
             allowedExtensions: ['png', 'jpg', 'jpeg'],
           );
-          print('Before if statement');
           if (result != null) {
             imageUrl!.value = result.xFiles.first.path;
             uploadedImage = result.files.single.bytes;
           }
-          print('Before Update');
         } else {
           final XFile? pickedFile = await _picker.pickImage(
             source: source,

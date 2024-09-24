@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
-import 'package:study_academy/features/admin/widgets/show_info.dart';
+import 'package:study_academy/core/widgets/big_text.dart';
+import 'package:study_academy/core/widgets/main_button.dart';
 
 class ProfilePage extends StatelessWidget {
   final String fullName;
@@ -9,6 +12,7 @@ class ProfilePage extends StatelessWidget {
   final String password;
   final String phone;
   final void Function() deactive;
+  final void Function()? reset;
 
   const ProfilePage({
     super.key,
@@ -18,6 +22,7 @@ class ProfilePage extends StatelessWidget {
     required this.password,
     required this.phone,
     required this.deactive,
+    this.reset,
   });
 
   @override
@@ -28,13 +33,94 @@ class ProfilePage extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(Dimensions.height15),
-        child: ShowInfo(
-          fullName: fullName,
-          image: image,
-          email: email,
-          password: password,
-          phone: phone,
-          deactive: deactive,
+        // child: ShowInfo(
+        //   fullName: fullName,
+        //   image: image,
+        //   email: email,
+        //   password: password,
+        //   phone: phone,
+        //   deactive: deactive,
+        //   reset: reset,
+        // ),
+        child: Column(
+          children: [
+            kIsWeb
+                ? SizedBox(
+                    height: Dimensions.height100 * 2, child: null // WebImage(
+                    // imageUrl: image,
+                    // )
+                    )
+                : CircleAvatar(
+                    radius: Dimensions.height100,
+                    backgroundColor: Colors.grey,
+                    foregroundImage: NetworkImage(image),
+                  ),
+            SizedBox(height: Dimensions.height10),
+            ListTile(
+              leading: const Icon(
+                Icons.person,
+                color: Colors.black,
+              ),
+              title: BigText(
+                text: fullName,
+                color: Colors.black,
+                size: Dimensions.font16,
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: Dimensions.height10),
+            ListTile(
+              leading: const Icon(
+                Icons.email,
+                color: Colors.black,
+              ),
+              title: BigText(
+                text: email,
+                color: Colors.black,
+                size: Dimensions.font16,
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: Dimensions.height10),
+            ListTile(
+              leading: const Icon(
+                Icons.password,
+                color: Colors.black,
+              ),
+              title: BigText(
+                text: password,
+                color: Colors.black,
+                size: Dimensions.font16,
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: Dimensions.height10),
+            ListTile(
+              leading: const Icon(
+                Icons.phone,
+                color: Colors.black,
+              ),
+              title: BigText(
+                text: phone,
+                color: Colors.black,
+                size: Dimensions.font16,
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: Dimensions.height10),
+            if (reset != null)
+              MainButton(
+                text: 'Reset Device',
+                onTap: reset!,
+                color: AppColors.mainColor,
+              ),
+            SizedBox(height: Dimensions.height10),
+            MainButton(
+              text: 'Delete',
+              onTap: deactive,
+              color: Colors.red,
+            ),
+          ],
         ),
       ),
     );

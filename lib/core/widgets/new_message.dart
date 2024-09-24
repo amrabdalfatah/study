@@ -338,7 +338,6 @@ class _NewMessageState extends State<NewMessage> {
                       )
                     : AudioRecorder(
                         onStop: (String path) {
-                          print(path);
                           setState(() {
                             audioSource = ap.AudioSource.uri(Uri.parse(path));
                             sendFileMessage(File(path), 'audio');
@@ -357,7 +356,8 @@ class AudioRecorder extends StatefulWidget {
   final void Function(String path) onStop;
 
   @override
-  _AudioRecorderState createState() => _AudioRecorderState();
+  createState() => _AudioRecorderState();
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
@@ -368,12 +368,12 @@ class AudioRecorder extends StatefulWidget {
 
 class _AudioRecorderState extends State<AudioRecorder> {
   bool _isRecording = false;
-  bool _isPaused = false;
+  bool isPaused = false;
   int _recordDuration = 0;
   Timer? _timer;
   Timer? _ampTimer;
   final FlutterSoundRecord _audioRecorder = FlutterSoundRecord();
-  Amplitude? _amplitude;
+  Amplitude? amplitude;
 
   @override
   void initState() {
@@ -408,7 +408,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
     late Icon icon;
     late Color color;
 
-    if (_isRecording || _isPaused) {
+    if (_isRecording || isPaused) {
       icon = const Icon(Icons.stop, color: Colors.red, size: 30);
       color = Colors.red.withOpacity(0.1);
     } else {
@@ -470,7 +470,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
     _ampTimer =
         Timer.periodic(const Duration(milliseconds: 200), (Timer t) async {
-      _amplitude = await _audioRecorder.getAmplitude();
+      amplitude = await _audioRecorder.getAmplitude();
       setState(() {});
     });
   }
