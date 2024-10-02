@@ -2,6 +2,7 @@ class AppConstants {
   static const String phoneNumber = '201120075820';
   static const String adminEmail = 'admin@study.academy';
   static String? userId;
+  static bool? isGuest;
   static String? userName;
   static String? userCode;
   static TypePerson? typePerson;

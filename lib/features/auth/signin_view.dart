@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
+import 'package:study_academy/core/utils/constants.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/view_model/auth_viewmodel.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 import 'package:study_academy/features/auth/widgets/input_field.dart';
+import 'package:study_academy/features/student/student_homeview.dart';
 
 class SignInView extends StatelessWidget {
   SignInView({super.key});
@@ -77,12 +79,35 @@ class SignInView extends StatelessWidget {
                             : MainButton(
                                 text: 'Login',
                                 onTap: () {
+                                  AppConstants.isGuest = false;
                                   _formKey.currentState!.save();
                                   if (_formKey.currentState!.validate()) {
                                     controller.signInWithEmailAndPassword();
                                   }
                                 },
                               );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: Dimensions.height15,
+                  ),
+                  BigText(
+                    text: 'OR Login as Guest',
+                    color: Colors.black,
+                    size: Dimensions.font16,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.height15,
+                      vertical: Dimensions.height20,
+                    ),
+                    child: MainButton(
+                      text: 'Go to Home',
+                      color: Colors.orange,
+                      onTap: () {
+                        AppConstants.isGuest = true;
+                        Get.to(() => const StudentHomeView());
                       },
                     ),
                   ),

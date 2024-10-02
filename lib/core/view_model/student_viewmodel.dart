@@ -34,7 +34,9 @@ class StudentViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getStudent();
+    if (!AppConstants.isGuest!) {
+      getStudent();
+    }
   }
 
   Future<void> getStudent() async {
