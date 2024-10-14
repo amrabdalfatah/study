@@ -120,7 +120,7 @@ class AuthViewModel extends GetxController {
           AppConstants.typePerson = TypePerson.student;
           box.write('usertype', TypePerson.student.index);
           AppConstants.userId = value.user!.uid;
-          final deviceId = await getIP();
+          // final deviceId = await getIP();
           StudentModel? studentData;
           await FireStoreStudent()
               .getCurrentStudent(value.user!.uid)
@@ -131,26 +131,29 @@ class AuthViewModel extends GetxController {
             AppConstants.userCode = '${studentData!.code}';
           }).whenComplete(() async {
             if (studentData!.isActive!) {
-              if (studentData!.deviceId!.isEmpty) {
-                await FireStoreStudent().updateStudentInfo(
-                  key: 'deviceId',
-                  value: deviceId!,
-                  studentId: value.user!.uid,
-                );
-                action.value = false;
-                Get.offAll(() => const StudentHomeView());
-              } else if (studentData!.deviceId! == deviceId!) {
-                action.value = false;
-                Get.offAll(() => const StudentHomeView());
-              } else {
-                action.value = false;
-                Get.snackbar(
-                  'Error Login',
-                  'You are not using the same ip for your device \ncontact us for more details',
-                  snackPosition: SnackPosition.BOTTOM,
-                  colorText: Colors.red,
-                );
-              }
+              action.value = false;
+              Get.offAll(() => const StudentHomeView());
+              // This is for ignoring ip address for student app
+              // if (studentData!.deviceId!.isEmpty) {
+              //   await FireStoreStudent().updateStudentInfo(
+              //     key: 'deviceId',
+              //     value: deviceId!,
+              //     studentId: value.user!.uid,
+              //   );
+              //   action.value = false;
+              //   Get.offAll(() => const StudentHomeView());
+              // } else if (studentData!.deviceId! == deviceId!) {
+              //   action.value = false;
+              //   Get.offAll(() => const StudentHomeView());
+              // } else {
+              //   action.value = false;
+              //   Get.snackbar(
+              //     'Error Login',
+              //     'You are not using the same ip for your device \ncontact us for more details',
+              //     snackPosition: SnackPosition.BOTTOM,
+              //     colorText: Colors.red,
+              //   );
+              // }
             } else {
               action.value = false;
               Get.snackbar(
