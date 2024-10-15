@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
@@ -27,40 +26,51 @@ class AddStudentCourseView extends StatefulWidget {
 class _AddStudentCourseViewState extends State<AddStudentCourseView> {
   String courseId = '';
   String courseName = '';
+  List<Map> coursesRegistered = [];
+
   registerCourseToStudent(
-      String courseId, String studentId, bool isRegistered) async {
-    const uuid = Uuid();
-    final regId = uuid.v4();
-    if (!isRegistered) {
-      try {
-        await FirebaseFirestore.instance
-            .collection('Registers')
-            .doc(regId)
-            .set({
-          'courseId': courseId,
-          'studentId': studentId,
-        });
-        await FirebaseFirestore.instance
-            .collection('Rooms')
-            .doc(courseId)
-            .collection('People')
-            .add({
-          'id': studentId,
-        });
-        Get.snackbar(
-          'Success',
-          'Added New Chat for this Course',
-          snackPosition: SnackPosition.TOP,
-          colorText: Colors.green,
-        );
-        Navigator.of(context).pop();
-      } catch (e) {
-        Get.snackbar(
-          'Error',
-          e.toString(),
-          snackPosition: SnackPosition.TOP,
-          colorText: Colors.red,
-        );
+    String courseId,
+    String studentId,
+    bool isRegistered,
+  ) async {
+    if (courseId.isEmpty) {
+      Navigator.of(context).pop();
+    } else {
+      const uuid = Uuid();
+      final regId = uuid.v4();
+      if (!isRegistered) {
+        try {
+          Navigator.of(context).pop();
+          await FirebaseFirestore.instance
+              .collection('Registers')
+              .doc(regId)
+              .set({
+            'courseId': courseId,
+            'studentId': studentId,
+            'regId': regId,
+          });
+          await FirebaseFirestore.instance
+              .collection('Rooms')
+              .doc(courseId)
+              .collection('People')
+              .doc(regId)
+              .set({
+            'id': studentId,
+          });
+          Get.snackbar(
+            'Success',
+            'Added New Chat for this Course',
+            snackPosition: SnackPosition.TOP,
+            colorText: Colors.green,
+          );
+        } catch (e) {
+          Get.snackbar(
+            'Error',
+            e.toString(),
+            snackPosition: SnackPosition.TOP,
+            colorText: Colors.red,
+          );
+        }
       }
     }
   }
@@ -98,35 +108,53 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
                   if (snapshot.hasData) {
                     snapshot.data!.docs.forEach(
                       (element) {
-                        courses.add(
-                          CourseModel.fromJson(
-                            element.data(),
-                          ),
+                        CourseModel course = CourseModel.fromJson(
+                          element.data(),
                         );
+                        if (coursesRegistered.isNotEmpty) {
+                          for (int i = 0; i < coursesRegistered.length; i++) {
+                            if (coursesRegistered[i]['courseId'] !=
+                                course.courseId) {
+                              courses.add(course);
+                            }
+                          }
+                        } else {
+                          courses.add(course);
+                        }
                       },
                     );
                   }
 
-                  courseId = courses[0].courseId!;
-                  courseName = courses[0].title!;
+                  if (courses.isNotEmpty) {
+                    courseId = courses[0].courseId!;
+                    courseName = courses[0].title!;
+                  }
 
-                  return DropdownButton<String>(
-                    value: courseId,
-                    isExpanded: true,
-                    padding: EdgeInsets.all(Dimensions.height10),
-                    items: List.generate(
-                      courses.length,
-                      (index) {
-                        return DropdownMenuItem(
-                          value: courses[index].courseId!,
-                          child: Text(courses[index].title!),
+                  return courses.isEmpty
+                      ? Center(
+                          child: SmallText(
+                            text: 'No courses available',
+                            size: Dimensions.font16,
+                            color: Colors.black,
+                          ),
+                        )
+                      : DropdownButton<String>(
+                          value: courseId,
+                          isExpanded: true,
+                          padding: EdgeInsets.all(Dimensions.height10),
+                          items: List.generate(
+                            courses.length,
+                            (index) {
+                              return DropdownMenuItem(
+                                value: courses[index].courseId!,
+                                child: Text(courses[index].title!),
+                              );
+                            },
+                          ),
+                          onChanged: (value) {
+                            courseId = value!;
+                          },
                         );
-                      },
-                    ),
-                    onChanged: (value) {
-                      courseId = value!;
-                    },
-                  );
                 },
               ),
             ),
@@ -139,11 +167,78 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
                   widget.studentId,
                   false,
                 );
+                setState(() {
+                  courseId = '';
+                });
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void deleteRegisterCourse(String registerId, String cours) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return CupertinoAlertDialog(
+          title: const Text('Delete'),
+          content: const Text(
+            'Are you sure to delete this Course for this student?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                try {
+                  await FirebaseFirestore.instance
+                      .collection('Registers')
+                      .doc(registerId)
+                      .delete();
+                  await FirebaseFirestore.instance
+                      .collection('Rooms')
+                      .doc(cours)
+                      .collection('People')
+                      .doc(registerId)
+                      .delete();
+
+                  Get.snackbar(
+                    'Success',
+                    'Deleted Course for this student Success',
+                    snackPosition: SnackPosition.TOP,
+                    colorText: Colors.green,
+                  );
+                } catch (error) {
+                  Get.snackbar(
+                    'Error',
+                    error.toString(),
+                    snackPosition: SnackPosition.TOP,
+                    colorText: Colors.red,
+                  );
+                }
+              },
+              child: const Text(
+                'Yes',
+                style: TextStyle(
+                  color: Colors.green,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'No',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -160,7 +255,6 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
             .where('studentId', isEqualTo: widget.studentId)
             .snapshots(),
         builder: (ctx, snapshot) {
-          List<Map> coursesRegistered = [];
           if (snapshot.hasError) {
             return const Text('Something went wrong');
           }
@@ -205,33 +299,29 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
                           course = CourseModel.fromJson(snapshot.data!.data());
                         }
                         return ListTile(
-                          onTap: () {},
-                          title: Row(
-                            children: [
-                              kIsWeb
-                                  ? SizedBox(
-                                      width: Dimensions.width100,
-                                      height: Dimensions.height100,
-                                      child: null,
-                                      // child: WebImage(
-                                      //   imageUrl: course!.image!,
-                                      // ),
-                                    )
-                                  : CircleAvatar(
-                                      backgroundColor: Colors.grey,
-                                      foregroundImage: NetworkImage(
-                                        course!.image!,
-                                      ),
-                                    ),
-                              SizedBox(width: Dimensions.width20),
-                              BigText(
-                                text: course!.title!,
-                                color: Colors.black,
-                                size: Dimensions.font20,
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            foregroundImage: NetworkImage(
+                              course!.image!,
+                            ),
                           ),
+                          title: BigText(
+                            text: course.title!,
+                            color: Colors.black,
+                            size: Dimensions.font20,
+                            textAlign: TextAlign.start,
+                          ),
+                          trailing: IconButton(
+                              onPressed: () {
+                                deleteRegisterCourse(
+                                  coursesRegistered[index]['regId'],
+                                  course!.courseId!,
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.remove_circle,
+                                color: Colors.red,
+                              )),
                         );
                       },
                     );

@@ -127,12 +127,15 @@ class _ShowStudentsWithSearchState extends State<ShowStudentsWithSearch> {
           height: Dimensions.height15,
         ),
         Expanded(
-          child: ListView.builder(
+          child: ListView.separated(
             itemCount: studentsHere.length,
             itemBuilder: (context, index) {
               return ShowStudent(
                 member: studentsHere[index],
               );
+            },
+            separatorBuilder: (context, index) {
+              return const Divider();
             },
           ),
         ),
