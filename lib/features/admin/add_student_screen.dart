@@ -311,19 +311,8 @@ class AddStudentScreen extends GetWidget<AdminViewModel> {
                                       text: 'Add',
                                       onTap: () {
                                         _formKey.currentState!.save();
-                                        if (controller
-                                            .imageUrl!.value.isNotEmpty) {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            controller.addStudent();
-                                          }
-                                        } else {
-                                          Get.snackbar(
-                                            'Error',
-                                            'Image Required',
-                                            snackPosition: SnackPosition.TOP,
-                                            colorText: Colors.red,
-                                          );
+                                        if (_formKey.currentState!.validate()) {
+                                          controller.addStudent();
                                         }
                                       },
                                     );

@@ -2,21 +2,24 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
+import 'package:study_academy/core/utils/image_strings.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 
 class ProfilePage extends StatelessWidget {
   final String fullName;
-  final String image;
+  final String? image;
   final String email;
   final String password;
   final String phone;
+  final String code;
   final void Function() deactive;
   final void Function()? reset;
 
   const ProfilePage({
     super.key,
     required this.fullName,
+    required this.code,
     required this.image,
     required this.email,
     required this.password,
@@ -29,7 +32,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(code),
       ),
       body: Padding(
         padding: EdgeInsets.all(Dimensions.height15),
@@ -53,7 +56,9 @@ class ProfilePage extends StatelessWidget {
                 : CircleAvatar(
                     radius: Dimensions.height100,
                     backgroundColor: Colors.grey,
-                    foregroundImage: NetworkImage(image),
+                    foregroundImage: image != null
+                        ? NetworkImage(image!)
+                        : const AssetImage(ImagesStrings.logo),
                   ),
             SizedBox(height: Dimensions.height10),
             ListTile(
@@ -63,6 +68,19 @@ class ProfilePage extends StatelessWidget {
               ),
               title: BigText(
                 text: fullName,
+                color: Colors.black,
+                size: Dimensions.font16,
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: Dimensions.height10),
+            ListTile(
+              leading: const Icon(
+                Icons.code,
+                color: Colors.black,
+              ),
+              title: BigText(
+                text: code,
                 color: Colors.black,
                 size: Dimensions.font16,
                 textAlign: TextAlign.start,

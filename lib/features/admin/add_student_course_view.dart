@@ -152,7 +152,7 @@ class _AddStudentCourseViewState extends State<AddStudentCourseView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.mainColor,
-        title: const Text('Register Course'),
+        title: Text('Courses for ${widget.studentName}'),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance

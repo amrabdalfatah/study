@@ -5,7 +5,7 @@ class CourseModel {
   String? title;
   String? description;
   String? image;
-  double? price;
+  num? price;
   bool? active;
 
   CourseModel({

@@ -263,10 +263,12 @@ class AdminViewModel extends GetxController {
                 uploadedImage,
                 email,
               )
-            : await StudentStorage().uploadStudentImage(
-                imageUrl!.value,
-                email,
-              );
+            : imageUrl!.value.isNotEmpty
+                ? await StudentStorage().uploadStudentImage(
+                    imageUrl!.value,
+                    email,
+                  )
+                : null;
         studentModel = StudentModel(
           studentId: id,
           email: email,

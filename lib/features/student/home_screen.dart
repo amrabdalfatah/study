@@ -180,6 +180,9 @@ class HomeScreen extends StatelessWidget {
                               SizedBox(height: Dimensions.height10),
                               GetX<StudentViewModel>(
                                 builder: (catContr) {
+                                  print(categories);
+                                  // print(categories[catContr.catIndex.value]
+                                  //     .categoryId);
                                   return StreamBuilder(
                                       stream: FirebaseFirestore.instance
                                           .collection('Courses')

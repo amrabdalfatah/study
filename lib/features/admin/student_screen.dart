@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
 import 'package:study_academy/core/view_model/admin_viewmodel.dart';
+import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/small_text.dart';
 import 'package:study_academy/model/student_model.dart';
 
@@ -47,33 +48,8 @@ class StudentScreen extends GetWidget<AdminViewModel> {
                         fontWeight: FontWeight.w400,
                       ),
                     )
-                  : Column(
-                      children: [
-                        // SizedBox(
-                        //   height: Dimensions.height100,
-                        //   child: TextFormField(
-                        //     onChanged: (val) {
-                        //       controller
-                        //           .setFinalStudents(students.where((elem) {
-                        //         return elem.email!.contains(val);
-                        //       }).toList());
-                        //     },
-                        //     decoration: const InputDecoration(
-                        //       border: OutlineInputBorder(),
-                        //     ),
-                        //   ),
-                        // ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: students.length,
-                            itemBuilder: (context, index) {
-                              return ShowStudent(
-                                member: students[index],
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                  : ShowStudentsWithSearch(
+                      students: students,
                     ),
             );
           },
@@ -87,6 +63,80 @@ class StudentScreen extends GetWidget<AdminViewModel> {
         backgroundColor: AppColors.mainColor,
         child: const Icon(CupertinoIcons.add),
       ),
+    );
+  }
+}
+
+class ShowStudentsWithSearch extends StatefulWidget {
+  const ShowStudentsWithSearch({
+    super.key,
+    required this.students,
+  });
+
+  final List<StudentModel> students;
+
+  @override
+  State<ShowStudentsWithSearch> createState() => _ShowStudentsWithSearchState();
+}
+
+class _ShowStudentsWithSearchState extends State<ShowStudentsWithSearch> {
+  List<StudentModel> studentsHere = [];
+
+  @override
+  void initState() {
+    super.initState();
+    studentsHere = widget.students;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          child: TextField(
+            onChanged: (val) {
+              studentsHere = [];
+              widget.students.forEach((student) {
+                if (student.email!.contains(val)) {
+                  studentsHere.add(student);
+                } else if (student.fullName!.contains(val)) {
+                  studentsHere.add(student);
+                } else if (student.code!.contains(val)) {
+                  studentsHere.add(student);
+                }
+              });
+              setState(() {});
+            },
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Search by email, or code, or full name',
+            ),
+          ),
+        ),
+        SizedBox(
+          height: Dimensions.height15,
+        ),
+        BigText(
+          text: 'Students',
+          color: Colors.black,
+          size: Dimensions.font20,
+          textAlign: TextAlign.start,
+        ),
+        SizedBox(
+          height: Dimensions.height15,
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: studentsHere.length,
+            itemBuilder: (context, index) {
+              return ShowStudent(
+                member: studentsHere[index],
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

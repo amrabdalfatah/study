@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:study_academy/core/services/firestore/firestore_student.dart';
 import 'package:study_academy/core/utils/colors.dart';
 import 'package:study_academy/core/utils/dimensions.dart';
+import 'package:study_academy/core/utils/image_strings.dart';
 import 'package:study_academy/core/widgets/big_text.dart';
 import 'package:study_academy/core/widgets/main_button.dart';
 import 'package:study_academy/features/admin/add_student_course_view.dart';
@@ -43,9 +44,11 @@ class _ShowStudentState extends State<ShowStudent> {
       leading: CircleAvatar(
         radius: Dimensions.height50,
         backgroundColor: Colors.grey,
-        foregroundImage: NetworkImage(
-          widget.member.image!,
-        ),
+        foregroundImage: widget.member.image != null
+            ? NetworkImage(
+                widget.member.image!,
+              )
+            : const AssetImage(ImagesStrings.logo),
       ),
       title: Column(
         children: [
@@ -72,7 +75,8 @@ class _ShowStudentState extends State<ShowStudent> {
                   Get.to(
                     () => ProfilePage(
                       fullName: widget.member.fullName!,
-                      image: widget.member.image!,
+                      code: widget.member.code!,
+                      image: widget.member.image,
                       email: widget.member.email!,
                       password: widget.member.password!,
                       phone: widget.member.phone!,
@@ -101,9 +105,11 @@ class _ShowStudentState extends State<ShowStudent> {
                                       await user!.delete().then((val) async {
                                         await FireStoreStudent().deleteStudent(
                                             widget.member.studentId!);
-                                        await FirebaseStorage.instance
-                                            .refFromURL(widget.member.image!)
-                                            .delete();
+                                        if (widget.member.image != null) {
+                                          await FirebaseStorage.instance
+                                              .refFromURL(widget.member.image!)
+                                              .delete();
+                                        }
                                         Get.snackbar(
                                           'Success',
                                           'Deleted User Success',
